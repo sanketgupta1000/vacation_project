@@ -1,5 +1,6 @@
 package com.project.readers.readers_community.controllers;
 
+import com.project.readers.readers_community.entities.MemberApprovalRequest;
 import com.project.readers.readers_community.entities.User;
 import com.project.readers.readers_community.services.AuthService;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +33,35 @@ public class AuthController
     {
         return authService.verifyOtp(email, otp);
     }
+
+    // method to approve member signup request from the side of reference
+    @GetMapping("/{request_id}/approveFromReference")
+    public String approveFromReference(@PathVariable("request_id") MemberApprovalRequest request)
+    {
+        return authService.approveFromReference(request);
+    }
+
+    // method to reject member signup request from the side of reference
+    @GetMapping("/{request_id}/rejectFromReference")
+    public String rejectFromReference(@PathVariable("request_id") MemberApprovalRequest request)
+    {
+        return authService.rejectFromReference(request);
+    }
+
+    // method to approve member signup request from the side of admin
+    @GetMapping("/{request_id}/approveFromAdmin")
+    public String approveFromAdmin(@PathVariable("request_id") MemberApprovalRequest request)
+    {
+        return authService.approveFromAdmin(request);
+    }
+
+    // method to reject member signup request from the side of admin
+    @GetMapping("/{request_id}/approveFromAdmin")
+    public String rejectFromAdmin(@PathVariable("request_id") MemberApprovalRequest request)
+    {
+        return authService.rejectFromAdmin(request);
+    }
+
 
     // method to send otp again for signup
     @PostMapping("/send-otp")
