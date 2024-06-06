@@ -44,12 +44,13 @@ public class User
     @Column(name = "otp")
     private String otp;
 
-    // is profile approved by reference person and admin
-    @Column(name = "is_approved")
-    private boolean isApproved;
+    // approval request
+    @OneToOne(mappedBy = "member")
+    @Column(name = "request_id")
+    private MemberApprovalRequest memberApprovalRequest;
 
     // constructor
-    public User(User referrer, String phoneNumber, UserType userType, String fullName, String password, String email, Integer id, String otp, boolean isApproved) {
+    public User(User referrer, String phoneNumber, UserType userType, String fullName, String password, String email, Integer id, String otp, MemberApprovalRequest memberApprovalRequest) {
         this.referrer = referrer;
         this.phoneNumber = phoneNumber;
         this.userType = userType;
@@ -58,7 +59,7 @@ public class User
         this.email = email;
         this.id = id;
         this.otp = otp;
-        this.isApproved = isApproved;
+        this.memberApprovalRequest = memberApprovalRequest;
     }
 
     // no args
@@ -128,12 +129,12 @@ public class User
         this.otp = otp;
     }
 
-    public boolean isApproved() {
-        return isApproved;
+    public MemberApprovalRequest getMemberApprovalRequest() {
+        return memberApprovalRequest;
     }
 
-    public void setApproved(boolean isApproved) {
-        this.isApproved = isApproved;
+    public void setMemberApprovalRequest(MemberApprovalRequest memberApprovalRequest) {
+        this.memberApprovalRequest = memberApprovalRequest;
     }
 
     @Override
@@ -147,7 +148,7 @@ public class User
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", referrer=" + referrer +
                 ", otp='" + otp +
-                ", isApproved=" + isApproved +
+                ", memberApprovalRequest=" + memberApprovalRequest +
                 '}';
     }
 }
