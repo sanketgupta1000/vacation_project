@@ -135,6 +135,92 @@ public class AuthService
         return "Profile sent for approval";
     }
 
+    public String approveFromReference(MemberApprovalRequest request)
+    {
+        if( request == null )
+        {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Member approval request not found");
+        }
+
+        if( request.getReferrerApproval() != Approval.UNRESPONDED )
+        {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Member approval request has already been responded to");
+        }
+
+        request.setReferrerApproval(Approval.APPROVED);
+
+        String to = request.getMember().getEmail();
+        String subject = "Member approval request status";
+        String message = "Your member approval request has been approved from your reference's side. Please wait for the admin's response.";
+        emailService.sendEmail(to, subject, message);
+
+        return "Member approval request has been approved from the reference side";
+    }
+
+    public String rejectFromReference(MemberApprovalRequest request)
+    {
+        if( request == null )
+        {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Member approval request not found");
+        }
+
+        if( request.getReferrerApproval() != Approval.UNRESPONDED )
+        {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Member approval request has already been responded to");
+        }
+
+        request.setReferrerApproval(Approval.REJECTED);
+        String to = request.getMember().getEmail();
+        String subject = "Member approval request status";
+        String message = "Your member approval request has been rejected from your reference's side. Please wait for the admin's response.";
+        emailService.sendEmail(to, subject, message);
+
+        return "Member approval request has been rejected from the reference side";
+    }
+
+    public String approveFromAdmin(MemberApprovalRequest request)
+    {
+        if( request == null )
+        {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Member approval request not found");
+        }
+        if( request.getAdminApproval() != Approval.UNRESPONDED )
+        {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Member approval request has already been responded to");
+        }
+
+        request.setAdminApproval(Approval.APPROVED);
+
+        String to = request.getMember().getEmail();
+        String subject = "Member approval request status";
+        String message = "Congratulations! Your member approval request has been approved by the admin. Please login to the site with the email and password used at the time of registration.";
+        emailService.sendEmail(to, subject, message);
+
+        return "Member approval request has been approved from the admin side";
+    }
+
+    public String rejectFromAdmin(MemberApprovalRequest request)
+    {
+        if( request == null )
+        {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Member approval request not found");
+        }
+
+        if( request.getAdminApproval() != Approval.UNRESPONDED )
+        {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Member approval request has already been responded to");
+        }
+
+        request.setAdminApproval(Approval.REJECTED);
+
+        String to = request.getMember().getEmail();
+        String subject = "Member approval request status";
+        String message = "Sorry, user! Your member approval request has been rejected by the admin. All your personal details has been removed from the site.";
+        emailService.sendEmail(to, subject, message);
+
+        return "Member approval request has been rejected from the admin side";
+    }
+
     // method to send otp again for signup
     public String sendOtp(String email)
     {
