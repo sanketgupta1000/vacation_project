@@ -10,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.HashMap;
 import java.util.Optional;
 
 @Service
@@ -224,6 +225,33 @@ public class AuthService
     // method to send otp again for signup
     public String sendOtp(String email)
     {
+    	 User user1 = userRepository.findByEmail(email);
+    	 
+    	 //generating otp
+    	 String otp = otpService.generateOtp(6);
+         // setting in entity
+         user1.setOtp(otp);
+         user1.setOtpVerified(false);
+         user1.setMemberApprovalRequest(null);
+         // save
+         userRepository.save(user1);
 
+         // send otp
+         emailService.sendEmail(user1.getEmail(), "OTP for signup verification", "OTP for signup: "+otp);
+
+         return "OTP sent to the entered email for verification.";
+     
+    }
+
+       //login 
+    public JwtAuthentication_response signin(signIn_request signin_request)
+    {
+    	authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signin_request.getEmail(),signin_request.getPassword()));
+  
+ 	var user = userRepository.findByEmail(signin_request.getEmail()).orElseThrow("Invalid email or password");
+    
+ 	var jwt=jwtService.generateToken(user);
+ 	var refreshtoken=jwtService.refreshToken(new HashMap<>(),user);
+    	
     }
 }
