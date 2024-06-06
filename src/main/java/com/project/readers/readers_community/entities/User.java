@@ -44,12 +44,16 @@ public class User
     @Column(name = "otp")
     private String otp;
 
+    // is otp verified
+    @Column(name = "is_otp_verified")
+    private boolean isOtpVerified;
+
     // approval request
-    @OneToOne(mappedBy = "member")
+    @OneToOne(mappedBy = "member", cascade = CascadeType.ALL)
     private MemberApprovalRequest memberApprovalRequest;
 
     // constructor
-    public User(User referrer, String phoneNumber, UserType userType, String fullName, String password, String email, Integer id, String otp, MemberApprovalRequest memberApprovalRequest) {
+    public User(User referrer, String phoneNumber, UserType userType, String fullName, String password, String email, Integer id, String otp, MemberApprovalRequest memberApprovalRequest, boolean isOtpVerified) {
         this.referrer = referrer;
         this.phoneNumber = phoneNumber;
         this.userType = userType;
@@ -59,6 +63,7 @@ public class User
         this.id = id;
         this.otp = otp;
         this.memberApprovalRequest = memberApprovalRequest;
+        this.isOtpVerified = isOtpVerified;
     }
 
     // no args
@@ -136,6 +141,14 @@ public class User
         this.memberApprovalRequest = memberApprovalRequest;
     }
 
+    public boolean isOtpVerified() {
+        return isOtpVerified;
+    }
+
+    public void setOtpVerified(boolean isOtpVerified) {
+        this.isOtpVerified = isOtpVerified;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -148,6 +161,7 @@ public class User
                 ", referrer=" + referrer +
                 ", otp='" + otp +
                 ", memberApprovalRequest=" + memberApprovalRequest +
+                ", isOtpVerified=" + isOtpVerified +
                 '}';
     }
 }
