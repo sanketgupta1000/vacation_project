@@ -46,7 +46,6 @@ public class User
 
     // approval request
     @OneToOne(mappedBy = "member")
-    @Column(name = "request_id")
     private MemberApprovalRequest memberApprovalRequest;
 
     // constructor
