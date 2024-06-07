@@ -4,6 +4,7 @@ import com.project.readers.readers_community.annotations.CurrentUser;
 import com.project.readers.readers_community.entities.MemberApprovalRequest;
 import com.project.readers.readers_community.entities.User;
 import com.project.readers.readers_community.services.AuthService;
+import com.project.readers.readers_community.utilities.LoginRequest;
 import org.springframework.web.bind.annotation.*;
 
 // for authentication purposes
@@ -71,4 +72,9 @@ public class AuthController
         return authService.sendOtp(email);
     }
 
+    @PostMapping("/login")
+    public String login(@RequestBody LoginRequest loginRequest)
+    {
+        return authService.login(loginRequest);
+    }
 }

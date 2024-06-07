@@ -1,9 +1,6 @@
 package com.project.readers.readers_community.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
 public class Book {
@@ -15,7 +12,7 @@ public class Book {
 		
 		
 		
-
+		@ManyToOne
 		private User book_owner;
 		private String book_author;
 		private byte[] book_image;
@@ -41,7 +38,12 @@ public class Book {
 			this.catagory = catagory;
 			this.approval_status=false;
 		}
-		public Long getId() {
+
+	public Book() {
+
+	}
+
+	public Long getId() {
 			return id;
 		}
 		public void setId(Long id) {
