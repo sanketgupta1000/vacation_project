@@ -161,7 +161,7 @@ public class AuthService
         }
 
         User reference = request.getMember().getReferrer();
-        if(currentUser != reference)
+        if(!currentUser.getEmail().equals(reference.getEmail()))
         {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User does not have access to this member approval request");
         }
@@ -192,7 +192,7 @@ public class AuthService
         }
 
         User reference = request.getMember().getReferrer();
-        if(currentUser != reference)
+        if(!currentUser.getEmail().equals(reference.getEmail()))
         {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User does not have access to this member approval request");
         }
@@ -300,7 +300,7 @@ public class AuthService
 
     // login
     @Transactional
-    public String login(@RequestBody LoginRequest loginRequest)
+    public String login(LoginRequest loginRequest)
     {
 
         // doing custom checks
