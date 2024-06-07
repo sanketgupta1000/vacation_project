@@ -1,5 +1,6 @@
 package com.project.readers.readers_community.controllers;
 
+import com.project.readers.readers_community.annotations.CurrentUser;
 import com.project.readers.readers_community.entities.MemberApprovalRequest;
 import com.project.readers.readers_community.entities.User;
 import com.project.readers.readers_community.services.AuthService;
@@ -36,16 +37,16 @@ public class AuthController
 
     // method to approve member signup request from the side of reference
     @GetMapping("/{request_id}/approveFromReference")
-    public String approveFromReference(@PathVariable("request_id") MemberApprovalRequest request)
+    public String approveFromReference(@PathVariable("request_id") MemberApprovalRequest request, @CurrentUser User currentUser)
     {
-        return authService.approveFromReference(request);
+        return authService.approveFromReference(request, currentUser);
     }
 
     // method to reject member signup request from the side of reference
     @GetMapping("/{request_id}/rejectFromReference")
-    public String rejectFromReference(@PathVariable("request_id") MemberApprovalRequest request)
+    public String rejectFromReference(@PathVariable("request_id") MemberApprovalRequest request, @CurrentUser User currentUser)
     {
-        return authService.rejectFromReference(request);
+        return authService.rejectFromReference(request, currentUser);
     }
 
     // method to approve member signup request from the side of admin
@@ -56,7 +57,7 @@ public class AuthController
     }
 
     // method to reject member signup request from the side of admin
-    @GetMapping("/{request_id}/approveFromAdmin")
+    @GetMapping("/{request_id}/rejectFromAdmin")
     public String rejectFromAdmin(@PathVariable("request_id") MemberApprovalRequest request)
     {
         return authService.rejectFromAdmin(request);

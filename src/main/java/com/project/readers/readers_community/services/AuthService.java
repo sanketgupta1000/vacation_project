@@ -4,6 +4,7 @@ import com.project.readers.readers_community.entities.MemberApprovalRequest;
 import com.project.readers.readers_community.entities.User;
 import com.project.readers.readers_community.enums.Approval;
 import com.project.readers.readers_community.enums.UserType;
+import com.project.readers.readers_community.repositories.MemberApprovalRequestRepository;
 import com.project.readers.readers_community.repositories.UserRepository;
 import com.project.readers.readers_community.utilities.LoginRequest;
 import jakarta.transaction.Transactional;
@@ -26,6 +27,8 @@ public class AuthService
 
     // repository
     private final UserRepository userRepository;
+    private  final MemberApprovalRequestRepository memberApprovalRequestRepository;
+
     private final PasswordEncoder passwordEncoder;
     private final OtpService otpService;
     private final EmailService emailService;
@@ -33,9 +36,10 @@ public class AuthService
     private TokenService tokenService;
 
     // DI
-    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, OtpService otpService, EmailService emailService, AuthenticationManager authenticationManager)
+    public AuthService(UserRepository userRepository, MemberApprovalRequestRepository memberApprovalRequestRepository, PasswordEncoder passwordEncoder, OtpService otpService, EmailService emailService, AuthenticationManager authenticationManager)
     {
         this.userRepository = userRepository;
+        this.memberApprovalRequestRepository = memberApprovalRequestRepository;
         this.passwordEncoder = passwordEncoder;
         this.otpService = otpService;
         this.emailService = emailService;
@@ -149,11 +153,17 @@ public class AuthService
     }
 
     @Transactional
-    public String approveFromReference(MemberApprovalRequest request)
+    public String approveFromReference(MemberApprovalRequest request, User currentUser)
     {
         if( request == null )
         {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Member approval request not found");
+        }
+
+        User reference = request.getMember().getReferrer();
+        if(currentUser != reference)
+        {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User does not have access to this member approval request");
         }
 
         if( request.getReferrerApproval() != Approval.UNRESPONDED )
@@ -162,6 +172,8 @@ public class AuthService
         }
 
         request.setReferrerApproval(Approval.APPROVED);
+
+        memberApprovalRequestRepository.save(request);
 
         String to = request.getMember().getEmail();
         String subject = "Member approval request status";
@@ -172,11 +184,17 @@ public class AuthService
     }
 
     @Transactional
-    public String rejectFromReference(MemberApprovalRequest request)
+    public String rejectFromReference(MemberApprovalRequest request, User currentUser)
     {
         if( request == null )
         {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Member approval request not found");
+        }
+
+        User reference = request.getMember().getReferrer();
+        if(currentUser != reference)
+        {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User does not have access to this member approval request");
         }
 
         if( request.getReferrerApproval() != Approval.UNRESPONDED )
@@ -185,6 +203,9 @@ public class AuthService
         }
 
         request.setReferrerApproval(Approval.REJECTED);
+
+        memberApprovalRequestRepository.save(request);
+
         String to = request.getMember().getEmail();
         String subject = "Member approval request status";
         String message = "Your member approval request has been rejected from your reference's side. Please wait for the admin's response.";
@@ -206,6 +227,8 @@ public class AuthService
         }
 
         request.setAdminApproval(Approval.APPROVED);
+
+        memberApprovalRequestRepository.save(request);
 
         String to = request.getMember().getEmail();
         String subject = "Member approval request status";
@@ -229,6 +252,8 @@ public class AuthService
         }
 
         request.setAdminApproval(Approval.REJECTED);
+
+        memberApprovalRequestRepository.save(request);
 
         String to = request.getMember().getEmail();
         String subject = "Member approval request status";

@@ -40,4 +40,8 @@ public class SecurityUser implements UserDetails
     {
         return user.getEmail();
     }
+
+    public User getUser() {
+        return user;
+    }
 }
