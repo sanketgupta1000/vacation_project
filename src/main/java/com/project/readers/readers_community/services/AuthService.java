@@ -156,10 +156,6 @@ public class AuthService
     @Transactional
     public String approveFromReference(MemberApprovalRequest request, User currentUser)
     {
-        if( request == null )
-        {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Member approval request not found");
-        }
 
         User reference = request.getMember().getReferrer();
         if(!currentUser.getEmail().equals(reference.getEmail()))
@@ -187,10 +183,6 @@ public class AuthService
     @Transactional
     public String rejectFromReference(MemberApprovalRequest request, User currentUser)
     {
-        if( request == null )
-        {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Member approval request not found");
-        }
 
         User reference = request.getMember().getReferrer();
         if(!currentUser.getEmail().equals(reference.getEmail()))
@@ -218,10 +210,7 @@ public class AuthService
     @Transactional
     public String approveFromAdmin(MemberApprovalRequest request)
     {
-        if( request == null )
-        {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Member approval request not found");
-        }
+
         if( request.getAdminApproval() != Approval.UNRESPONDED )
         {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Member approval request has already been responded to");
@@ -242,10 +231,7 @@ public class AuthService
     @Transactional
     public String rejectFromAdmin(MemberApprovalRequest request)
     {
-        if( request == null )
-        {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Member approval request not found");
-        }
+
 
         if( request.getAdminApproval() != Approval.UNRESPONDED )
         {
