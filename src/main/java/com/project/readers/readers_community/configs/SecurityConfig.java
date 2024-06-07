@@ -65,7 +65,8 @@ public class SecurityConfig
                             .requestMatchers(HttpMethod.POST, "/auth/verify-otp").permitAll()
                             .requestMatchers(HttpMethod.POST, "/auth/send-otp").permitAll()
                             .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
-
+                            .requestMatchers(HttpMethod.GET, "/auth/{request_id}/approveFromAdmin").hasAuthority("ROLE_ADMIN")
+                            .requestMatchers(HttpMethod.GET, "/auth/{request_id}/rejectFromAdmin").hasAuthority("ROLE_ADMIN")
                             .anyRequest().authenticated();
                 })
                 // for jwt
