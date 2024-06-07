@@ -9,6 +9,9 @@ import com.nimbusds.jose.proc.SecurityContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -36,6 +39,19 @@ public class SecurityConfig
         this.rsaKeys = rsaKeys;
     }
 
+    // bean for custom authentication manager
+    @Bean
+    public AuthenticationManager authenticationManager(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder)
+    {
+        // new authentication provider
+        var authProvider = new DaoAuthenticationProvider();
+        // injecting my custom user details service
+        authProvider.setUserDetailsService(userDetailsService);
+        // injecting password encoder
+        authProvider.setPasswordEncoder(passwordEncoder);
+        return new ProviderManager(authProvider);
+    }
+
     // security config bean
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -47,6 +63,9 @@ public class SecurityConfig
                     auth
                             .requestMatchers(HttpMethod.POST, "/auth/signup").permitAll()
                             .requestMatchers(HttpMethod.POST, "/auth/verify-otp").permitAll()
+                            .requestMatchers(HttpMethod.POST, "/auth/send-otp").permitAll()
+                            .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
+
                             .anyRequest().authenticated();
                 })
                 // for jwt
@@ -56,10 +75,7 @@ public class SecurityConfig
                                         jwt->jwt.decoder(jwtDecoder())
                                 )
                 )
-                // custom user details service
-                .userDetailsService(customUserDetailsService)
                 .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .httpBasic(Customizer.withDefaults())
                 .build();
     }
 
