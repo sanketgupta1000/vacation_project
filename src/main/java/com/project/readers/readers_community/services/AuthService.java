@@ -5,9 +5,16 @@ import com.project.readers.readers_community.entities.User;
 import com.project.readers.readers_community.enums.Approval;
 import com.project.readers.readers_community.enums.UserType;
 import com.project.readers.readers_community.repositories.UserRepository;
+import com.project.readers.readers_community.utilities.LoginRequest;
+import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashMap;
@@ -22,17 +29,21 @@ public class AuthService
     private final PasswordEncoder passwordEncoder;
     private final OtpService otpService;
     private final EmailService emailService;
+    private final AuthenticationManager authenticationManager;
+    private TokenService tokenService;
 
     // DI
-    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, OtpService otpService, EmailService emailService)
+    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, OtpService otpService, EmailService emailService, AuthenticationManager authenticationManager)
     {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.otpService = otpService;
         this.emailService = emailService;
+        this.authenticationManager = authenticationManager;
     }
 
     // method to signup
+    @Transactional
     public String signup(User user)
     {
         // first need to check if email already registered or not
@@ -84,6 +95,7 @@ public class AuthService
     }
 
     // to verify otp
+    @Transactional
     public String verifyOtp(String email, String otp)
     {
 
@@ -136,6 +148,7 @@ public class AuthService
         return "Profile sent for approval";
     }
 
+    @Transactional
     public String approveFromReference(MemberApprovalRequest request)
     {
         if( request == null )
@@ -158,6 +171,7 @@ public class AuthService
         return "Member approval request has been approved from the reference side";
     }
 
+    @Transactional
     public String rejectFromReference(MemberApprovalRequest request)
     {
         if( request == null )
@@ -179,6 +193,7 @@ public class AuthService
         return "Member approval request has been rejected from the reference side";
     }
 
+    @Transactional
     public String approveFromAdmin(MemberApprovalRequest request)
     {
         if( request == null )
@@ -200,6 +215,7 @@ public class AuthService
         return "Member approval request has been approved from the admin side";
     }
 
+    @Transactional
     public String rejectFromAdmin(MemberApprovalRequest request)
     {
         if( request == null )
@@ -222,10 +238,24 @@ public class AuthService
         return "Member approval request has been rejected from the admin side";
     }
 
+
     // method to send otp again for signup
+    @Transactional
     public String sendOtp(String email)
     {
     	 User user1 = userRepository.findByEmail(email);
+
+         // checking if user exists
+         if(user1==null)
+         {
+             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Member not found");
+         }
+
+         // checking if otp already verified
+        if(user1.isOtpVerified())
+        {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Member is already verified");
+        }
     	 
     	 //generating otp
     	 String otp = otpService.generateOtp(6);
@@ -243,15 +273,31 @@ public class AuthService
      
     }
 
-       //login 
-    public JwtAuthentication_response signin(signIn_request signin_request)
+    // login
+    @Transactional
+    public String login(@RequestBody LoginRequest loginRequest)
     {
-    	authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signin_request.getEmail(),signin_request.getPassword()));
-  
- 	var user = userRepository.findByEmail(signin_request.getEmail()).orElseThrow("Invalid email or password");
-    
- 	var jwt=jwtService.generateToken(user);
- 	var refreshtoken=jwtService.refreshToken(new HashMap<>(),user);
+
+        // doing custom checks
+        User user = userRepository.findByEmail(loginRequest.getEmail());
+        if(user==null)
+        {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Member not found");
+        }
+
+        if(!user.isOtpVerified())
+        {
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Please verify your otp before login");
+        }
+
+        if((user.getMemberApprovalRequest().getAdminApproval()!=Approval.APPROVED))
+        {
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Your membersip is not yet approved by admin");
+        }
+
+    	Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(),loginRequest.getPassword()));
+
+        return tokenService.generateToken(authentication);
     	
     }
 }
