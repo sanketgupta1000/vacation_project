@@ -6,6 +6,7 @@ import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
+import jakarta.servlet.DispatcherType;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -65,9 +66,13 @@ public class SecurityConfig
                             .requestMatchers(HttpMethod.POST, "/auth/verify-otp").permitAll()
                             .requestMatchers(HttpMethod.POST, "/auth/send-otp").permitAll()
                             .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
-                            .requestMatchers(HttpMethod.GET, "/auth/{request_id}/approveFromAdmin").hasAuthority("ROLE_ADMIN")
-                            .requestMatchers(HttpMethod.GET, "/auth/{request_id}/rejectFromAdmin").hasAuthority("ROLE_ADMIN")
+                            .requestMatchers(HttpMethod.GET, "/auth/{request_id}/approveFromAdmin").hasAuthority("SCOPE_ROLE_ADMIN")
+                            .requestMatchers(HttpMethod.GET, "/auth/{request_id}/rejectFromAdmin").hasAuthority("SCOPE_ROLE_ADMIN")
+                            // to throw custom status codes and errors
+                            .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
                             .anyRequest().authenticated();
+
+
                 })
                 // for jwt
                 .oauth2ResourceServer(
@@ -91,9 +96,9 @@ public class SecurityConfig
     public JwtEncoder jwtEncoder()
     {
         JWK jwk = new RSAKey.Builder(rsaKeys.publicKey()).privateKey(rsaKeys.privateKey()).build();
-
         JWKSource<SecurityContext> jwks = new ImmutableJWKSet<>(new JWKSet(jwk));
-        return new NimbusJwtEncoder(jwks);
+        NimbusJwtEncoder nje = new NimbusJwtEncoder(jwks);
+        return nje;
     }
 
     // bean for password encoder

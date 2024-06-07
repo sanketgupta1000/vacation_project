@@ -33,10 +33,10 @@ public class AuthService
     private final OtpService otpService;
     private final EmailService emailService;
     private final AuthenticationManager authenticationManager;
-    private TokenService tokenService;
+    private final TokenService tokenService;
 
     // DI
-    public AuthService(UserRepository userRepository, MemberApprovalRequestRepository memberApprovalRequestRepository, PasswordEncoder passwordEncoder, OtpService otpService, EmailService emailService, AuthenticationManager authenticationManager)
+    public AuthService(UserRepository userRepository, MemberApprovalRequestRepository memberApprovalRequestRepository, PasswordEncoder passwordEncoder, OtpService otpService, EmailService emailService, AuthenticationManager authenticationManager, TokenService tokenService)
     {
         this.userRepository = userRepository;
         this.memberApprovalRequestRepository = memberApprovalRequestRepository;
@@ -44,6 +44,7 @@ public class AuthService
         this.otpService = otpService;
         this.emailService = emailService;
         this.authenticationManager = authenticationManager;
+        this.tokenService = tokenService;
     }
 
     // method to signup
@@ -310,16 +311,16 @@ public class AuthService
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Member not found");
         }
 
-        if(!user.isOtpVerified())
+        if(user.getUserType()!=UserType.ADMIN)
         {
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Please verify your otp before login");
-        }
+            if (!user.isOtpVerified()) {
+                throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Please verify your otp before login");
+            }
 
-        if((user.getMemberApprovalRequest().getAdminApproval()!=Approval.APPROVED))
-        {
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Your membersip is not yet approved by admin");
+            if ((user.getMemberApprovalRequest().getAdminApproval() != Approval.APPROVED)) {
+                throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Your membersip is not yet approved by admin");
+            }
         }
-
     	Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(),loginRequest.getPassword()));
 
         return tokenService.generateToken(authentication);
