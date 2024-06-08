@@ -1,8 +1,11 @@
 package com.project.readers.readers_community.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.project.readers.readers_community.embeddables.Address;
 import com.project.readers.readers_community.enums.UserType;
 import jakarta.persistence.*;
+
+import java.util.Date;
 
 @Entity
 @Table(name="users")
@@ -51,6 +54,25 @@ public class User
     // approval request
     @OneToOne(mappedBy = "member", cascade = CascadeType.ALL)
     private MemberApprovalRequest memberApprovalRequest;
+
+    // embedded address
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride( name = "houseNo", column = @Column(name = "house_no")),
+            @AttributeOverride( name = "street", column = @Column(name = "street")),
+            @AttributeOverride( name = "landmark", column = @Column(name = "landmark")),
+            @AttributeOverride( name = "city", column = @Column(name = "city")),
+            @AttributeOverride( name = "state", column = @Column(name = "state")),
+            @AttributeOverride( name = "country", column = @Column(name = "country")),
+    })
+    private Address address;
+
+    // date of birth
+    @Temporal(TemporalType.DATE)
+    @Column(name = "date_of_birth")
+    private Date dateOfBirth;
+
+    // TODO: add profile photo too
 
     // constructor
     public User(User referrer, String phoneNumber, UserType userType, String fullName, String password, String email, Integer id, String otp, MemberApprovalRequest memberApprovalRequest, boolean isOtpVerified) {
