@@ -51,7 +51,7 @@ public class UserController
 	}
 
 	@PutMapping("/updateUserProfile")
-	public User updateUserProfile(UpdatableUserPersonalDetails updatedDetails, @CurrentUser User currentUser)
+	public User updateUserProfile(@RequestBody UpdatableUserPersonalDetails updatedDetails, @CurrentUser User currentUser)
 	{
 		return userService.updateUserProfile(updatedDetails, currentUser);
 	}

@@ -61,8 +61,8 @@ public class UserService
     {
         currentUser.setFullName(updatedDetails.getFullName());
         currentUser.setPhoneNumber(updatedDetails.getPhoneNumber());
-//        currentUser.setAddress(updatedDetails.getAddress());
-//        currentUser.setDateOfBirth(updatedDetails.getDateOfBirth());
+        currentUser.setAddress(updatedDetails.getAddress());
+        currentUser.setDateOfBirth(updatedDetails.getDateOfBirth());
         return userRepository.save(currentUser);
     }
 
