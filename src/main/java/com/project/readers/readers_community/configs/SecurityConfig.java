@@ -66,13 +66,16 @@ public class SecurityConfig
                             .requestMatchers(HttpMethod.POST, "/auth/verify-otp").permitAll()
                             .requestMatchers(HttpMethod.POST, "/auth/send-otp").permitAll()
                             .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
+                            .requestMatchers(HttpMethod.GET, "/auth/{request_id}/approveFromReference").hasAnyAuthority("SCOPE_ROLE_MEMBER", "SCOPE_ROLE_ADMIN")
+                            .requestMatchers(HttpMethod.GET, "/auth/{request_id}/rejectFromReference").hasAnyAuthority("SCOPE_ROLE_MEMBER", "SCOPE_ROLE_ADMIN")
                             .requestMatchers(HttpMethod.GET, "/auth/{request_id}/approveFromAdmin").hasAuthority("SCOPE_ROLE_ADMIN")
                             .requestMatchers(HttpMethod.GET, "/auth/{request_id}/rejectFromAdmin").hasAuthority("SCOPE_ROLE_ADMIN")
+                            .requestMatchers(HttpMethod.GET, "/users/getUserDetails").hasAnyAuthority("SCOPE_ROLE_MEMBER", "SCOPE_ROLE_ADMIN")
+                            .requestMatchers(HttpMethod.POST, "/users/updateUserProfile").hasAnyAuthority("SCOPE_ROLE_MEMBER", "SCOPE_ROLE_ADMIN")
+                            .requestMatchers(HttpMethod.DELETE, "/users/deleteUserProfile").hasAnyAuthority("SCOPE_ROLE_MEMBER", "SCOPE_ROLE_ADMIN")
                             // to throw custom status codes and errors
                             .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
                             .anyRequest().authenticated();
-
-
                 })
                 // for jwt
                 .oauth2ResourceServer(
