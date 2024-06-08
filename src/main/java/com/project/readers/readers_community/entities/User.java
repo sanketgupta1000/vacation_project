@@ -171,6 +171,22 @@ public class User
         this.isOtpVerified = isOtpVerified;
     }
 
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+
+    public Date getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(Date dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -184,6 +200,8 @@ public class User
                 ", otp='" + otp +
                 ", memberApprovalRequest=" + memberApprovalRequest +
                 ", isOtpVerified=" + isOtpVerified +
+                ", address=" + address +
+                ", dateOfBirth=" + dateOfBirth +
                 '}';
     }
 }

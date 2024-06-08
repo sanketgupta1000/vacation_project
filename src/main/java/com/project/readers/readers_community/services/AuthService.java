@@ -82,7 +82,7 @@ public class AuthService
         // hash the password
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         // set user type
-        user.setUserType(UserType.MEMBER);
+        user.setUserType(UserType.NEW_MEMBER);
 
         // generating otp
         String otp = otpService.generateOtp(6);
