@@ -26,18 +26,24 @@ public class TokenService
 
     public String generateToken(Authentication authentication)
     {
-        Instant now = Instant.now();
         String scope = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(" "));
-        System.out.println(scope);
+        return encode(authentication.getName(), scope);
+    }
+
+    //method to encode
+    public String encode(String subject, String scope)
+    {
+        Instant now = Instant.now();
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer("self")
                 .issuedAt(now)
                 .expiresAt(now.plus(1, ChronoUnit.HOURS))
-                .subject(authentication.getName())
+                .subject(subject)
                 .claim("scope", scope)
                 .build();
+
         return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
     }
 }
