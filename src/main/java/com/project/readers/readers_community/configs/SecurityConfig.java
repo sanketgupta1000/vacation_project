@@ -73,6 +73,7 @@ public class SecurityConfig
                             .requestMatchers(HttpMethod.GET, "/users/getUserDetails").hasAnyAuthority("SCOPE_ROLE_MEMBER", "SCOPE_ROLE_ADMIN")
                             .requestMatchers(HttpMethod.POST, "/users/updateUserProfile").hasAnyAuthority("SCOPE_ROLE_MEMBER", "SCOPE_ROLE_ADMIN")
                             .requestMatchers(HttpMethod.DELETE, "/users/deleteUserProfile").hasAnyAuthority("SCOPE_ROLE_MEMBER", "SCOPE_ROLE_ADMIN")
+                            .requestMatchers(HttpMethod.POST, "/users/profile-complete").hasAuthority("SCOPE_ROLE_NEW_MEMBER")
                             // to throw custom status codes and errors
                             .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
                             .anyRequest().authenticated();
