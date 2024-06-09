@@ -11,7 +11,6 @@ public class Book {
 		private Long id;
 		
 		
-		
 		@ManyToOne
 		private User book_owner;
 		private String book_author;

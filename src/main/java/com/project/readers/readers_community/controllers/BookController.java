@@ -7,7 +7,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.project.readers.readers_community.annotations.CurrentUser;
 import com.project.readers.readers_community.entities.Book;
+import com.project.readers.readers_community.entities.User;
 import com.project.readers.readers_community.services.BookService;
 
 @RestController
@@ -29,6 +31,13 @@ public class BookController {
 	{
 		bookservice.upload_book_post(book);
 		return "book uploaded successfully";
+	}
+	
+	@PostMapping("/BookRequest")
+	public String Book_post_request(Book book , @CurrentUser User cur_user)
+	{
+		bookservice.managae_book_request(book,cur_user);
+		return "book request sent to admin";
 	}
 	
 	@PostMapping("/bookRequestAccept")
