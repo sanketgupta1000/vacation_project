@@ -22,8 +22,8 @@ public class BorrowRequest
 
     // the member who has requested
     @OneToOne
-    @JoinColumn(name = "member_id")
-    private User member;
+    @JoinColumn(name = "requester_id")
+    private User requester;
 
     // approval of the actual owner
     @Column(name = "owner_approval")
@@ -36,12 +36,13 @@ public class BorrowRequest
     }
 
     // all args
-    public BorrowRequest(Integer id, BookCopy bookCopy, User member, Approval ownerApproval) {
+    public BorrowRequest(Integer id, BookCopy bookCopy, User requester, Approval ownerApproval) {
         this.id = id;
         this.bookCopy = bookCopy;
-        this.member = member;
+        this.requester = requester;
         this.ownerApproval = ownerApproval;
     }
+
 
     // getters and setters
 
@@ -61,12 +62,12 @@ public class BorrowRequest
         this.bookCopy = bookCopy;
     }
 
-    public User getMember() {
-        return member;
+    public User getRequester() {
+        return requester;
     }
 
-    public void setMember(User member) {
-        this.member = member;
+    public void setRequester(User requester) {
+        this.requester = requester;
     }
 
     public Approval getOwnerApproval() {
@@ -76,15 +77,14 @@ public class BorrowRequest
     public void setOwnerApproval(Approval ownerApproval) {
         this.ownerApproval = ownerApproval;
     }
-
-    // to string
-
+    
+    //to string
     @Override
     public String toString() {
         return "BorrowRequest{" +
                 "id=" + id +
                 ", bookCopy=" + bookCopy +
-                ", member=" + member +
+                ", requester=" + requester +
                 ", ownerApproval=" + ownerApproval +
                 '}';
     }
