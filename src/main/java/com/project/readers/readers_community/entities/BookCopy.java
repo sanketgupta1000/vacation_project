@@ -6,9 +6,13 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 
 @Entity
-public class BorrowedBook {
+//all copy of one actual book. this table represents the track of all copies of one same book 
+@Table(name="book_copies")
+public class BookCopy {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -16,16 +20,18 @@ public class BorrowedBook {
 	
 	@OneToMany
 	//book which is taken by the member for reading
-	@Column(name="taken_book")
+	@Column(name="taken_books")
 	private Book takenBook;
 	
 	
 	@Column(name="holder")
 	//holder=current owner 
+	@OneToOne
 	private User holder;
 	
 	@Column(name="borrower")
 	//borrower=person who has requested for that book->pending request person
+	@OneToOne
 	private User borrower;
 
 	
@@ -37,7 +43,7 @@ public class BorrowedBook {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId  (int id) {
 		this.id = id;
 	}
 
@@ -65,12 +71,13 @@ public class BorrowedBook {
 		this.borrower = borrower;
 	}
 
-	public BorrowedBook(int id, Book takenBook, User holder, User borrower) {
+	public BookCopy(int id, Book takenBook, User holder, User borrower) {
 		super();
 		this.id = id;
 		this.takenBook = takenBook;
 		this.holder = holder;
 		this.borrower = borrower;
 	}
+
 	
 }
