@@ -4,116 +4,153 @@ import com.project.readers.readers_community.enums.Approval;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
+//represents the information about a book, not the actual physical book
 @Entity
+@Table(name = "books")
 public class Book {
-	
-		@Id
-		@GeneratedValue(strategy = GenerationType.IDENTITY)
-		private Long id;
-		
-		
-		@ManyToOne
-		@Column(name="book_owner")
-		private User bookOwner ;
-		
-		@Column(name="book_author")
-		private String bookAuthor ;
-		
-		@Column(name="page_no")
-		private int pageNo;
-		
-		@Column(name="book_name")
-		private String bookName;
-		
-		@Column(name="quantity")
-		private int quantity;
-		
-		@Column(name="catagory")
-		private String catagory;
-		
-		@Column(name="approval_status")
-		private  Approval approvalStatus;
-		
-		
-		
 
-		public Book(Long id, User bookOwner, String bookAuthor, int pageNo, String bookName, int quantity,
-				String catagory, Approval approvalStatus) {
-			super();
-			this.id = id;
-			this.bookOwner = bookOwner;
-			this.bookAuthor = bookAuthor;
-			this.pageNo = pageNo;
-			this.bookName = bookName;
-			this.quantity = quantity;
-			this.catagory = catagory;
-			this.approvalStatus = approvalStatus;
-		}
+	//auto generated id
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name="id")
+	private Long id;
 
-		public Long getId() {
-			return id;
-		}
+	//title of the boook
+	@Column(name = "book_title")
+	private String bookTitle;
 
-		public void setId(Long id) {
-			this.id = id;
-		}
+	//name of the author of the book
+	@Column(name = "author_name")
+	private String authorName;
 
-		public User getBookOwner() {
-			return bookOwner;
-		}
+	//how many pages does the book have
+	@Column(name = "page_count")
+	private int pageCount;
 
-		public void setBookOwner(User bookOwner) {
-			this.bookOwner = bookOwner;
-		}
+	//how many copies of this book does the owner have
+	@Column(name = "quantity")
+	private int quantity;
 
-		public String getBookAuthor() {
-			return bookAuthor;
-		}
+	// Genre of the book
+	@ManyToOne
+	@JoinColumn(name = "category_id")
+	private BookCategory category;
 
-		public void setBookAuthor(String bookAuthor) {
-			this.bookAuthor = bookAuthor;
-		}
+	//is it approved or rejected by the admin
+	@Column(name = "adminApproval")
+	private Approval adminApproval;
 
-		public int getPageNo() {
-			return pageNo;
-		}
+	//user that owns the book
+	@ManyToOne
+	@JoinColumn(name = "owner_id")
+	private User owner;
 
-		public void setPageNo(int pageNo) {
-			this.pageNo = pageNo;
-		}
+	//all physical copies of this book
+	@OneToMany(mappedBy = "book")
+	private List<BookCopy> bookCopies;
 
-		public String getBookName() {
-			return bookName;
-		}
+	public Book() {
+	}
 
-		public void setBookName(String bookName) {
-			this.bookName = bookName;
-		}
+	public Book(Long id, String bookTitle, String authorName, int pageCount, int quantity, BookCategory category, Approval adminApproval, User owner) {
+		this.id = id;
+		this.bookTitle = bookTitle;
+		this.authorName = authorName;
+		this.pageCount = pageCount;
+		this.quantity = quantity;
+		this.category = category;
+		this.adminApproval = adminApproval;
+		this.owner = owner;
+	}
 
-		public int getQuantity() {
-			return quantity;
-		}
+	public Long getId() {
+		return id;
+	}
 
-		public void setQuantity(int quantity) {
-			this.quantity = quantity;
-		}
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-		public String getCatagory() {
-			return catagory;
-		}
+	public String getBookTitle() {
+		return bookTitle;
+	}
 
-		public void setCatagory(String catagory) {
-			this.catagory = catagory;
-		}
+	public void setBookTitle(String bookTitle) {
+		this.bookTitle = bookTitle;
+	}
 
-		public Approval getApprovalStatus() {
-			return approvalStatus;
-		}
+	public String getAuthorName() {
+		return authorName;
+	}
 
-		public void setApprovalStatus(Approval approvalStatus) {
-			this.approvalStatus = approvalStatus;
-		}
-	
+	public void setAuthorName(String authorName) {
+		this.authorName = authorName;
+	}
+
+	public int getPageCount() {
+		return pageCount;
+	}
+
+	public void setPageCount(int pageCount) {
+		this.pageCount = pageCount;
+	}
+
+	public int getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(int quantity) {
+		this.quantity = quantity;
+	}
+
+	public BookCategory getCategory() {
+		return category;
+	}
+
+	public void setCategory(BookCategory category) {
+		this.category = category;
+	}
+
+	public Approval getAdminApproval() {
+		return adminApproval;
+	}
+
+	public void setAdminApproval(Approval adminApproval) {
+		this.adminApproval = adminApproval;
+	}
+
+	public User getOwner() {
+		return owner;
+	}
+
+	public void setOwner(User owner) {
+		this.owner = owner;
+	}
+
+	public List<BookCopy> getBookCopies() {
+		return bookCopies;
+	}
+
+	public void setBookCopies(List<BookCopy> bookCopies) {
+		this.bookCopies = bookCopies;
+	}
+
+	@Override
+	public String toString() {
+		return "Book{" +
+				"id=" + id +
+				", bookTitle='" + bookTitle + '\'' +
+				", authorName='" + authorName + '\'' +
+				", pageCount=" + pageCount +
+				", quantity=" + quantity +
+				", category=" + category +
+				", adminApproval=" + adminApproval +
+				", owner=" + owner +
+				'}';
+	}
+}
 		
 		
 		

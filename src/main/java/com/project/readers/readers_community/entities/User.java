@@ -1,11 +1,13 @@
 package com.project.readers.readers_community.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.project.readers.readers_community.embeddables.Address;
 import com.project.readers.readers_community.enums.UserType;
 import jakarta.persistence.*;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name="users")
@@ -53,6 +55,7 @@ public class User
 
     // approval request
     @OneToOne(mappedBy = "member", cascade = CascadeType.ALL)
+    @JsonIgnore
     private MemberApprovalRequest memberApprovalRequest;
 
     // embedded address
@@ -71,6 +74,30 @@ public class User
     @Temporal(TemporalType.DATE)
     @Column(name = "date_of_birth")
     private Date dateOfBirth;
+
+    //books uploaded by user
+    @OneToMany(mappedBy = "owner")
+    private List<Book> uploadedBooks;
+
+    //book copy currently borrowed by user
+    @OneToOne(mappedBy = "holder")
+    private BookCopy borrowedBookCopy;
+
+    //book copy that will be borrowed by user next
+    @OneToOne(mappedBy = "borrower")
+    private BookCopy nextBorrowBookCopy;
+
+    //transaction in which this user acted as book giver
+    @OneToMany(mappedBy = "bookGiver")
+    private List<BookTransaction> bookGivingTransactions;
+
+    //transaction in which this user acted as book receiver
+    @OneToMany(mappedBy = "bookReceiver")
+    private List<BookTransaction> bookReceivingTransactions;
+
+    //this user's current borrow request
+    @OneToOne(mappedBy = "requester")
+    private BorrowRequest currentBorrowRequest;
 
     // TODO: add profile photo too
 
@@ -185,6 +212,54 @@ public class User
 
     public void setDateOfBirth(Date dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
+    }
+
+    public List<Book> getUploadedBooks() {
+        return uploadedBooks;
+    }
+
+    public void setUploadedBooks(List<Book> uploadedBooks) {
+        this.uploadedBooks = uploadedBooks;
+    }
+
+    public BookCopy getBorrowedBookCopy() {
+        return borrowedBookCopy;
+    }
+
+    public void setBorrowedBookCopy(BookCopy borrowedBookCopy) {
+        this.borrowedBookCopy = borrowedBookCopy;
+    }
+
+    public BookCopy getNextBorrowBookCopy() {
+        return nextBorrowBookCopy;
+    }
+
+    public void setNextBorrowBookCopy(BookCopy nextBorrowBookCopy) {
+        this.nextBorrowBookCopy = nextBorrowBookCopy;
+    }
+
+    public List<BookTransaction> getBookGivingTransactions() {
+        return bookGivingTransactions;
+    }
+
+    public void setBookGivingTransactions(List<BookTransaction> bookGivingTransactions) {
+        this.bookGivingTransactions = bookGivingTransactions;
+    }
+
+    public List<BookTransaction> getBookReceivingTransactions() {
+        return bookReceivingTransactions;
+    }
+
+    public void setBookReceivingTransactions(List<BookTransaction> bookReceivingTransactions) {
+        this.bookReceivingTransactions = bookReceivingTransactions;
+    }
+
+    public BorrowRequest getCurrentBorrowRequest() {
+        return currentBorrowRequest;
+    }
+
+    public void setCurrentBorrowRequest(BorrowRequest currentBorrowRequest) {
+        this.currentBorrowRequest = currentBorrowRequest;
     }
 
     @Override
