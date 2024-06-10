@@ -66,6 +66,7 @@ public class BookService {
 		
 		
 		
+		
 		obj.setMember(cur_user);
 		obj.setBook(book);
 		
