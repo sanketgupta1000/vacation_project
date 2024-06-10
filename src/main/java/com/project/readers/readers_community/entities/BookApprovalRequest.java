@@ -21,6 +21,16 @@ public class BookApprovalRequest {
 	@OneToOne
 	private Book book;
 	
+	//whose book request is this
+	 @ManyToOne
+	 @JoinColumn(name = "member_id")
+	 private User member;
+		 
+		 //approval of admin 
+	 private Approval admin_approval;
+		 
+	
+	
 	public Book getBook() {
 		return book;
 	}
@@ -65,14 +75,7 @@ public class BookApprovalRequest {
 		this.admin_approval = admin_approval;
 	}
 
-	//whose book request is this
-	 @ManyToOne
-	 @JoinColumn(name = "member_id")
-	 private User member;
-	 
-	 //approval of admin 
-	 private Approval admin_approval;
-	 
+	
 
 	
 }
