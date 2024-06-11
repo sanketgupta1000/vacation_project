@@ -1,23 +1,19 @@
 package com.project.readers.readers_community.services;
 
 import com.project.readers.readers_community.entities.BookCopy;
-import com.project.readers.readers_community.entities.BookTransaction;
 import com.project.readers.readers_community.repositories.BookCopyRepository;
+import com.project.readers.readers_community.entities.BorrowRequest;
+import com.project.readers.readers_community.repositories.BorrowRequestRepository;
+import com.project.readers.readers_community.entities.BookTransaction;
 import com.project.readers.readers_community.repositories.BookTransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
 import com.project.readers.readers_community.entities.Book;
+import com.project.readers.readers_community.repositories.BookRepository;
 import com.project.readers.readers_community.entities.User;
 import com.project.readers.readers_community.enums.Approval;
-import com.project.readers.readers_community.repositories.BookRepository;
 import org.springframework.web.server.ResponseStatusException;
-
-import javax.xml.crypto.Data;
-import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -28,13 +24,81 @@ public class BookService
 	private final OtpService otpService;
 	private final EmailService emailService;
 	private final BookTransactionRepository bookTransactionRepository;
+  private final BorrowRequestRepository borrowRequestRepository;
 
-	public BookService(BookRepository bookRepository, OtpService otpService, EmailService emailService, BookCopyRepository bookCopyRepository, BookTransactionRepository bookTransactionRepository) {
+	public BookService(BookRepository bookRepository, OtpService otpService, EmailService emailService, BookCopyRepository bookCopyRepository, BookTransactionRepository bookTransactionRepository, BorrowRequestRepository borrowRequestRepository) {
 		this.bookRepository = bookRepository;
 		this.otpService = otpService;
 		this.emailService = emailService;
 		this.bookCopyRepository = bookCopyRepository;
 		this.bookTransactionRepository = bookTransactionRepository;
+    this.borrowRequestRepository = borrowRequestRepository;
+	}
+  
+  // method to get a book by id
+	public Book getBook(long bookId)
+	{
+		Optional<Book> bookOptional = bookRepository.findById(bookId);
+
+		if(bookOptional.isPresent())
+		{
+			return bookOptional.get();
+		}
+
+		// did not find the book
+		throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found");
+	}
+
+	// method to get book copies of a book
+	public List<BookCopy> getBookCopies(long bookId)
+	{
+		// first, will get the book
+		Optional<Book> bookOptional = bookRepository.findById(bookId);
+
+		if(bookOptional.isPresent())
+		{
+			return bookOptional.get().getBookCopies();
+		}
+		// not found
+		throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found");
+	}
+
+	// method to create a borrow request for a book copy
+	public String requestForBorrow(long bookCopyId, User user)
+	{
+		Optional<BookCopy> bookCopyOptional = bookCopyRepository.findById(bookCopyId);
+
+		if(bookCopyOptional.isEmpty())
+		{
+			// no book copy found
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "BookCopy not found");
+		}
+
+		BookCopy bookCopy = bookCopyOptional.get();
+
+		// checking if borrower is other than owner, i.e., is the book going to be passed on to someone already?
+		if(!bookCopy.getBorrower().equals(bookCopy.getBook().getOwner()))
+		{
+			throw new ResponseStatusException(HttpStatus.CONFLICT, "Borrower already exists.");
+		}
+
+		BorrowRequest borrowRequest = new BorrowRequest();
+		borrowRequest.setId(0);
+		borrowRequest.setRequester(user);
+		borrowRequest.setBookCopy(bookCopy);
+		borrowRequest.setOwnerApproval(Approval.UNRESPONDED);
+
+		// save
+		borrowRequestRepository.save(borrowRequest);
+
+		// send mail to owner
+		emailService.sendEmail(
+				bookCopy.getBook().getOwner().getEmail(),
+				"New Borrow Request Received",
+				"You have received a new borrow request from "+user.getFullName()+" to borrow "+bookCopy.getBook().getBookTitle()+". Please check the website to respond."
+		);
+
+		return "Request sent to the owner";
 	}
 
 	public String initiate_handover(BookCopy bookCopy, User currentUser)
@@ -166,8 +230,8 @@ public class BookService
 		{
 			throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User does not have access to this book's history");
 		}
-
-		//get transactions
+    
+    //get transactions
 		List<BookTransaction> transactions = bookCopy.getTransactions();
 
 		//sort transactions with most recent ones being on top of the list
@@ -180,5 +244,5 @@ public class BookService
 
 		//return transactions
 		return transactions;
-	}
+  }
 }
