@@ -7,6 +7,7 @@ import com.project.readers.readers_community.entities.BorrowRequest;
 import com.project.readers.readers_community.repositories.BorrowRequestRepository;
 import com.project.readers.readers_community.entities.BookTransaction;
 import com.project.readers.readers_community.repositories.BookTransactionRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -40,6 +41,7 @@ public class BookService
 	}
   
   // method to get a book by id
+	@Transactional
 	public Book getBook(long bookId)
 	{
 		Optional<Book> bookOptional = bookRepository.findById(bookId);
@@ -54,12 +56,13 @@ public class BookService
 	}
 
 	// method to get book copies of a book
+	@Transactional
 	public List<BookCopy> getBookCopies(long bookId)
 	{
 		// first, will get the book
 		Optional<Book> bookOptional = bookRepository.findById(bookId);
 
-		if(bookOptional.isPresent())
+		if(bookOptional.isPresent() && bookOptional.get().getAdminApproval()==Approval.APPROVED)
 		{
 			return bookOptional.get().getBookCopies();
 		}
@@ -68,6 +71,7 @@ public class BookService
 	}
 
 	// method to create a borrow request for a book copy
+	@Transactional
 	public String requestForBorrow(int bookCopyId, User user)
 	{
 		Optional<BookCopy> bookCopyOptional = bookCopyRepository.findById(bookCopyId);
@@ -105,6 +109,7 @@ public class BookService
 		return "Request sent to the owner";
 	}
 
+	@Transactional
 	public String initiate_handover(BookCopy bookCopy, User currentUser)
 	{
 		//getting both parties taking part in handover
@@ -149,6 +154,7 @@ public class BookService
 		return "Handover has initiated.An otp is sent to the borrower.";
 	}
 
+	@Transactional
 	public String handoverBookCopy(BookCopy bookCopy, User currentUser, String otp)
 	{
 		//getting both parties taking part in handover
@@ -225,6 +231,7 @@ public class BookService
 		return "Book has been successfully handover";
 	}
 
+	@Transactional
 	public List<BookTransaction> getBookTransactions(BookCopy bookCopy, User currentUser)
 	{
 		User owner = bookCopy.getBook().getOwner();
@@ -250,6 +257,7 @@ public class BookService
 		return transactions;
   }
 
+	@Transactional
 	public String bookUpload(Book book,User cureentUser) {
 		
 		book.setId(0L);
@@ -266,11 +274,13 @@ public class BookService
 		
 	}
 
+	@Transactional
 	public List<Book> getAllRequests() {
 		
 		return bookRepository.findByAdminApproval(Approval.UNRESPONDED);
 	}
 
+	@Transactional
 	public String approve_book(long book_id) {
 		
 		
@@ -303,6 +313,7 @@ public class BookService
 		}
 	}
 
+	@Transactional
 	public String reject_book(long book_id) {
 		Book book=bookRepository.findById(book_id).get();
 		if(book==null)
@@ -323,6 +334,7 @@ public class BookService
 
 	}
 
+	@Transactional
 	public List<Book> getAllBooks() {
 			return bookRepository.findByAdminApproval(Approval.APPROVED);
 	}

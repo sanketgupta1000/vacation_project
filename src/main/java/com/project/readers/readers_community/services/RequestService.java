@@ -6,6 +6,7 @@ import com.project.readers.readers_community.entities.BorrowRequest;
 import com.project.readers.readers_community.entities.User;
 import com.project.readers.readers_community.enums.Approval;
 import com.project.readers.readers_community.repositories.BorrowRequestRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -28,6 +29,7 @@ public class RequestService
 
     // method to get all borrow requests of the current user
     // TODO: implement a query in a custom repository for this
+    @Transactional
     public List<BorrowRequest> getBorrowRequests(User user)
     {
         List<BorrowRequest> borrowRequests = new ArrayList<BorrowRequest>();
@@ -44,6 +46,7 @@ public class RequestService
     }
 
     // method to let the book owner approve a borrow request
+    @Transactional
     public String approveBorrowRequest(int borrowRequestId, User user)
     {
 
@@ -102,6 +105,7 @@ public class RequestService
     }
 
     // method to let the book owner reject a borrow request
+    @Transactional
     public String rejectBorrowRequest(int borrowRequestId, User user)
     {
         Optional<BorrowRequest> borrowRequestOptional = borrowRequestRepository.findById(borrowRequestId);
