@@ -17,7 +17,7 @@ public class BookCopy {
 
 	//book which is taken by the member for reading
 	@ManyToOne
-	@Column(name="book_id")
+	@JoinColumn(name="book_id")
 	private Book book;
 
 	//user that currently possesses this book copy
@@ -27,7 +27,7 @@ public class BookCopy {
 
 	//user to whom the holder will pass on this book copy. Null means book copy will be returned to the owner by holder
 	@OneToOne
-	@Column(name="borrower_id")
+	@JoinColumn(name="borrower_id")
 	private User borrower;
 
 	//OTP to confirm book transaction for this copy

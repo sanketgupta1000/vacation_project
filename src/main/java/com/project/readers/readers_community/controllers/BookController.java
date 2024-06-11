@@ -9,8 +9,6 @@ import com.project.readers.readers_community.services.BookService;
 import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
-
-
 @RestController
 @RequestMapping("/books")
 public class BookController
@@ -24,10 +22,10 @@ public class BookController
 	
 	//request for book upload 
 	@PostMapping("/uploadBook")
-	public String upload_boook(@RequestBody Book book)
+	public String upload_boook(@RequestBody Book book , @CurrentUser User currentUser)
 	{
-		bookService.bookUpload(book);
-		return "your book upload request is sent to admin";
+		return bookService.bookUpload(book,currentUser);
+		
 	}
 	
 	
@@ -44,8 +42,8 @@ public class BookController
 	@PostMapping("/requests/{book_id}/approveBook")
 	public String bookApproval(@PathVariable long book_id)
 	{
-		bookService.approve_book(book_id);
-		return "your upload request is approved";
+		return bookService.approve_book(book_id);
+		
 	}
 	
 	
@@ -54,15 +52,15 @@ public class BookController
 	@PostMapping("/requests/{book_id}/rejectBook")
 	public String bookRejection(@PathVariable long book_id)
 	{
-		bookService.reject_book(book_id);
-		return "your upload request is rejected";
+		return bookService.reject_book(book_id);
+		
 	}
 	
 	//to get all books
 	@GetMapping("/getAllBooks")
 	public List<Book> getallbooks()
 	{
-		return bookService.getAllRequest();
+		return bookService.getAllBook();
 	}
 	
 	

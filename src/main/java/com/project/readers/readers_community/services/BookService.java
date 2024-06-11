@@ -1,6 +1,7 @@
 package com.project.readers.readers_community.services;
 
 import com.project.readers.readers_community.entities.BookCopy;
+import com.project.readers.readers_community.repositories.BookCategoryRepository;
 import com.project.readers.readers_community.repositories.BookCopyRepository;
 import com.project.readers.readers_community.entities.BorrowRequest;
 import com.project.readers.readers_community.repositories.BorrowRequestRepository;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import com.project.readers.readers_community.entities.Book;
+import com.project.readers.readers_community.entities.BookCategory;
 import com.project.readers.readers_community.repositories.BookRepository;
 import com.project.readers.readers_community.entities.User;
 import com.project.readers.readers_community.enums.Approval;
@@ -23,6 +25,7 @@ public class BookService
 	private final BookRepository bookRepository;
 	private final OtpService otpService;
 	private final EmailService emailService;
+	private final BookCategoryRepository bookCategoryRepository ;
 	private final BookTransactionRepository bookTransactionRepository;
   private final BorrowRequestRepository borrowRequestRepository;
 
@@ -246,34 +249,82 @@ public class BookService
 		return transactions;
   }
 
-	public void bookUpload(Book book) {
+	public String bookUpload(Book book,User cureentUser) {
+		
+		book.setId(0L);
+		book.setOwner(cureentUser);
+		
+		long bookcategory_id=book.getCategory().getId();
+		
+		BookCategory bc=bookCategoryRepository.findById(bookcategory_id).get();
+		
+		book.setCategory(bc);
 		
 		bookRepository.save(book);
+		return "your book upload request is sent to admin";
 		
 	}
 
 	public List<Book> getallrequests() {
 		
-		return bookRepository.findByadminApproval(Approval.UNRESPONDED);
+		return bookRepository.findByAdminApproval(Approval.UNRESPONDED);
 	}
 
-	public void approve_book(long book_id) {
+	public String approve_book(long book_id) {
+		
+		
 		
 		Book book=bookRepository.findById(book_id).get();
+		if(book==null)
+		{
+			return "no book found with this id ";
+		}
+		if(book.getAdminApproval()==Approval.UNRESPONDED)
+		{
 		book.setAdminApproval(Approval.APPROVED);
 		bookRepository.save(book);
 		
+		//create copy of books equals to quantity
+		int quantity=book.getQuantity(); 
+		for(int i=1;i<=quantity;i++)
+		{
+			BookCopy bookcopy=new BookCopy();
+			bookcopy.setBook(book);
+			bookcopy.setBorrower(book.getOwner());
+			bookcopy.setHolder(book.getOwner());
+			bookCopyRepository.save(bookcopy);
+		}
+		return "your request is accepted";
+		}
+		else 
+		{
+			return "already responded";
+		}
 	}
 	
-		public void reject_book(long book_id) {
+		public String reject_book(long book_id) {
+		
 		
 		Book book=bookRepository.findById(book_id).get();
+		if(book==null)
+		{
+			return "no book found with this id ";
+		}
+		if(book.getAdminApproval()==Approval.UNRESPONDED)
+		{
 		book.setAdminApproval(Approval.REJECTED);
-		bookRepository.save(book);
 		
+		bookRepository.save(book);
+		return "your book request is rejected";
+		}
+		else 
+		{
+			return "already responded";
+		}
+
 	}
 
-		public List<Book> getAllRequest() {
-			return bookRepository.findByadminApproval(Approval.APPROVED);
+		public List<Book> getAllBook() {
+			return bookRepository.findByAdminApproval(Approval.APPROVED);
 		}
 }
