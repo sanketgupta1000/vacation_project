@@ -8,11 +8,11 @@ import jakarta.persistence.*;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name="users")
-public class User
-{
+public class User {
     // auto generated id
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,7 +32,7 @@ public class User
     private String fullName;
 
     // role or user_type
-    @Column(name="user_type")
+    @Column(name = "user_type")
     private UserType userType;
 
     // phone number
@@ -61,12 +61,12 @@ public class User
     // embedded address
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride( name = "houseNo", column = @Column(name = "house_no")),
-            @AttributeOverride( name = "street", column = @Column(name = "street")),
-            @AttributeOverride( name = "landmark", column = @Column(name = "landmark")),
-            @AttributeOverride( name = "city", column = @Column(name = "city")),
-            @AttributeOverride( name = "state", column = @Column(name = "state")),
-            @AttributeOverride( name = "country", column = @Column(name = "country")),
+            @AttributeOverride(name = "houseNo", column = @Column(name = "house_no")),
+            @AttributeOverride(name = "street", column = @Column(name = "street")),
+            @AttributeOverride(name = "landmark", column = @Column(name = "landmark")),
+            @AttributeOverride(name = "city", column = @Column(name = "city")),
+            @AttributeOverride(name = "state", column = @Column(name = "state")),
+            @AttributeOverride(name = "country", column = @Column(name = "country")),
     })
     private Address address;
 
@@ -116,7 +116,8 @@ public class User
     }
 
     // no args
-    public User() {}
+    public User() {
+    }
 
     public Integer getId() {
         return id;
@@ -278,5 +279,13 @@ public class User
                 ", address=" + address +
                 ", dateOfBirth=" + dateOfBirth +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id);
     }
 }
