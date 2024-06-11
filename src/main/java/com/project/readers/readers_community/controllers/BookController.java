@@ -47,8 +47,7 @@ public class BookController
 		bookService.approve_book(book_id);
 		return "your upload request is approved";
 	}
-	
-	
+
 	//to reject book upload request
 	//for admin
 	@PostMapping("/requests/{book_id}/rejectBook")

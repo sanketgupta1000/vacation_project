@@ -24,7 +24,7 @@ public class BookService
 	private final OtpService otpService;
 	private final EmailService emailService;
 	private final BookTransactionRepository bookTransactionRepository;
-  private final BorrowRequestRepository borrowRequestRepository;
+  	private final BorrowRequestRepository borrowRequestRepository;
 
 	public BookService(BookRepository bookRepository, OtpService otpService, EmailService emailService, BookCopyRepository bookCopyRepository, BookTransactionRepository bookTransactionRepository, BorrowRequestRepository borrowRequestRepository) {
 		this.bookRepository = bookRepository;
@@ -254,7 +254,7 @@ public class BookService
 
 	public List<Book> getallrequests() {
 		
-		return bookRepository.findByadminApproval(Approval.UNRESPONDED);
+		return bookRepository.findByAdminApproval(Approval.UNRESPONDED);
 	}
 
 	public void approve_book(long book_id) {
@@ -265,7 +265,7 @@ public class BookService
 		
 	}
 	
-		public void reject_book(long book_id) {
+	public void reject_book(long book_id) {
 		
 		Book book=bookRepository.findById(book_id).get();
 		book.setAdminApproval(Approval.REJECTED);
@@ -273,7 +273,7 @@ public class BookService
 		
 	}
 
-		public List<Book> getAllRequest() {
-			return bookRepository.findByadminApproval(Approval.APPROVED);
+	public List<Book> getAllRequest() {
+			return bookRepository.findByAdminApproval(Approval.APPROVED);
 		}
 }
