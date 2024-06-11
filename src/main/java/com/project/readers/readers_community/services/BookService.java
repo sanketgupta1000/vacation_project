@@ -64,7 +64,7 @@ public class BookService
 	}
 
 	// method to create a borrow request for a book copy
-	public String requestForBorrow(long bookCopyId, User user)
+	public String requestForBorrow(int bookCopyId, User user)
 	{
 		Optional<BookCopy> bookCopyOptional = bookCopyRepository.findById(bookCopyId);
 

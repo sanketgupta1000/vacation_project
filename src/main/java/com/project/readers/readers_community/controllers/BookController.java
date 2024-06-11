@@ -83,7 +83,7 @@ public class BookController
 
 	// method to request for a book copy (a physical book)
 	@PostMapping("/{book_copy_id}/borrow-request")
-	public String requestForBorrow(@PathVariable("book_copy_id") long bookCopyId, @CurrentUser User user)
+	public String requestForBorrow(@PathVariable("book_copy_id") int bookCopyId, @CurrentUser User user)
 	{
 		return bookService.requestForBorrow(bookCopyId, user);
   }
