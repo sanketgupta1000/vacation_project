@@ -21,12 +21,12 @@ public class BookCopy {
 	private Book book;
 
 	//user that currently possesses this book copy
-	@OneToOne
+	@ManyToOne
 	@JoinColumn(name="holder_id")
 	private User holder;
 
 	//user to whom the holder will pass on this book copy. Null means book copy will be returned to the owner by holder
-	@OneToOne
+	@ManyToOne
 	@JoinColumn(name="borrower_id")
 	private User borrower;
 

@@ -80,12 +80,12 @@ public class User {
     private List<Book> uploadedBooks;
 
     //book copy currently borrowed by user
-    @OneToOne(mappedBy = "holder")
-    private BookCopy borrowedBookCopy;
+    @OneToMany(mappedBy = "holder")
+    private List<BookCopy> borrowedBookCopies;
 
     //book copy that will be borrowed by user next
-    @OneToOne(mappedBy = "borrower")
-    private BookCopy nextBorrowBookCopy;
+    @OneToMany(mappedBy = "borrower")
+    private List<BookCopy> nextBorrowBookCopies;
 
     //transaction in which this user acted as book giver
     @OneToMany(mappedBy = "bookGiver")
@@ -223,20 +223,20 @@ public class User {
         this.uploadedBooks = uploadedBooks;
     }
 
-    public BookCopy getBorrowedBookCopy() {
-        return borrowedBookCopy;
+    public List<BookCopy> getBorrowedBookCopies() {
+        return borrowedBookCopies;
     }
 
-    public void setBorrowedBookCopy(BookCopy borrowedBookCopy) {
-        this.borrowedBookCopy = borrowedBookCopy;
+    public void setBorrowedBookCopies(List<BookCopy> borrowedBookCopies) {
+        this.borrowedBookCopies = borrowedBookCopies;
     }
 
-    public BookCopy getNextBorrowBookCopy() {
-        return nextBorrowBookCopy;
+    public List<BookCopy> getNextBorrowBookCopies() {
+        return nextBorrowBookCopies;
     }
 
-    public void setNextBorrowBookCopy(BookCopy nextBorrowBookCopy) {
-        this.nextBorrowBookCopy = nextBorrowBookCopy;
+    public void setNextBorrowBookCopies(List<BookCopy> nextBorrowBookCopies) {
+        this.nextBorrowBookCopies = nextBorrowBookCopies;
     }
 
     public List<BookTransaction> getBookGivingTransactions() {
