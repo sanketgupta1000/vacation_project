@@ -7,7 +7,5 @@ import com.project.readers.readers_community.enums.Approval;
 
 public interface BookRepository extends JpaRepository<Book,Long> 
 {
-
 	List<Book> findByAdminApproval(Approval status);
-
 }

@@ -25,17 +25,18 @@ public class BookService
 	private final BookRepository bookRepository;
 	private final OtpService otpService;
 	private final EmailService emailService;
-	private final BookCategoryRepository bookCategoryRepository ;
+	private final BookCategoryRepository bookCategoryRepository;
 	private final BookTransactionRepository bookTransactionRepository;
-  private final BorrowRequestRepository borrowRequestRepository;
+  	private final BorrowRequestRepository borrowRequestRepository;
 
-	public BookService(BookRepository bookRepository, OtpService otpService, EmailService emailService, BookCopyRepository bookCopyRepository, BookTransactionRepository bookTransactionRepository, BorrowRequestRepository borrowRequestRepository) {
+	public BookService(BookRepository bookRepository, OtpService otpService, EmailService emailService, BookCopyRepository bookCopyRepository, BookTransactionRepository bookTransactionRepository, BorrowRequestRepository borrowRequestRepository, BookCategoryRepository bookCategoryRepository) {
 		this.bookRepository = bookRepository;
 		this.otpService = otpService;
 		this.emailService = emailService;
 		this.bookCopyRepository = bookCopyRepository;
 		this.bookTransactionRepository = bookTransactionRepository;
-    this.borrowRequestRepository = borrowRequestRepository;
+    	this.borrowRequestRepository = borrowRequestRepository;
+		this.bookCategoryRepository = bookCategoryRepository;
 	}
   
   // method to get a book by id
@@ -265,7 +266,7 @@ public class BookService
 		
 	}
 
-	public List<Book> getallrequests() {
+	public List<Book> getAllRequests() {
 		
 		return bookRepository.findByAdminApproval(Approval.UNRESPONDED);
 	}
@@ -301,10 +302,8 @@ public class BookService
 			return "already responded";
 		}
 	}
-	
-		public String reject_book(long book_id) {
-		
-		
+
+	public String reject_book(long book_id) {
 		Book book=bookRepository.findById(book_id).get();
 		if(book==null)
 		{
@@ -324,7 +323,7 @@ public class BookService
 
 	}
 
-		public List<Book> getAllBook() {
+	public List<Book> getAllBooks() {
 			return bookRepository.findByAdminApproval(Approval.APPROVED);
-		}
+	}
 }

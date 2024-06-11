@@ -34,7 +34,7 @@ public class BookController
 	@GetMapping("/getAllRequests")
 	public List<Book> getAllRequests()
 	{
-		return bookService.getallrequests();
+		return bookService.getAllRequests();
 	}
 	
 	//to approve book upload request
@@ -45,8 +45,7 @@ public class BookController
 		return bookService.approve_book(book_id);
 		
 	}
-	
-	
+
 	//to reject book upload request
 	//for admin
 	@PostMapping("/requests/{book_id}/rejectBook")
@@ -60,7 +59,7 @@ public class BookController
 	@GetMapping("/getAllBooks")
 	public List<Book> getallbooks()
 	{
-		return bookService.getAllBook();
+		return bookService.getAllBooks();
 	}
 	
 	
