@@ -8,7 +8,6 @@ import com.project.readers.readers_community.repositories.BorrowRequestRepositor
 import com.project.readers.readers_community.entities.BookTransaction;
 import com.project.readers.readers_community.repositories.BookTransactionRepository;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import com.project.readers.readers_community.entities.Book;
@@ -262,6 +261,7 @@ public class BookService
 		
 		book.setId(0L);
 		book.setOwner(cureentUser);
+		book.setAdminApproval(Approval.UNRESPONDED);
 		
 		long bookcategory_id=book.getCategory().getId();
 		
@@ -270,6 +270,8 @@ public class BookService
 		book.setCategory(bc);
 		
 		bookRepository.save(book);
+		
+		
 		return "your book upload request is sent to admin";
 		
 	}
@@ -285,51 +287,58 @@ public class BookService
 		
 		
 		
-		Book book=bookRepository.findById(book_id).get();
-		if(book==null)
+		Optional<Book> book=bookRepository.findById(book_id);
+		if(book.isEmpty())
 		{
-			return "no book found with this id ";
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Book id not available");
+			
 		}
-		if(book.getAdminApproval()==Approval.UNRESPONDED)
+	
+		if(book.get().getAdminApproval()==Approval.UNRESPONDED)
 		{
-		book.setAdminApproval(Approval.APPROVED);
-		bookRepository.save(book);
+		book.get().setAdminApproval(Approval.APPROVED);
+		bookRepository.save(book.get());
 		
 		//create copy of books equals to quantity
-		int quantity=book.getQuantity(); 
+		int quantity=book.get().getQuantity(); 
 		for(int i=1;i<=quantity;i++)
 		{
 			BookCopy bookcopy=new BookCopy();
-			bookcopy.setBook(book);
-			bookcopy.setBorrower(book.getOwner());
-			bookcopy.setHolder(book.getOwner());
+			bookcopy.setBook(book.get());
+			bookcopy.setBorrower(book.get().getOwner());
+			bookcopy.setHolder(book.get().getOwner());
 			bookCopyRepository.save(bookcopy);
 		}
-		return "your request is accepted";
+		throw new ResponseStatusException(HttpStatus.ACCEPTED, "Request approved");
+		
 		}
 		else 
 		{
-			return "already responded";
+			throw new ResponseStatusException(HttpStatus.ALREADY_REPORTED, "already approved");
+			
 		}
 	}
 
 	@Transactional
 	public String reject_book(long book_id) {
-		Book book=bookRepository.findById(book_id).get();
-		if(book==null)
+		Optional<Book> book=bookRepository.findById(book_id);
+		if(book.isEmpty())
 		{
-			return "no book found with this id ";
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Book id not available");
+			
 		}
-		if(book.getAdminApproval()==Approval.UNRESPONDED)
+		if(book.get().getAdminApproval()==Approval.UNRESPONDED)
 		{
-		book.setAdminApproval(Approval.REJECTED);
+		book.get().setAdminApproval(Approval.REJECTED);
 		
-		bookRepository.save(book);
-		return "your book request is rejected";
+		bookRepository.save(book.get());
+		throw new ResponseStatusException(HttpStatus.ACCEPTED, "Request rejected");
+		
 		}
 		else 
 		{
-			return "already responded";
+			throw new ResponseStatusException(HttpStatus.ALREADY_REPORTED, "already approved");
+			
 		}
 
 	}
