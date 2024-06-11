@@ -10,8 +10,8 @@ import java.util.List;
 //represents the information about a book, not the actual physical book
 @Entity
 @Table(name = "books")
-public class Book {
-
+public class Book  
+{
 	//auto generated id
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -152,6 +152,7 @@ public class Book {
 				", owner=" + owner +
 				'}';
 	}
+	
 }
 		
 		
