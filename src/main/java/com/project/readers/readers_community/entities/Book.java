@@ -1,5 +1,6 @@
 package com.project.readers.readers_community.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.project.readers.readers_community.enums.Approval;
 
 import jakarta.persistence.*;
@@ -49,6 +50,7 @@ public class Book {
 
 	//all physical copies of this book
 	@OneToMany(mappedBy = "book")
+	@JsonIgnore
 	private List<BookCopy> bookCopies;
 
 	public Book() {
