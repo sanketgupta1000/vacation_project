@@ -28,7 +28,6 @@ public class AuthService
     // repository
     private final UserRepository userRepository;
     private  final MemberApprovalRequestRepository memberApprovalRequestRepository;
-
     private final PasswordEncoder passwordEncoder;
     private final OtpService otpService;
     private final EmailService emailService;
@@ -122,7 +121,7 @@ public class AuthService
         // now need to verify
         if(!otp.equals(user.getOtp()))
         {
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "OTP is incorrect.");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "OTP is incorrect.");
         }
 
         // set otp verified

@@ -30,6 +30,10 @@ public class BookCopy {
 	@Column(name="borrower_id")
 	private User borrower;
 
+	//OTP to confirm book transaction for this copy
+	@Column(name = "otp")
+	private String otp;
+
 	//transactions involving this book copy
 	@OneToMany(mappedBy = "bookCopy")
 	private List<BookTransaction> transactions;
@@ -46,6 +50,7 @@ public class BookCopy {
 		this.book = book;
 		this.holder = holder;
 		this.borrower = borrower;
+		this.otp = null;
 	}
 
 	public int getId() {
@@ -78,6 +83,14 @@ public class BookCopy {
 
 	public void setBorrower(User borrower) {
 		this.borrower = borrower;
+	}
+
+	public String getOtp() {
+		return otp;
+	}
+
+	public void setOtp(String otp) {
+		this.otp = otp;
 	}
 
 	public List<BookTransaction> getTransactions() {
