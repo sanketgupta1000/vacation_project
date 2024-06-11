@@ -21,6 +21,51 @@ public class BookController
 	{
 		this.bookService = bookService;
 	}
+	
+	//request for book upload 
+	@PostMapping("/uploadBook")
+	public String upload_boook(@RequestBody Book book)
+	{
+		bookService.bookUpload(book);
+		return "your book upload request is sent to admin";
+	}
+	
+	
+	//method to get all unresponded request
+	//method for admin
+	@GetMapping("/getAllRequests")
+	public List<Book> getAllRequests()
+	{
+		return bookService.getallrequests();
+	}
+	
+	//to approve book upload request
+	//for admin
+	@PostMapping("/requests/{book_id}/approveBook")
+	public String bookApproval(@PathVariable long book_id)
+	{
+		bookService.approve_book(book_id);
+		return "your upload request is approved";
+	}
+	
+	
+	//to reject book upload request
+	//for admin
+	@PostMapping("/requests/{book_id}/rejectBook")
+	public String bookRejection(@PathVariable long book_id)
+	{
+		bookService.reject_book(book_id);
+		return "your upload request is rejected";
+	}
+	
+	//to get all books
+	@GetMapping("/getAllBooks")
+	public List<Book> getallbooks()
+	{
+		return bookService.getAllRequest();
+	}
+	
+	
 
 	// method to get a book's data
 	@GetMapping("/{book_id}")

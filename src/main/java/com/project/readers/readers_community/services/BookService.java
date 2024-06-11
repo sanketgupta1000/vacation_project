@@ -245,4 +245,35 @@ public class BookService
 		//return transactions
 		return transactions;
   }
+
+	public void bookUpload(Book book) {
+		
+		bookRepository.save(book);
+		
+	}
+
+	public List<Book> getallrequests() {
+		
+		return bookRepository.findByadminApproval(Approval.UNRESPONDED);
+	}
+
+	public void approve_book(long book_id) {
+		
+		Book book=bookRepository.findById(book_id).get();
+		book.setAdminApproval(Approval.APPROVED);
+		bookRepository.save(book);
+		
+	}
+	
+		public void reject_book(long book_id) {
+		
+		Book book=bookRepository.findById(book_id).get();
+		book.setAdminApproval(Approval.REJECTED);
+		bookRepository.save(book);
+		
+	}
+
+		public List<Book> getAllRequest() {
+			return bookRepository.findByadminApproval(Approval.APPROVED);
+		}
 }
