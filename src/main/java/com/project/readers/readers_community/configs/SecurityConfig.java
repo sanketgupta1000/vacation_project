@@ -74,7 +74,7 @@ public class SecurityConfig
                             .requestMatchers(HttpMethod.POST, "/users/updateUserProfile").hasAnyAuthority("SCOPE_ROLE_MEMBER", "SCOPE_ROLE_ADMIN")
                             .requestMatchers(HttpMethod.DELETE, "/users/deleteUserProfile").hasAnyAuthority("SCOPE_ROLE_MEMBER", "SCOPE_ROLE_ADMIN")
                             .requestMatchers(HttpMethod.POST, "/books/uploadBook").hasAnyAuthority("SCOPE_ROLE_MEMBER", "SCOPE_ROLE_ADMIN")
-                            .requestMatchers(HttpMethod.GET, "/books/getAllRequests").hasAnyAuthority("SCOPE_ROLE_MEMBER", "SCOPE_ROLE_ADMIN")
+                            .requestMatchers(HttpMethod.GET, "/books/getAllRequests").hasAuthority("SCOPE_ROLE_ADMIN")
                             .requestMatchers(HttpMethod.POST, "/books/requests/{book_id}/approveBook").hasAuthority("SCOPE_ROLE_ADMIN")
                             .requestMatchers(HttpMethod.POST, "/books/requests/{book_id}/rejectBook").hasAuthority("SCOPE_ROLE_ADMIN")
                             .requestMatchers(HttpMethod.GET, "/books/getAllBooks").hasAnyAuthority("SCOPE_ROLE_MEMBER", "SCOPE_ROLE_ADMIN")
