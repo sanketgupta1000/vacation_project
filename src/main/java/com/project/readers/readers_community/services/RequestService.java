@@ -5,6 +5,7 @@ import com.project.readers.readers_community.entities.BookCopy;
 import com.project.readers.readers_community.entities.BorrowRequest;
 import com.project.readers.readers_community.entities.User;
 import com.project.readers.readers_community.enums.Approval;
+import com.project.readers.readers_community.repositories.BookCopyRepository;
 import com.project.readers.readers_community.repositories.BorrowRequestRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
@@ -21,10 +22,12 @@ public class RequestService
 
     private final BorrowRequestRepository borrowRequestRepository;
     private final EmailService emailService;
+    private final BookCopyRepository bookCopyRepository;
 
-    public RequestService(BorrowRequestRepository borrowRequestRepository, EmailService emailService) {
+    public RequestService(BorrowRequestRepository borrowRequestRepository, EmailService emailService, BookCopyRepository bookCopyRepository) {
         this.borrowRequestRepository = borrowRequestRepository;
         this.emailService = emailService;
+        this.bookCopyRepository = bookCopyRepository;
     }
 
     // method to get all borrow requests of the current user
@@ -82,7 +85,13 @@ public class RequestService
         // now can approve
         borrowRequest.setOwnerApproval(Approval.APPROVED);
 
+        // set requester as next borrower
+        BookCopy bookCopy = borrowRequest.getBookCopy();
+        bookCopy.setBorrower(borrowRequest.getRequester());
+
+        // save
         borrowRequestRepository.save(borrowRequest);
+        bookCopyRepository.save(bookCopy);
 
         // send emails
 
