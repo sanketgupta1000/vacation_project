@@ -25,6 +25,7 @@ public class User {
 
     // password
     @Column(name = "password")
+    @JsonIgnore
     private String password;
 
     // full name
@@ -77,27 +78,32 @@ public class User {
 
     //books uploaded by user
     @OneToMany(mappedBy = "owner")
-    @JsonIgnoreProperties("owner")
+    @JsonIgnore
     private List<Book> uploadedBooks;
 
     //book copy currently borrowed by user
     @OneToMany(mappedBy = "holder")
+    @JsonIgnore
     private List<BookCopy> borrowedBookCopies;
 
     //book copy that will be borrowed by user next
     @OneToMany(mappedBy = "borrower")
+    @JsonIgnore
     private List<BookCopy> nextBorrowBookCopies;
 
     //transaction in which this user acted as book giver
     @OneToMany(mappedBy = "bookGiver")
+    @JsonIgnore
     private List<BookTransaction> bookGivingTransactions;
 
     //transaction in which this user acted as book receiver
     @OneToMany(mappedBy = "bookReceiver")
+    @JsonIgnore
     private List<BookTransaction> bookReceivingTransactions;
 
     //this user's current borrow request
     @OneToOne(mappedBy = "requester")
+    @JsonIgnore
     private BorrowRequest currentBorrowRequest;
 
     // TODO: add profile photo too
