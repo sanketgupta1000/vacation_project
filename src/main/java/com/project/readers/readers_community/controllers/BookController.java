@@ -1,12 +1,11 @@
 package com.project.readers.readers_community.controllers;
 
+import com.project.readers.readers_community.DTOs.BookDTO;
 import com.project.readers.readers_community.entities.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import com.project.readers.readers_community.annotations.CurrentUser;
 import com.project.readers.readers_community.services.BookService;
-import org.springframework.web.server.ResponseStatusException;
+
 import java.util.List;
 
 @RestController
@@ -32,7 +31,7 @@ public class BookController
 	//method to get all unresponded request
 	//method for admin
 	@GetMapping("/getAllRequests")
-	public List<Book> getAllRequests()
+	public List<BookDTO> getAllRequests()
 	{
 		return bookService.getAllRequests();
 	}
@@ -57,7 +56,7 @@ public class BookController
 	
 	//to get all books
 	@GetMapping("/getAllBooks")
-	public List<Book> getallbooks()
+	public List<BookDTO> getallbooks()
 	{
 		return bookService.getAllBooks();
 	}
@@ -66,7 +65,7 @@ public class BookController
 
 	// method to get a book's data
 	@GetMapping("/{book_id}")
-	public Book getBook(@PathVariable("book_id") long bookId)
+	public BookDTO getBook(@PathVariable("book_id") long bookId)
 	{
 		return bookService.getBook(bookId);
 	}

@@ -1,5 +1,7 @@
 package com.project.readers.readers_community.services;
 
+import com.project.readers.readers_community.DTOs.BookDTO;
+import com.project.readers.readers_community.DTOs.Mapper;
 import com.project.readers.readers_community.entities.BookCopy;
 import com.project.readers.readers_community.repositories.BookCategoryRepository;
 import com.project.readers.readers_community.repositories.BookCopyRepository;
@@ -28,8 +30,9 @@ public class BookService {
     private final BookCategoryRepository bookCategoryRepository;
     private final BookTransactionRepository bookTransactionRepository;
     private final BorrowRequestRepository borrowRequestRepository;
+    private final Mapper mapper;
 
-    public BookService(BookRepository bookRepository, OtpService otpService, EmailService emailService, BookCopyRepository bookCopyRepository, BookTransactionRepository bookTransactionRepository, BorrowRequestRepository borrowRequestRepository, BookCategoryRepository bookCategoryRepository) {
+    public BookService(BookRepository bookRepository, OtpService otpService, EmailService emailService, BookCopyRepository bookCopyRepository, BookTransactionRepository bookTransactionRepository, BorrowRequestRepository borrowRequestRepository, BookCategoryRepository bookCategoryRepository, Mapper mapper) {
         this.bookRepository = bookRepository;
         this.otpService = otpService;
         this.emailService = emailService;
@@ -37,15 +40,16 @@ public class BookService {
         this.bookTransactionRepository = bookTransactionRepository;
         this.borrowRequestRepository = borrowRequestRepository;
         this.bookCategoryRepository = bookCategoryRepository;
+        this.mapper = mapper;
     }
 
     // method to get a book by id
     @Transactional
-    public Book getBook(long bookId) {
+    public BookDTO getBook(long bookId) {
         Optional<Book> bookOptional = bookRepository.findById(bookId);
 
         if (bookOptional.isPresent()) {
-            return bookOptional.get();
+            return mapper.bookToBookDTO(bookOptional.get());
         }
 
         // did not find the book
@@ -261,9 +265,12 @@ public class BookService {
     }
 
     @Transactional
-    public List<Book> getAllRequests() {
+    public List<BookDTO> getAllRequests() {
 
-        return bookRepository.findByAdminApproval(Approval.UNRESPONDED);
+        return bookRepository.findByAdminApproval(Approval.UNRESPONDED)
+                .stream()
+                .map(mapper::bookToBookDTO)
+                .toList();
     }
 
     @Transactional
@@ -338,7 +345,10 @@ public class BookService {
     }
 
     @Transactional
-    public List<Book> getAllBooks() {
-        return bookRepository.findByAdminApproval(Approval.APPROVED);
+    public List<BookDTO> getAllBooks() {
+        return bookRepository.findByAdminApproval(Approval.APPROVED)
+                .stream()
+                .map(mapper::bookToBookDTO)
+                .toList();
     }
 }
