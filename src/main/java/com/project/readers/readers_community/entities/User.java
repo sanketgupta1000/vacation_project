@@ -77,6 +77,7 @@ public class User {
 
     //books uploaded by user
     @OneToMany(mappedBy = "owner")
+    @JsonIgnoreProperties("owner")
     private List<Book> uploadedBooks;
 
     //book copy currently borrowed by user
