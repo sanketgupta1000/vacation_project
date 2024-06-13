@@ -82,4 +82,18 @@ public class BookController
     	return bookService.getalluploadedbooks(user);
     }
 
+	// method to get uploaded and approved books of the current user
+	@GetMapping("/getMyUploadedBooks")
+	public List<BookDTO> getMyUploadedBooks(@CurrentUser User user)
+	{
+		return bookService.getMyUploadedBooks(user);
+	}
+
+	// method to get the borrowed book copies of current user
+	@GetMapping("/getMyBorrowedBookCopies")
+	public List<BookCopyDTO> getMyBorrowedBookCopies(@CurrentUser User user)
+	{
+		return bookService.getMyBorrowedBookCopies(user);
+	}
+
 }

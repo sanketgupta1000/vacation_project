@@ -101,6 +101,12 @@ public class RequestController
     {
         return requestService.rejectBorrowRequest(borrowRequestId, user);
     }
-    
-  
+
+    // method to get the current user's borrow requests
+    @GetMapping("/getMyBorrowRequests")
+    public List<BorrowRequestDTO> getMyBorrowRequests(@CurrentUser User user)
+    {
+        return requestService.getMyBorrowRequest(user);
+    }
+
 }

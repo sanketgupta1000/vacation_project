@@ -92,8 +92,8 @@ public class User {
     private List<BookTransaction> bookReceivingTransactions;
 
     //this user's current borrow request
-    @OneToOne(mappedBy = "requester")
-    private BorrowRequest currentBorrowRequest;
+    @OneToMany(mappedBy = "requester")
+    private List<BorrowRequest> borrowRequests;
 
     // TODO: add profile photo too
 
@@ -251,12 +251,12 @@ public class User {
         this.bookReceivingTransactions = bookReceivingTransactions;
     }
 
-    public BorrowRequest getCurrentBorrowRequest() {
-        return currentBorrowRequest;
+    public List<BorrowRequest> getBorrowRequests() {
+        return borrowRequests;
     }
 
-    public void setCurrentBorrowRequest(BorrowRequest currentBorrowRequest) {
-        this.currentBorrowRequest = currentBorrowRequest;
+    public void setBorrowRequests(List<BorrowRequest> borrowRequests) {
+        this.borrowRequests = borrowRequests;
     }
 
     @Override

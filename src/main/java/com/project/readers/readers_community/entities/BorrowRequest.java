@@ -21,7 +21,7 @@ public class BorrowRequest
     private BookCopy bookCopy;
 
     // the member who has requested
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "requester_id")
     private User requester;
 
