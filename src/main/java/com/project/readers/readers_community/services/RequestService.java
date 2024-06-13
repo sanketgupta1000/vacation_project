@@ -350,4 +350,12 @@ public class RequestService
         return "Borrow Request Rejected";
 
     }
+
+    public List<BorrowRequestDTO> getMyBorrowRequest(User user)
+    {
+        return user.getBorrowRequests()
+                .stream()
+                .map(mapper::borrowRequestToBorrowRequestDTO)
+                .toList();
+    }
 }
