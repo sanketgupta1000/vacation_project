@@ -36,35 +36,6 @@ public class AuthController
         return authService.verifyOtp(email, otp);
     }
 
-    // method to approve member signup request from the side of reference
-    @GetMapping("/{request_id}/approveFromReference")
-    public String approveFromReference(@PathVariable("request_id") MemberApprovalRequest request, @CurrentUser User currentUser)
-    {
-        return authService.approveFromReference(request, currentUser);
-    }
-
-    // method to reject member signup request from the side of reference
-    @GetMapping("/{request_id}/rejectFromReference")
-    public String rejectFromReference(@PathVariable("request_id") MemberApprovalRequest request, @CurrentUser User currentUser)
-    {
-        return authService.rejectFromReference(request, currentUser);
-    }
-
-    // method to approve member signup request from the side of admin
-    @GetMapping("/{request_id}/approveFromAdmin")
-    public String approveFromAdmin(@PathVariable("request_id") MemberApprovalRequest request)
-    {
-        return authService.approveFromAdmin(request);
-    }
-
-    // method to reject member signup request from the side of admin
-    @GetMapping("/{request_id}/rejectFromAdmin")
-    public String rejectFromAdmin(@PathVariable("request_id") MemberApprovalRequest request)
-    {
-        return authService.rejectFromAdmin(request);
-    }
-
-
     // method to send otp again for signup
     @PostMapping("/send-otp")
     public String sendOtp(@RequestParam("email") String email)

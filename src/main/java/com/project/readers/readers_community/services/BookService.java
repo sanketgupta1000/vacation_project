@@ -45,6 +45,34 @@ public class BookService {
         this.mapper = mapper;
     }
 
+    @Transactional
+    public String bookUpload(Book book, User cureentUser) {
+
+        book.setId(0L);
+        book.setOwner(cureentUser);
+        book.setAdminApproval(Approval.UNRESPONDED);
+
+        long bookcategory_id = book.getCategory().getId();
+
+        BookCategory bc = bookCategoryRepository.findById(bookcategory_id).get();
+
+        book.setCategory(bc);
+
+        bookRepository.save(book);
+
+
+        return "your book upload request is sent to admin";
+
+    }
+
+    @Transactional
+    public List<BookDTO> getAllBooks() {
+        return bookRepository.findByAdminApproval(Approval.APPROVED)
+                .stream()
+                .map(mapper::bookToBookDTO)
+                .toList();
+    }
+
     // method to get a book by id
     @Transactional
     public BookDTO getBook(long bookId) {
@@ -249,114 +277,6 @@ public class BookService {
         return transactions
                 .stream()
                 .map(mapper::bookTransactionToBookTransactionDTO)
-                .toList();
-    }
-
-    @Transactional
-    public String bookUpload(Book book, User cureentUser) {
-
-        book.setId(0L);
-        book.setOwner(cureentUser);
-        book.setAdminApproval(Approval.UNRESPONDED);
-
-        long bookcategory_id = book.getCategory().getId();
-
-        BookCategory bc = bookCategoryRepository.findById(bookcategory_id).get();
-
-        book.setCategory(bc);
-
-        bookRepository.save(book);
-
-
-        return "your book upload request is sent to admin";
-
-    }
-
-    @Transactional
-    public List<BookDTO> getAllRequests() {
-
-        return bookRepository.findByAdminApproval(Approval.UNRESPONDED)
-                .stream()
-                .map(mapper::bookToBookDTO)
-                .toList();
-    }
-
-    @Transactional
-    public String approve_book(long book_id) {
-
-
-        Optional<Book> book = bookRepository.findById(book_id);
-        if (book.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found");
-
-        }
-
-        if (book.get().getAdminApproval() == Approval.UNRESPONDED) {
-            book.get().setAdminApproval(Approval.APPROVED);
-            bookRepository.save(book.get());
-
-            //create copy of books equals to quantity
-            int quantity = book.get().getQuantity();
-            for (int i = 1; i <= quantity; i++) {
-                BookCopy bookcopy = new BookCopy();
-                bookcopy.setBook(book.get());
-                bookcopy.setBorrower(book.get().getOwner());
-                bookcopy.setHolder(book.get().getOwner());
-                bookCopyRepository.save(bookcopy);
-            }
-
-            Book bookObj = book.get();
-
-            // send mail to owner
-            emailService.sendEmail(
-                    bookObj.getOwner().getEmail(),
-                    "Book upload request approved",
-                    "Congratulations! Your upload request for the book "+bookObj.getBookTitle()+" was approved!"
-            );
-
-            return "Book upload request approved";
-
-        } else {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Book upload request already responded to");
-
-        }
-    }
-
-    @Transactional
-    public String reject_book(long book_id) {
-        Optional<Book> book = bookRepository.findById(book_id);
-        if (book.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found");
-
-        }
-        if (book.get().getAdminApproval() == Approval.UNRESPONDED) {
-            book.get().setAdminApproval(Approval.REJECTED);
-
-            bookRepository.save(book.get());
-
-            Book bookObj = book.get();
-
-            // send mail to owner
-            emailService.sendEmail(
-                    bookObj.getOwner().getEmail(),
-                    "Book upload request rejected",
-                    "Unfortunately, your upload request for the book "+bookObj.getBookTitle()+" was rejected"
-            );
-
-            return "Book upload request rejected";
-
-        } else {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Book upload request already responded to");
-
-        }
-
-    }
-
-    @Transactional
-    public List<BookDTO> getAllBooks() {
-        return bookRepository.findByAdminApproval(Approval.APPROVED)
-                .stream()
-                .map(mapper::bookToBookDTO)
                 .toList();
     }
 }

@@ -13,9 +13,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashMap;
@@ -27,7 +25,6 @@ public class AuthService
 
     // repository
     private final UserRepository userRepository;
-    private  final MemberApprovalRequestRepository memberApprovalRequestRepository;
     private final PasswordEncoder passwordEncoder;
     private final OtpService otpService;
     private final EmailService emailService;
@@ -35,10 +32,9 @@ public class AuthService
     private final TokenService tokenService;
 
     // DI
-    public AuthService(UserRepository userRepository, MemberApprovalRequestRepository memberApprovalRequestRepository, PasswordEncoder passwordEncoder, OtpService otpService, EmailService emailService, AuthenticationManager authenticationManager, TokenService tokenService)
+    public AuthService(UserRepository userRepository,PasswordEncoder passwordEncoder, OtpService otpService, EmailService emailService, AuthenticationManager authenticationManager, TokenService tokenService)
     {
         this.userRepository = userRepository;
-        this.memberApprovalRequestRepository = memberApprovalRequestRepository;
         this.passwordEncoder = passwordEncoder;
         this.otpService = otpService;
         this.emailService = emailService;
@@ -151,104 +147,6 @@ public class AuthService
 
         return "Profile sent for approval";
     }
-
-    @Transactional
-    public String approveFromReference(MemberApprovalRequest request, User currentUser)
-    {
-
-        User reference = request.getMember().getReferrer();
-        if(!currentUser.getEmail().equals(reference.getEmail()))
-        {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User does not have access to this member approval request");
-        }
-
-        if( request.getReferrerApproval() != Approval.UNRESPONDED )
-        {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Member approval request has already been responded to");
-        }
-
-        request.setReferrerApproval(Approval.APPROVED);
-
-        memberApprovalRequestRepository.save(request);
-
-        String to = request.getMember().getEmail();
-        String subject = "Member approval request status";
-        String message = "Your member approval request has been approved from your reference's side. Please wait for the admin's response.";
-        emailService.sendEmail(to, subject, message);
-
-        return "Member approval request has been approved from the reference side";
-    }
-
-    @Transactional
-    public String rejectFromReference(MemberApprovalRequest request, User currentUser)
-    {
-
-        User reference = request.getMember().getReferrer();
-        if(!currentUser.getEmail().equals(reference.getEmail()))
-        {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User does not have access to this member approval request");
-        }
-
-        if( request.getReferrerApproval() != Approval.UNRESPONDED )
-        {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Member approval request has already been responded to");
-        }
-
-        request.setReferrerApproval(Approval.REJECTED);
-
-        memberApprovalRequestRepository.save(request);
-
-        String to = request.getMember().getEmail();
-        String subject = "Member approval request status";
-        String message = "Your member approval request has been rejected from your reference's side. Please wait for the admin's response.";
-        emailService.sendEmail(to, subject, message);
-
-        return "Member approval request has been rejected from the reference side";
-    }
-
-    @Transactional
-    public String approveFromAdmin(MemberApprovalRequest request)
-    {
-
-        if( request.getAdminApproval() != Approval.UNRESPONDED )
-        {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Member approval request has already been responded to");
-        }
-
-        request.setAdminApproval(Approval.APPROVED);
-
-        memberApprovalRequestRepository.save(request);
-
-        String to = request.getMember().getEmail();
-        String subject = "Member approval request status";
-        String message = "Congratulations! Your member approval request has been approved by the admin. Please login to the site with the email and password used at the time of registration.";
-        emailService.sendEmail(to, subject, message);
-
-        return "Member approval request has been approved from the admin side";
-    }
-
-    @Transactional
-    public String rejectFromAdmin(MemberApprovalRequest request)
-    {
-
-
-        if( request.getAdminApproval() != Approval.UNRESPONDED )
-        {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Member approval request has already been responded to");
-        }
-
-        request.setAdminApproval(Approval.REJECTED);
-
-        memberApprovalRequestRepository.save(request);
-
-        String to = request.getMember().getEmail();
-        String subject = "Member approval request status";
-        String message = "Sorry, user! Your member approval request has been rejected by the admin. All your personal details has been removed from the site.";
-        emailService.sendEmail(to, subject, message);
-
-        return "Member approval request has been rejected from the admin side";
-    }
-
 
     // method to send otp again for signup
     @Transactional

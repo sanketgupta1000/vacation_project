@@ -1,7 +1,5 @@
 package com.project.readers.readers_community.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.project.readers.readers_community.enums.Approval;
 
 import jakarta.persistence.*;
@@ -38,7 +36,6 @@ public class Book
 	// Genre of the book
 	@ManyToOne
 	@JoinColumn(name = "category_id")
-	@JsonIgnoreProperties("books")
 	private BookCategory category;
 
 	//is it approved or rejected by the admin
@@ -48,12 +45,10 @@ public class Book
 	//user that owns the book
 	@ManyToOne
 	@JoinColumn(name = "owner_id")
-	@JsonIgnoreProperties({"uploadedBooks", "borrowedBookCopies", "nextBorrowBookCopies"})
 	private User owner;
 
 	//all physical copies of this book
 	@OneToMany(mappedBy = "book")
-	@JsonIgnore
 	private List<BookCopy> bookCopies;
 
 	public Book() {

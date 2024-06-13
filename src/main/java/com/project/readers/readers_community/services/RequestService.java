@@ -1,22 +1,21 @@
 package com.project.readers.readers_community.services;
 
+import com.project.readers.readers_community.DTOs.BookDTO;
 import com.project.readers.readers_community.DTOs.BorrowRequestDTO;
 import com.project.readers.readers_community.DTOs.Mapper;
-import com.project.readers.readers_community.entities.Book;
-import com.project.readers.readers_community.entities.BookCopy;
-import com.project.readers.readers_community.entities.BorrowRequest;
-import com.project.readers.readers_community.entities.User;
+import com.project.readers.readers_community.DTOs.MemberApprovalRequestDTO;
+import com.project.readers.readers_community.entities.*;
 import com.project.readers.readers_community.enums.Approval;
 import com.project.readers.readers_community.repositories.BookCopyRepository;
+import com.project.readers.readers_community.repositories.BookRepository;
 import com.project.readers.readers_community.repositories.BorrowRequestRepository;
+import com.project.readers.readers_community.repositories.MemberApprovalRequestRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class RequestService
@@ -26,18 +25,208 @@ public class RequestService
     private final EmailService emailService;
     private final BookCopyRepository bookCopyRepository;
     private final Mapper mapper;
+    private final MemberApprovalRequestRepository memberApprovalRequestRepository;
+    private final BookRepository bookRepository;
 
-    public RequestService(BorrowRequestRepository borrowRequestRepository, EmailService emailService, BookCopyRepository bookCopyRepository, Mapper mapper) {
+    public RequestService(BorrowRequestRepository borrowRequestRepository, EmailService emailService, BookCopyRepository bookCopyRepository, Mapper mapper, MemberApprovalRequestRepository memberApprovalRequestRepository, BookRepository bookRepository) {
         this.borrowRequestRepository = borrowRequestRepository;
         this.emailService = emailService;
         this.bookCopyRepository = bookCopyRepository;
         this.mapper = mapper;
+        this.memberApprovalRequestRepository = memberApprovalRequestRepository;
+        this.bookRepository = bookRepository;
+    }
+
+    public Map<String,List<MemberApprovalRequestDTO>> getAllMemberApprovalRequests()
+    {
+        Map<String, List<MemberApprovalRequestDTO>> requestMap = new HashMap<>();
+        requestMap.put("unresponded", memberApprovalRequestRepository.findByAdminApproval(Approval.UNRESPONDED).stream().map(mapper::memberApprovalRequestToMemberApprovalRequestDTO).toList());
+        requestMap.put("approved", memberApprovalRequestRepository.findByAdminApproval(Approval.APPROVED).stream().map(mapper::memberApprovalRequestToMemberApprovalRequestDTO).toList());
+        requestMap.put("rejected", memberApprovalRequestRepository.findByAdminApproval(Approval.REJECTED).stream().map(mapper::memberApprovalRequestToMemberApprovalRequestDTO).toList());
+        return requestMap;
+    }
+
+    @Transactional
+    public String approveMemberApprovalRequestFromReference(MemberApprovalRequest request, User currentUser)
+    {
+
+        User reference = request.getMember().getReferrer();
+        if(!currentUser.getEmail().equals(reference.getEmail()))
+        {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User does not have access to this member approval request");
+        }
+
+        if( request.getReferrerApproval() != Approval.UNRESPONDED )
+        {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Member approval request has already been responded to");
+        }
+
+        request.setReferrerApproval(Approval.APPROVED);
+
+        memberApprovalRequestRepository.save(request);
+
+        String to = request.getMember().getEmail();
+        String subject = "Member approval request status";
+        String message = "Your member approval request has been approved from your reference's side. Please wait for the admin's response.";
+        emailService.sendEmail(to, subject, message);
+
+        return "Member approval request has been approved from the reference side";
+    }
+
+    @Transactional
+    public String rejectMemberApprovalRequestFromReference(MemberApprovalRequest request, User currentUser)
+    {
+
+        User reference = request.getMember().getReferrer();
+        if(!currentUser.getEmail().equals(reference.getEmail()))
+        {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User does not have access to this member approval request");
+        }
+
+        if( request.getReferrerApproval() != Approval.UNRESPONDED )
+        {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Member approval request has already been responded to");
+        }
+
+        request.setReferrerApproval(Approval.REJECTED);
+
+        memberApprovalRequestRepository.save(request);
+
+        String to = request.getMember().getEmail();
+        String subject = "Member approval request status";
+        String message = "Your member approval request has been rejected from your reference's side. Please wait for the admin's response.";
+        emailService.sendEmail(to, subject, message);
+
+        return "Member approval request has been rejected from the reference side";
+    }
+
+    @Transactional
+    public String approveMemberApprovalRequestFromAdmin(MemberApprovalRequest request)
+    {
+
+        if( request.getAdminApproval() != Approval.UNRESPONDED )
+        {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Member approval request has already been responded to");
+        }
+
+        request.setAdminApproval(Approval.APPROVED);
+
+        memberApprovalRequestRepository.save(request);
+
+        String to = request.getMember().getEmail();
+        String subject = "Member approval request status";
+        String message = "Congratulations! Your member approval request has been approved by the admin. Please login to the site with the email and password used at the time of registration.";
+        emailService.sendEmail(to, subject, message);
+
+        return "Member approval request has been approved from the admin side";
+    }
+
+    @Transactional
+    public String rejectMemberApprovalRequestFromAdmin(MemberApprovalRequest request)
+    {
+
+
+        if( request.getAdminApproval() != Approval.UNRESPONDED )
+        {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Member approval request has already been responded to");
+        }
+
+        request.setAdminApproval(Approval.REJECTED);
+
+        memberApprovalRequestRepository.save(request);
+
+        String to = request.getMember().getEmail();
+        String subject = "Member approval request status";
+        String message = "Sorry, user! Your member approval request has been rejected by the admin. All your personal details has been removed from the site.";
+        emailService.sendEmail(to, subject, message);
+
+        return "Member approval request has been rejected from the admin side";
+    }
+
+    @Transactional
+    public List<BookDTO> getAllBookUploadRequests() {
+
+        return bookRepository.findByAdminApproval(Approval.UNRESPONDED)
+                .stream()
+                .map(mapper::bookToBookDTO)
+                .toList();
+    }
+
+    @Transactional
+    public String approveBookUploadRequest(long book_id) {
+
+
+        Optional<Book> book = bookRepository.findById(book_id);
+        if (book.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found");
+
+        }
+
+        if (book.get().getAdminApproval() == Approval.UNRESPONDED) {
+            book.get().setAdminApproval(Approval.APPROVED);
+            bookRepository.save(book.get());
+
+            //create copy of books equals to quantity
+            int quantity = book.get().getQuantity();
+            for (int i = 1; i <= quantity; i++) {
+                BookCopy bookcopy = new BookCopy();
+                bookcopy.setBook(book.get());
+                bookcopy.setBorrower(book.get().getOwner());
+                bookcopy.setHolder(book.get().getOwner());
+                bookCopyRepository.save(bookcopy);
+            }
+
+            Book bookObj = book.get();
+
+            // send mail to owner
+            emailService.sendEmail(
+                    bookObj.getOwner().getEmail(),
+                    "Book upload request approved",
+                    "Congratulations! Your upload request for the book "+bookObj.getBookTitle()+" was approved!"
+            );
+
+            return "Book upload request approved";
+
+        } else {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Book upload request already responded to");
+
+        }
+    }
+
+    @Transactional
+    public String rejectBookUploadRequest(long book_id) {
+        Optional<Book> book = bookRepository.findById(book_id);
+        if (book.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found");
+
+        }
+        if (book.get().getAdminApproval() == Approval.UNRESPONDED) {
+            book.get().setAdminApproval(Approval.REJECTED);
+
+            bookRepository.save(book.get());
+
+            Book bookObj = book.get();
+
+            // send mail to owner
+            emailService.sendEmail(
+                    bookObj.getOwner().getEmail(),
+                    "Book upload request rejected",
+                    "Unfortunately, your upload request for the book "+bookObj.getBookTitle()+" was rejected"
+            );
+
+            return "Book upload request rejected";
+
+        } else {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Book upload request already responded to");
+
+        }
+
     }
 
     // method to get all borrow requests of the current user
     // TODO: implement a query in a custom repository for this
     @Transactional
-    public List<BorrowRequestDTO> getBorrowRequests(User user)
+    public List<BorrowRequestDTO> getAllBorrowRequests(User user)
     {
         List<BorrowRequest> borrowRequests = new ArrayList<BorrowRequest>();
 
