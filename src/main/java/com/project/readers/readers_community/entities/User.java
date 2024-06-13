@@ -1,7 +1,5 @@
 package com.project.readers.readers_community.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.project.readers.readers_community.embeddables.Address;
 import com.project.readers.readers_community.enums.UserType;
 import jakarta.persistence.*;
@@ -42,7 +40,6 @@ public class User {
     // person who referred this person
     @ManyToOne
     @JoinColumn(name = "referrer_id")
-    @JsonIgnoreProperties("referrer")
     private User referrer;
 
     // otp for verification, since REST, need to store in DB
@@ -55,7 +52,6 @@ public class User {
 
     // approval request
     @OneToOne(mappedBy = "member", cascade = CascadeType.ALL)
-    @JsonIgnore
     private MemberApprovalRequest memberApprovalRequest;
 
     // embedded address
@@ -77,32 +73,26 @@ public class User {
 
     //books uploaded by user
     @OneToMany(mappedBy = "owner")
-    @JsonIgnore
     private List<Book> uploadedBooks;
 
     //book copy currently borrowed by user
     @OneToMany(mappedBy = "holder")
-    @JsonIgnore
     private List<BookCopy> borrowedBookCopies;
 
     //book copy that will be borrowed by user next
     @OneToMany(mappedBy = "borrower")
-    @JsonIgnore
     private List<BookCopy> nextBorrowBookCopies;
 
     //transaction in which this user acted as book giver
     @OneToMany(mappedBy = "bookGiver")
-    @JsonIgnore
     private List<BookTransaction> bookGivingTransactions;
 
     //transaction in which this user acted as book receiver
     @OneToMany(mappedBy = "bookReceiver")
-    @JsonIgnore
     private List<BookTransaction> bookReceivingTransactions;
 
     //this user's current borrow request
     @OneToOne(mappedBy = "requester")
-    @JsonIgnore
     private BorrowRequest currentBorrowRequest;
 
     // TODO: add profile photo too

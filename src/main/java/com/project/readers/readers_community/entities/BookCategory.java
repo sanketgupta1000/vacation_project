@@ -1,8 +1,7 @@
 package com.project.readers.readers_community.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
 
+import jakarta.persistence.*;
 import java.util.List;
 
 //represents a book genre
@@ -22,7 +21,6 @@ public class BookCategory
 
     //books that belong to this category
     @OneToMany(mappedBy = "category")
-    @JsonIgnore
     private List<Book> books;
 
     public BookCategory() {

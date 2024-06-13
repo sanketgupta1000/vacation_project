@@ -28,42 +28,13 @@ public class BookController
 		return bookService.bookUpload(book,currentUser);
 		
 	}
-	
-	
-	//method to get all unresponded request
-	//method for admin
-	@GetMapping("/getAllRequests")
-	public List<BookDTO> getAllRequests()
-	{
-		return bookService.getAllRequests();
-	}
-	
-	//to approve book upload request
-	//for admin
-	@PostMapping("/requests/{book_id}/approveBook")
-	public String bookApproval(@PathVariable long book_id)
-	{
-		return bookService.approve_book(book_id);
-		
-	}
 
-	//to reject book upload request
-	//for admin
-	@PostMapping("/requests/{book_id}/rejectBook")
-	public String bookRejection(@PathVariable long book_id)
-	{
-		return bookService.reject_book(book_id);
-		
-	}
-	
 	//to get all books
 	@GetMapping("/getAllBooks")
 	public List<BookDTO> getallbooks()
 	{
 		return bookService.getAllBooks();
 	}
-	
-	
 
 	// method to get a book's data
 	@GetMapping("/{book_id}")

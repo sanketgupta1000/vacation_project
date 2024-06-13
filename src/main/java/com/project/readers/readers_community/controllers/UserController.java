@@ -40,10 +40,6 @@ public class UserController
         return userService.profileComplete(address, dateOfBirth, user);
     }
 
-	public UserService getUserService() {
-		return userService;
-	}
-	
 	@GetMapping("/getUserDetails")
 	public UserDTO getUserDetails(@CurrentUser User current_user)
 	{

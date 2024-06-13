@@ -1,6 +1,5 @@
 package com.project.readers.readers_community.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -37,12 +36,10 @@ public class BookCopy {
 
 	//transactions involving this book copy
 	@OneToMany(mappedBy = "bookCopy")
-	@JsonIgnore
 	private List<BookTransaction> transactions;
 
 	//book borrow request involving this book copy
 	@OneToMany(mappedBy = "bookCopy")
-	@JsonIgnore
 	private List<BorrowRequest> borrowRequests;
 
 	public BookCopy() {
