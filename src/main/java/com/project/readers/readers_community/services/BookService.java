@@ -279,4 +279,22 @@ public class BookService {
                 .map(mapper::bookTransactionToBookTransactionDTO)
                 .toList();
     }
+
+    // to find the current user's approved books
+    public List<BookDTO> getMyUploadedBooks(User user)
+    {
+        return bookRepository.findByOwnerAndAdminApproval(user, Approval.APPROVED)
+                .stream()
+                .map(mapper::bookToBookDTO)
+                .toList();
+    }
+
+    // method to get the borrowed book copies of current user
+    public List<BookCopyDTO> getMyBorrowedBookCopies(User user)
+    {
+        return user.getBorrowedBookCopies()
+                .stream()
+                .map(mapper::bookCopyToBookCopyDTO)
+                .toList();
+    }
 }
