@@ -1,5 +1,7 @@
 package com.project.readers.readers_community.services;
 
+import com.project.readers.readers_community.DTOs.BorrowRequestDTO;
+import com.project.readers.readers_community.DTOs.Mapper;
 import com.project.readers.readers_community.entities.Book;
 import com.project.readers.readers_community.entities.BookCopy;
 import com.project.readers.readers_community.entities.BorrowRequest;
@@ -23,17 +25,19 @@ public class RequestService
     private final BorrowRequestRepository borrowRequestRepository;
     private final EmailService emailService;
     private final BookCopyRepository bookCopyRepository;
+    private final Mapper mapper;
 
-    public RequestService(BorrowRequestRepository borrowRequestRepository, EmailService emailService, BookCopyRepository bookCopyRepository) {
+    public RequestService(BorrowRequestRepository borrowRequestRepository, EmailService emailService, BookCopyRepository bookCopyRepository, Mapper mapper) {
         this.borrowRequestRepository = borrowRequestRepository;
         this.emailService = emailService;
         this.bookCopyRepository = bookCopyRepository;
+        this.mapper = mapper;
     }
 
     // method to get all borrow requests of the current user
     // TODO: implement a query in a custom repository for this
     @Transactional
-    public List<BorrowRequest> getBorrowRequests(User user)
+    public List<BorrowRequestDTO> getBorrowRequests(User user)
     {
         List<BorrowRequest> borrowRequests = new ArrayList<BorrowRequest>();
 
@@ -45,7 +49,10 @@ public class RequestService
             }
         }
 
-        return borrowRequests;
+        return borrowRequests
+                .stream()
+                .map(mapper::borrowRequestToBorrowRequestDTO)
+                .toList();
     }
 
     // method to let the book owner approve a borrow request

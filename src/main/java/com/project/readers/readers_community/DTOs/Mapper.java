@@ -1,10 +1,11 @@
 package com.project.readers.readers_community.DTOs;
 
 import com.project.readers.readers_community.entities.Book;
+import com.project.readers.readers_community.entities.BookCopy;
+import com.project.readers.readers_community.entities.BorrowRequest;
 import com.project.readers.readers_community.entities.BookTransaction;
 import com.project.readers.readers_community.entities.MemberApprovalRequest;
 import org.springframework.stereotype.Component;
-
 import java.text.SimpleDateFormat;
 
 // to map entities to dtos
@@ -25,6 +26,33 @@ public class Mapper
                 book.getAdminApproval().toString(),
                 book.getOwner().getId(),
                 book.getOwner().getFullName()
+        );
+    }
+
+    public BorrowRequestDTO borrowRequestToBorrowRequestDTO(BorrowRequest borrowRequest)
+    {
+        return new BorrowRequestDTO(
+                borrowRequest.getId(),
+                borrowRequest.getBookCopy().getId(),
+                borrowRequest.getBookCopy().getBook().getBookTitle(),
+                borrowRequest.getRequester().getId(),
+                borrowRequest.getRequester().getFullName(),
+                borrowRequest.getOwnerApproval().toString(),
+                borrowRequest.getBookCopy().getBorrower().equals(borrowRequest.getBookCopy().getBook().getOwner())
+        );
+    }
+
+    public BookCopyDTO bookCopyToBookCopyDTO(BookCopy bookCopy)
+    {
+        return new BookCopyDTO(
+                bookCopy.getId(),
+                bookCopy.getBook().getId(),
+                bookCopy.getBook().getBookTitle(),
+                bookCopy.getHolder().getId(),
+                bookCopy.getHolder().getFullName(),
+                bookCopy.getBorrower().getId(),
+                bookCopy.getBorrower().getFullName(),
+                bookCopy.getBorrower().equals(bookCopy.getBook().getOwner())
         );
     }
 
@@ -63,4 +91,5 @@ public class Mapper
                 memberApprovalRequest.getAdminApproval().name()
         );
     }
+
 }
