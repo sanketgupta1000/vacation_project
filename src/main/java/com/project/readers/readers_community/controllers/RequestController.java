@@ -1,5 +1,6 @@
 package com.project.readers.readers_community.controllers;
 
+import com.project.readers.readers_community.DTOs.BorrowRequestDTO;
 import com.project.readers.readers_community.annotations.CurrentUser;
 import com.project.readers.readers_community.entities.BorrowRequest;
 import com.project.readers.readers_community.entities.User;
@@ -22,7 +23,7 @@ public class RequestController
 
     // method to get all the borrow requests of current user's books
     @GetMapping("/borrow-requests")
-    public List<BorrowRequest> getBorrowRequests(@CurrentUser User user)
+    public List<BorrowRequestDTO> getBorrowRequests(@CurrentUser User user)
     {
         return requestService.getBorrowRequests(user);
     }

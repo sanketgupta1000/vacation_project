@@ -1,5 +1,6 @@
 package com.project.readers.readers_community.controllers;
 
+import com.project.readers.readers_community.DTOs.BookCopyDTO;
 import com.project.readers.readers_community.DTOs.BookDTO;
 import com.project.readers.readers_community.entities.*;
 import org.springframework.web.bind.annotation.*;
@@ -72,7 +73,7 @@ public class BookController
 
 	// method to get all book copies of a book
 	@GetMapping("/{book_id}/view-copies")
-	public List<BookCopy> getBookCopies(@PathVariable("book_id") long bookId)
+	public List<BookCopyDTO> getBookCopies(@PathVariable("book_id") long bookId)
 	{
 		return bookService.getBookCopies(bookId);
 	}

@@ -1,5 +1,6 @@
 package com.project.readers.readers_community.services;
 
+import com.project.readers.readers_community.DTOs.BookCopyDTO;
 import com.project.readers.readers_community.DTOs.BookDTO;
 import com.project.readers.readers_community.DTOs.Mapper;
 import com.project.readers.readers_community.entities.BookCopy;
@@ -58,12 +59,15 @@ public class BookService {
 
     // method to get book copies of a book
     @Transactional
-    public List<BookCopy> getBookCopies(long bookId) {
+    public List<BookCopyDTO> getBookCopies(long bookId) {
         // first, will get the book
         Optional<Book> bookOptional = bookRepository.findById(bookId);
 
         if (bookOptional.isPresent() && bookOptional.get().getAdminApproval() == Approval.APPROVED) {
-            return bookOptional.get().getBookCopies();
+            return bookOptional.get().getBookCopies()
+                    .stream()
+                    .map(mapper::bookCopyToBookCopyDTO)
+                    .toList();
         }
         // not found
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found");
