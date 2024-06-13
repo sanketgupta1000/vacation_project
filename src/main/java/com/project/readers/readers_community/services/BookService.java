@@ -2,6 +2,7 @@ package com.project.readers.readers_community.services;
 
 import com.project.readers.readers_community.DTOs.BookCopyDTO;
 import com.project.readers.readers_community.DTOs.BookDTO;
+import com.project.readers.readers_community.DTOs.BookTransactionDTO;
 import com.project.readers.readers_community.DTOs.Mapper;
 import com.project.readers.readers_community.entities.BookCopy;
 import com.project.readers.readers_community.repositories.BookCategoryRepository;
@@ -225,7 +226,7 @@ public class BookService {
     }
 
     @Transactional
-    public List<BookTransaction> getBookTransactions(BookCopy bookCopy, User currentUser) {
+    public List<BookTransactionDTO> getBookTransactions(BookCopy bookCopy, User currentUser) {
         User owner = bookCopy.getBook().getOwner();
 
         //check: request is coming from owner
@@ -245,7 +246,10 @@ public class BookService {
         }.reversed());
 
         //return transactions
-        return transactions;
+        return transactions
+                .stream()
+                .map(mapper::bookTransactionToBookTransactionDTO)
+                .toList();
     }
 
     @Transactional

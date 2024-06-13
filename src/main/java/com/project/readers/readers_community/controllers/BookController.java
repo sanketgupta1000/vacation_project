@@ -2,6 +2,7 @@ package com.project.readers.readers_community.controllers;
 
 import com.project.readers.readers_community.DTOs.BookCopyDTO;
 import com.project.readers.readers_community.DTOs.BookDTO;
+import com.project.readers.readers_community.DTOs.BookTransactionDTO;
 import com.project.readers.readers_community.entities.*;
 import org.springframework.web.bind.annotation.*;
 import com.project.readers.readers_community.annotations.CurrentUser;
@@ -98,7 +99,7 @@ public class BookController
 	}
 
 	@GetMapping("/{book_copy_id}/transaction_history")
-	public List<BookTransaction> getBookTransactions(@PathVariable("book_copy_id")BookCopy bookCopy, @CurrentUser User currentUser)
+	public List<BookTransactionDTO> getBookTransactions(@PathVariable("book_copy_id")BookCopy bookCopy, @CurrentUser User currentUser)
 	{
 		return bookService.getBookTransactions(bookCopy, currentUser);
 	}
