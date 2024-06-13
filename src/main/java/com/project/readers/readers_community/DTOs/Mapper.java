@@ -5,6 +5,8 @@ import com.project.readers.readers_community.entities.BookCopy;
 import com.project.readers.readers_community.entities.BorrowRequest;
 import com.project.readers.readers_community.entities.BookTransaction;
 import com.project.readers.readers_community.entities.MemberApprovalRequest;
+import com.project.readers.readers_community.entities.User;
+
 import org.springframework.stereotype.Component;
 import java.text.SimpleDateFormat;
 
@@ -27,6 +29,44 @@ public class Mapper
                 book.getOwner().getId(),
                 book.getOwner().getFullName()
         );
+    }
+    public UserDTO userToUserDTO(User user)
+    {
+    	String referername="";
+    	if(user.getReferrer()==null)
+    	{
+    		 referername="no reference person";
+    		 return new UserDTO(
+    	    			user.getId(),
+    	    			user.getEmail(),
+    	    			user.getFullName(),
+    	    			user.getPhoneNumber(),
+    	    			referername,
+    	    			user.getAddress().getHouseNo(),
+    	    			user.getAddress().getStreet(),
+    	    			user.getAddress().getLandmark(),
+    	    			user.getAddress().getCity(),
+    	    			user.getAddress().getState(),
+    	    			user.getAddress().getCountry(),
+    	    			user.getDateOfBirth()
+    	    			);
+    	}
+    	
+    	return new UserDTO(
+    			user.getId(),
+    			user.getEmail(),
+    			user.getFullName(),
+    			user.getPhoneNumber(),
+    			user.getReferrer().getFullName(),
+    			user.getAddress().getHouseNo(),
+    			user.getAddress().getStreet(),
+    			user.getAddress().getLandmark(),
+    			user.getAddress().getCity(),
+    			user.getAddress().getState(),
+    			user.getAddress().getCountry(),
+    			user.getDateOfBirth()
+    			);
+    			
     }
 
     public BorrowRequestDTO borrowRequestToBorrowRequestDTO(BorrowRequest borrowRequest)

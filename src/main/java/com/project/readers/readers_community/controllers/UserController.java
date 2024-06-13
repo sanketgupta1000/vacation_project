@@ -1,5 +1,6 @@
 package com.project.readers.readers_community.controllers;
 
+import com.project.readers.readers_community.DTOs.UserDTO;
 import com.project.readers.readers_community.annotations.CurrentUser;
 
 import com.project.readers.readers_community.embeddables.Address;
@@ -17,7 +18,6 @@ import com.project.readers.readers_community.utilities.UpdatableUserPersonalDeta
 import org.springframework.web.bind.annotation.*;
 
 import javax.swing.plaf.IconUIResource;
-
 
 @RestController
 @RequestMapping("/users")
@@ -45,13 +45,13 @@ public class UserController
 	}
 	
 	@GetMapping("/getUserDetails")
-	public User getUserDetails(@CurrentUser User current_user)
+	public UserDTO getUserDetails(@CurrentUser User current_user)
 	{
 		return userService.getCurrentUserDetail(current_user);
 	}
 
 	@PutMapping("/updateUserProfile")
-	public User updateUserProfile(@RequestBody UpdatableUserPersonalDetails updatedDetails, @CurrentUser User currentUser)
+	public UserDTO updateUserProfile(@RequestBody UpdatableUserPersonalDetails updatedDetails, @CurrentUser User currentUser)
 	{
 		return userService.updateUserProfile(updatedDetails, currentUser);
 	}
