@@ -10,6 +10,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.List;
 
 import com.project.readers.readers_community.entities.User;
 import com.project.readers.readers_community.services.UserService;
@@ -57,5 +58,12 @@ public class UserController
 	public String deleteUserProfile(@CurrentUser User currentUser)
 	{
 		return userService.deleteUserProfile(currentUser);
+	}
+	
+	//endpoint to see all persons who has registered themselves as his reference
+	@GetMapping("/getAllreferences")
+	public List<UserDTO> seeAllReferences(@CurrentUser User user)
+	{
+		return userService.getallreference(user);
 	}
 }

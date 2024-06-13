@@ -75,6 +75,13 @@ public class BookController
 		return bookService.getBookTransactions(bookCopy, currentUser);
 	}
 
+  //endpoint to see my/user's uploaded books
+	@GetMapping("/getAllUploadedBooks")
+    public List<BookDTO> currentUserUploadedBook(@CurrentUser User user)
+    {
+    	return bookService.getalluploadedbooks(user);
+    }
+
 	// method to get uploaded and approved books of the current user
 	@GetMapping("/getMyUploadedBooks")
 	public List<BookDTO> getMyUploadedBooks(@CurrentUser User user)

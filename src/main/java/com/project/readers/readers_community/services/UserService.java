@@ -19,6 +19,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class UserService {
@@ -69,4 +70,10 @@ public class UserService {
         userRepository.delete(currentUser);
         return "Your account has been successfully deleted.";
     }
+
+	public List<UserDTO> getallreference(User user) {
+		
+	return	userRepository.findByReferrer(user).stream().map(mapper::userToUserDTO).toList();
+		
+	}
 }
