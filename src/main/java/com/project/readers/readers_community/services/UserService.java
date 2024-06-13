@@ -1,6 +1,8 @@
 package com.project.readers.readers_community.services;
 
 
+import com.project.readers.readers_community.DTOs.Mapper;
+import com.project.readers.readers_community.DTOs.UserDTO;
 import com.project.readers.readers_community.embeddables.Address;
 import com.project.readers.readers_community.entities.User;
 import com.project.readers.readers_community.enums.UserType;
@@ -23,10 +25,12 @@ public class UserService
 {
     private final UserRepository userRepository;
     private final TokenService tokenService;
+    private final Mapper mapper;
 
-    public UserService(UserRepository userRepository, TokenService tokenService) {
+    public UserService(UserRepository userRepository, TokenService tokenService,Mapper mapper) {
         this.userRepository = userRepository;
         this.tokenService = tokenService;
+        this.mapper=mapper;
     }
 
     // to let user complete his/her profile by providing additional information like address, dob
@@ -47,23 +51,28 @@ public class UserService
     }
   
   @Transactional
-	public User getCurrentUserDetail(User current_user) {
+	public UserDTO getCurrentUserDetail(User current_user) {
 		
     	
 		String cemail=current_user.getEmail();
 		
-		return userRepository.findByEmail(cemail);
+		User user= userRepository.findByEmail(cemail);
+		
+		return mapper.userToUserDTO(user);
+
 
 	}
 
     @Transactional
-    public User updateUserProfile(UpdatableUserPersonalDetails updatedDetails, User currentUser)
+    public UserDTO updateUserProfile(UpdatableUserPersonalDetails updatedDetails, User currentUser)
     {
         currentUser.setFullName(updatedDetails.getFullName());
         currentUser.setPhoneNumber(updatedDetails.getPhoneNumber());
         currentUser.setAddress(updatedDetails.getAddress());
         currentUser.setDateOfBirth(updatedDetails.getDateOfBirth());
-        return userRepository.save(currentUser);
+        User user= userRepository.save(currentUser);
+        
+        return mapper.userToUserDTO(user);
     }
 
     @Transactional
