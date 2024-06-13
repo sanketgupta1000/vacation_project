@@ -279,4 +279,10 @@ public class BookService {
                 .map(mapper::bookTransactionToBookTransactionDTO)
                 .toList();
     }
+
+	public List<BookDTO> getalluploadedbooks(User user) {
+		
+		return user.getUploadedBooks().stream().map(mapper::bookToBookDTO).toList();
+		
+	}
 }
