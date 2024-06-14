@@ -280,12 +280,6 @@ public class BookService {
                 .toList();
     }
 
-	public List<BookDTO> getalluploadedbooks(User user) {
-		
-		return user.getUploadedBooks().stream().map(mapper::bookToBookDTO).toList();
-		
-	}
-
     // to find the current user's approved books
     public List<BookDTO> getMyUploadedBooks(User user)
     {
