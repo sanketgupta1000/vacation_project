@@ -358,4 +358,10 @@ public class RequestService
                 .map(mapper::borrowRequestToBorrowRequestDTO)
                 .toList();
     }
+
+    public List<BookDTO> getMyUploadRequests(User user) {
+
+        return user.getUploadedBooks().stream().map(mapper::bookToBookDTO).toList();
+
+    }
 }

@@ -2,10 +2,13 @@ package com.project.readers.readers_community.services;
 
 
 import com.project.readers.readers_community.DTOs.Mapper;
+import com.project.readers.readers_community.DTOs.MemberApprovalRequestDTO;
 import com.project.readers.readers_community.DTOs.UserDTO;
 import com.project.readers.readers_community.embeddables.Address;
 import com.project.readers.readers_community.entities.User;
+import com.project.readers.readers_community.enums.Approval;
 import com.project.readers.readers_community.enums.UserType;
+import com.project.readers.readers_community.repositories.MemberApprovalRequestRepository;
 import com.project.readers.readers_community.repositories.UserRepository;
 import jakarta.transaction.Transactional;
 
@@ -19,18 +22,22 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class UserService {
     private final UserRepository userRepository;
     private final TokenService tokenService;
     private final Mapper mapper;
+    private final MemberApprovalRequestRepository memberApprovalRequestRepository;
 
-    public UserService(UserRepository userRepository, TokenService tokenService, Mapper mapper) {
+    public UserService(UserRepository userRepository, TokenService tokenService, Mapper mapper, MemberApprovalRequestRepository memberApprovalRequestRepository) {
         this.userRepository = userRepository;
         this.tokenService = tokenService;
         this.mapper = mapper;
+        this.memberApprovalRequestRepository = memberApprovalRequestRepository;
     }
 
     // to let user complete his/her profile by providing additional information like address, dob
@@ -71,9 +78,33 @@ public class UserService {
         return "Your account has been successfully deleted.";
     }
 
-	public List<UserDTO> getallreference(User user) {
+	public Map<String, List<MemberApprovalRequestDTO>> getallreference(User user) {
 		
-	return	userRepository.findByReferrer(user).stream().map(mapper::userToUserDTO).toList();
+	    // create a new hashmap
+        Map<String, List<MemberApprovalRequestDTO>> map = new HashMap<>();
+
+        map.put("unresponded",
+                memberApprovalRequestRepository.findByReferrerApproval(Approval.UNRESPONDED)
+                        .stream()
+                        .map(mapper::memberApprovalRequestToMemberApprovalRequestDTO)
+                        .toList()
+                );
+
+        map.put("approved",
+                memberApprovalRequestRepository.findByReferrerApproval(Approval.APPROVED)
+                        .stream()
+                        .map(mapper::memberApprovalRequestToMemberApprovalRequestDTO)
+                        .toList()
+        );
+
+        map.put("rejected",
+                memberApprovalRequestRepository.findByReferrerApproval(Approval.REJECTED)
+                        .stream()
+                        .map(mapper::memberApprovalRequestToMemberApprovalRequestDTO)
+                        .toList()
+        );
+
+        return map;
 		
 	}
 }

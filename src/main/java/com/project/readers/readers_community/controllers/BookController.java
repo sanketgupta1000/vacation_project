@@ -20,13 +20,12 @@ public class BookController
 	{
 		this.bookService = bookService;
 	}
-	
-	//request for book upload 
+
+	//request for book upload
 	@PostMapping("/uploadBook")
 	public String upload_boook(@RequestBody Book book , @CurrentUser User currentUser)
 	{
 		return bookService.bookUpload(book,currentUser);
-		
 	}
 
 	//to get all books
@@ -55,7 +54,7 @@ public class BookController
 	public String requestForBorrow(@PathVariable("book_copy_id") int bookCopyId, @CurrentUser User user)
 	{
 		return bookService.requestForBorrow(bookCopyId, user);
-  }
+	}
 
 	@PostMapping("/{book_copy_id}/initiate_handover")
 	public String initiate_handover(@PathVariable("book_copy_id")BookCopy bookCopy, @CurrentUser User currentUser)
@@ -74,13 +73,6 @@ public class BookController
 	{
 		return bookService.getBookTransactions(bookCopy, currentUser);
 	}
-
-  //endpoint to see my/user's uploaded books
-	@GetMapping("/getAllUploadedBooks")
-    public List<BookDTO> currentUserUploadedBook(@CurrentUser User user)
-    {
-    	return bookService.getalluploadedbooks(user);
-    }
 
 	// method to get uploaded and approved books of the current user
 	@GetMapping("/getMyUploadedBooks")

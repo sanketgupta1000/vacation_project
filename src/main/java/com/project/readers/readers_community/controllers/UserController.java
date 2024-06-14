@@ -1,5 +1,6 @@
 package com.project.readers.readers_community.controllers;
 
+import com.project.readers.readers_community.DTOs.MemberApprovalRequestDTO;
 import com.project.readers.readers_community.DTOs.UserDTO;
 import com.project.readers.readers_community.annotations.CurrentUser;
 
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import com.project.readers.readers_community.entities.User;
 import com.project.readers.readers_community.services.UserService;
@@ -62,7 +64,7 @@ public class UserController
 	
 	//endpoint to see all persons who has registered themselves as his reference
 	@GetMapping("/getAllreferences")
-	public List<UserDTO> seeAllReferences(@CurrentUser User user)
+	public Map<String, List<MemberApprovalRequestDTO>> seeAllReferences(@CurrentUser User user)
 	{
 		return userService.getallreference(user);
 	}

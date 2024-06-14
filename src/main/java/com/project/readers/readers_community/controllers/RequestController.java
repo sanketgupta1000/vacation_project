@@ -109,4 +109,11 @@ public class RequestController
         return requestService.getMyBorrowRequest(user);
     }
 
+    //endpoint to see my/current user's upload book requests
+    @GetMapping("/getMyUploadRequests")
+    public List<BookDTO> getMyUploadRequests(@CurrentUser User user)
+    {
+        return requestService.getMyUploadRequests(user);
+    }
+
 }
