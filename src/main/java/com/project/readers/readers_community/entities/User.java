@@ -91,14 +91,19 @@ public class User {
     @OneToMany(mappedBy = "bookReceiver")
     private List<BookTransaction> bookReceivingTransactions;
 
-    //this user's current borrow request
+    //this user's current borrow requests
     @OneToMany(mappedBy = "requester")
     private List<BorrowRequest> borrowRequests;
+
+    // since at a time only one active borrow request, can store it here
+    @OneToOne
+    @JoinColumn(name = "current_borrow_request_id")
+    private BorrowRequest currentBorrowRequest;
 
     // TODO: add profile photo too
 
     // constructor
-    public User(User referrer, String phoneNumber, UserType userType, String fullName, String password, String email, Integer id, String otp, MemberApprovalRequest memberApprovalRequest, boolean isOtpVerified) {
+    public User(User referrer, String phoneNumber, UserType userType, String fullName, String password, String email, Integer id, String otp, MemberApprovalRequest memberApprovalRequest, boolean isOtpVerified, Address address, Date dateOfBirth, List<Book> uploadedBooks, BorrowRequest currentBorrowRequest) {
         this.referrer = referrer;
         this.phoneNumber = phoneNumber;
         this.userType = userType;
@@ -109,6 +114,10 @@ public class User {
         this.otp = otp;
         this.memberApprovalRequest = memberApprovalRequest;
         this.isOtpVerified = isOtpVerified;
+        this.address = address;
+        this.dateOfBirth = dateOfBirth;
+        this.uploadedBooks = uploadedBooks;
+        this.currentBorrowRequest = currentBorrowRequest;
     }
 
     // no args
@@ -259,6 +268,14 @@ public class User {
         this.borrowRequests = borrowRequests;
     }
 
+    public BorrowRequest getCurrentBorrowRequest() {
+        return currentBorrowRequest;
+    }
+
+    public void setCurrentBorrowRequest(BorrowRequest currentBorrowRequest) {
+        this.currentBorrowRequest = currentBorrowRequest;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -274,6 +291,13 @@ public class User {
                 ", isOtpVerified=" + isOtpVerified +
                 ", address=" + address +
                 ", dateOfBirth=" + dateOfBirth +
+                ", uploadedBooks=" + uploadedBooks +
+                ", borrowedBookCopies=" + borrowedBookCopies +
+                ", nextBorrowBookCopies=" + nextBorrowBookCopies +
+                ", bookGivingTransactions=" + bookGivingTransactions +
+                ", bookReceivingTransactions=" + bookReceivingTransactions +
+                ", borrowRequests=" + borrowRequests +
+                ", currentBorrowRequest=" + currentBorrowRequest +
                 '}';
     }
 

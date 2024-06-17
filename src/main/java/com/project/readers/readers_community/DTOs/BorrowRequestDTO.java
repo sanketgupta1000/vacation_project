@@ -8,17 +8,15 @@ public class BorrowRequestDTO
     private String bookCopyName;
     private Integer requesterId;
     private String requesterName;
-    private String approvalStatus;
-    private boolean approvable;
+    private String status;
 
-    public BorrowRequestDTO(Integer borrowRequestId, Integer bookCopyId, String bookCopyName, Integer requesterId, String requesterName, String approvalStatus, boolean approvable) {
+    public BorrowRequestDTO(Integer borrowRequestId, Integer bookCopyId, String bookCopyName, Integer requesterId, String requesterName, String status) {
         this.borrowRequestId = borrowRequestId;
         this.bookCopyId = bookCopyId;
         this.bookCopyName = bookCopyName;
         this.requesterId = requesterId;
         this.requesterName = requesterName;
-        this.approvalStatus = approvalStatus;
-        this.approvable = approvable;
+        this.status = status;
     }
 
     public BorrowRequestDTO(){}
@@ -63,20 +61,12 @@ public class BorrowRequestDTO
         this.requesterName = requesterName;
     }
 
-    public String getApprovalStatus() {
-        return approvalStatus;
+    public String getstatus() {
+        return status;
     }
 
-    public void setApprovalStatus(String approvalStatus) {
-        this.approvalStatus = approvalStatus;
-    }
-
-    public boolean isApprovable() {
-        return approvable;
-    }
-
-    public void setApprovable(boolean approvable) {
-        this.approvable = approvable;
+    public void setstatus(String status) {
+        this.status = status;
     }
 
     @Override
@@ -87,8 +77,7 @@ public class BorrowRequestDTO
                 ", bookCopyName='" + bookCopyName + '\'' +
                 ", requesterId=" + requesterId +
                 ", requesterName='" + requesterName + '\'' +
-                ", approvalStatus='" + approvalStatus + '\'' +
-                ", approvable=" + approvable +
+                ", status='" + status +
                 '}';
     }
 }

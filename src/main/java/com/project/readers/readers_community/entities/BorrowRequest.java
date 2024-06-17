@@ -1,6 +1,7 @@
 package com.project.readers.readers_community.entities;
 
 import com.project.readers.readers_community.enums.Approval;
+import com.project.readers.readers_community.enums.BorrowRequestStatus;
 import jakarta.persistence.*;
 
 // represents the request to borrow a physical book
@@ -25,9 +26,9 @@ public class BorrowRequest
     @JoinColumn(name = "requester_id")
     private User requester;
 
-    // approval of the actual owner
-    @Column(name = "owner_approval")
-    private Approval ownerApproval;
+    // status of the borrow request
+    @Column(name = "status")
+    private BorrowRequestStatus status;
 
     // no args constructor
     public BorrowRequest()
@@ -36,11 +37,11 @@ public class BorrowRequest
     }
 
     // all args
-    public BorrowRequest(Integer id, BookCopy bookCopy, User requester, Approval ownerApproval) {
+    public BorrowRequest(Integer id, BookCopy bookCopy, User requester, BorrowRequestStatus status) {
         this.id = id;
         this.bookCopy = bookCopy;
         this.requester = requester;
-        this.ownerApproval = ownerApproval;
+        this.status = status;
     }
 
 
@@ -70,12 +71,12 @@ public class BorrowRequest
         this.requester = requester;
     }
 
-    public Approval getOwnerApproval() {
-        return ownerApproval;
+    public BorrowRequestStatus getStatus() {
+        return status;
     }
 
-    public void setOwnerApproval(Approval ownerApproval) {
-        this.ownerApproval = ownerApproval;
+    public void setStatus(BorrowRequestStatus status) {
+        this.status = status;
     }
     
     //to string
@@ -85,7 +86,7 @@ public class BorrowRequest
                 "id=" + id +
                 ", bookCopy=" + bookCopy +
                 ", requester=" + requester +
-                ", ownerApproval=" + ownerApproval +
+                ", status=" + status +
                 '}';
     }
 }
