@@ -5,18 +5,15 @@ import com.project.readers.readers_community.DTOs.BookDTO;
 import com.project.readers.readers_community.DTOs.BookTransactionDTO;
 import com.project.readers.readers_community.DTOs.Mapper;
 import com.project.readers.readers_community.entities.BookCopy;
-import com.project.readers.readers_community.repositories.BookCategoryRepository;
-import com.project.readers.readers_community.repositories.BookCopyRepository;
+import com.project.readers.readers_community.enums.BorrowRequestStatus;
+import com.project.readers.readers_community.repositories.*;
 import com.project.readers.readers_community.entities.BorrowRequest;
-import com.project.readers.readers_community.repositories.BorrowRequestRepository;
 import com.project.readers.readers_community.entities.BookTransaction;
-import com.project.readers.readers_community.repositories.BookTransactionRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import com.project.readers.readers_community.entities.Book;
 import com.project.readers.readers_community.entities.BookCategory;
-import com.project.readers.readers_community.repositories.BookRepository;
 import com.project.readers.readers_community.entities.User;
 import com.project.readers.readers_community.enums.Approval;
 import org.springframework.web.server.ResponseStatusException;
@@ -33,8 +30,9 @@ public class BookService {
     private final BookTransactionRepository bookTransactionRepository;
     private final BorrowRequestRepository borrowRequestRepository;
     private final Mapper mapper;
+    private final UserRepository userRepository;
 
-    public BookService(BookRepository bookRepository, OtpService otpService, EmailService emailService, BookCopyRepository bookCopyRepository, BookTransactionRepository bookTransactionRepository, BorrowRequestRepository borrowRequestRepository, BookCategoryRepository bookCategoryRepository, Mapper mapper) {
+    public BookService(BookRepository bookRepository, OtpService otpService, EmailService emailService, BookCopyRepository bookCopyRepository, BookTransactionRepository bookTransactionRepository, BorrowRequestRepository borrowRequestRepository, BookCategoryRepository bookCategoryRepository, Mapper mapper, UserRepository userRepository) {
         this.bookRepository = bookRepository;
         this.otpService = otpService;
         this.emailService = emailService;
@@ -43,6 +41,7 @@ public class BookService {
         this.borrowRequestRepository = borrowRequestRepository;
         this.bookCategoryRepository = bookCategoryRepository;
         this.mapper = mapper;
+        this.userRepository = userRepository;
     }
 
     @Transactional
@@ -104,7 +103,43 @@ public class BookService {
 
     // method to create a borrow request for a book copy
     @Transactional
-    public String requestForBorrow(int bookCopyId, User user) {
+    public String requestForBorrow(int bookCopyId, User user)
+    {
+
+        // checking if this is person eligible to request for a book
+        boolean canRequest = true;
+        String message = null;
+        BorrowRequest currentBorrowRequest = user.getCurrentBorrowRequest();
+        if(currentBorrowRequest!=null)
+        {
+            // if the user already requested any book
+            if(currentBorrowRequest.getStatus()==BorrowRequestStatus.UNRESPONDED)
+            {
+                canRequest = false;
+                message = "You have already requested for a book. Cannot request for multiple books";
+            }
+
+            // if the user is already about to borrow a book
+            else if(currentBorrowRequest.getStatus()==BorrowRequestStatus.APPROVED)
+            {
+                canRequest = false;
+                message = "One borrow request of yours is already accepted. Please borrow that book and read it";
+            }
+
+            // if the user already has a borrowed book
+            else if(currentBorrowRequest.getStatus()==BorrowRequestStatus.RECEIVED)
+            {
+                canRequest = false;
+                message = "You already a book borrowed. Please return it to request for another";
+            }
+        }
+
+        if(!canRequest)
+        {
+            // cannot request
+            throw new ResponseStatusException(HttpStatus.CONFLICT, message);
+        }
+
         Optional<BookCopy> bookCopyOptional = bookCopyRepository.findById(bookCopyId);
 
         if (bookCopyOptional.isEmpty()) {
@@ -123,10 +158,14 @@ public class BookService {
         borrowRequest.setId(0);
         borrowRequest.setRequester(user);
         borrowRequest.setBookCopy(bookCopy);
-        borrowRequest.setOwnerApproval(Approval.UNRESPONDED);
+        borrowRequest.setStatus(BorrowRequestStatus.UNRESPONDED);
 
         // save
         borrowRequestRepository.save(borrowRequest);
+
+        // also set the user's current borrow request
+        user.setCurrentBorrowRequest(borrowRequest);
+        userRepository.save(user);
 
         // send mail to owner
         emailService.sendEmail(
@@ -150,13 +189,13 @@ public class BookService {
         }
 
         /*
-         * If book copy is with owner and no borrower is approved, owner will be the holder and borrower himself. In this can handover can not be done.
+         * If book copy is with owner and no borrower is approved, owner will be the holder and borrower himself. In this case handover can not be done.
          * In any other case, book will be handed over from holder to borrower. Note that owner still can be a holder or a borrower but not both.
          * If owner is the holder then the book is entering the cycle.
          * If owner is the borrower then the book is exiting the cycle by returning back to the owner.
          */
         //Check: book copy has a valid borrower
-        if (borrower == holder) {
+        if (borrower.equals(holder)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Book copy currently doesn't have a borrower.");
         }
 
@@ -173,7 +212,7 @@ public class BookService {
         String message = String.format("""
                 Here is your OTP for book transaction: %s
                 NOTE!!!!:
-                ONLY SHARE IT UPON RECEIVING THE BOOK WITH THE OTHER PARTY. SHARING THIS OTP WILL MEAN THAT YOU HAVE RECEIVED THE BOOK AND FROM HERE ON YOU TAKE IT's RESPONSIBILITY!""", otp);
+                ONLY SHARE IT UPON RECEIVING THE BOOK WITH THE OTHER PARTY. SHARING THIS OTP WILL MEAN THAT YOU HAVE RECEIVED THE BOOK AND FROM HERE ON YOU TAKE ITS RESPONSIBILITY!""", otp);
         emailService.sendEmail(to, subject, message);
 
         //success
@@ -206,12 +245,37 @@ public class BookService {
 
         //set OTP to null
         bookCopy.setOtp(null);
-        bookCopyRepository.save(bookCopy);
-
         //borrower is now holder of the book copy
         bookCopy.setHolder(borrower);
         //book copy is supposed to return to owner until new borrower is approved by owner
         bookCopy.setBorrower(owner);
+        bookCopyRepository.save(bookCopy);
+
+        // modifying borrow requests' statuses
+
+        BorrowRequest holderBorrowRequest = holder.getCurrentBorrowRequest();
+        BorrowRequest borrowerBorrowRequest = borrower.getCurrentBorrowRequest();
+
+        // holder borrow request can be null, in the case when it is just uploaded (by default, owner himself is the holder for newly uploaded books)
+        // in that case, no need to do anything
+        if(holderBorrowRequest!=null)
+        {
+            // mark as completed
+            holderBorrowRequest.setStatus(BorrowRequestStatus.COMPLETED);
+            // also unset the current borrow request
+            holder.setCurrentBorrowRequest(null);
+            borrowRequestRepository.save(holderBorrowRequest);
+            userRepository.save(holder);
+        }
+
+        // borrower borrow request can be null, in the case when the book is returned to the owner himself (by default, owner is the borrower for a book copy)
+        // in that case, no need to do anything
+        if(borrowerBorrowRequest!=null)
+        {
+            // mark as received
+            borrowerBorrowRequest.setStatus(BorrowRequestStatus.RECEIVED);
+            borrowRequestRepository.save(borrowerBorrowRequest);
+        }
 
         //record the transaction
         BookTransaction bookTransaction = new BookTransaction();

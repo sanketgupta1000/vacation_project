@@ -6,10 +6,8 @@ import com.project.readers.readers_community.DTOs.Mapper;
 import com.project.readers.readers_community.DTOs.MemberApprovalRequestDTO;
 import com.project.readers.readers_community.entities.*;
 import com.project.readers.readers_community.enums.Approval;
-import com.project.readers.readers_community.repositories.BookCopyRepository;
-import com.project.readers.readers_community.repositories.BookRepository;
-import com.project.readers.readers_community.repositories.BorrowRequestRepository;
-import com.project.readers.readers_community.repositories.MemberApprovalRequestRepository;
+import com.project.readers.readers_community.enums.BorrowRequestStatus;
+import com.project.readers.readers_community.repositories.*;
 import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -27,14 +25,16 @@ public class RequestService
     private final Mapper mapper;
     private final MemberApprovalRequestRepository memberApprovalRequestRepository;
     private final BookRepository bookRepository;
+    private final UserRepository userRepository;
 
-    public RequestService(BorrowRequestRepository borrowRequestRepository, EmailService emailService, BookCopyRepository bookCopyRepository, Mapper mapper, MemberApprovalRequestRepository memberApprovalRequestRepository, BookRepository bookRepository) {
+    public RequestService(BorrowRequestRepository borrowRequestRepository, EmailService emailService, BookCopyRepository bookCopyRepository, Mapper mapper, MemberApprovalRequestRepository memberApprovalRequestRepository, BookRepository bookRepository, UserRepository userRepository) {
         this.borrowRequestRepository = borrowRequestRepository;
         this.emailService = emailService;
         this.bookCopyRepository = bookCopyRepository;
         this.mapper = mapper;
         this.memberApprovalRequestRepository = memberApprovalRequestRepository;
         this.bookRepository = bookRepository;
+        this.userRepository = userRepository;
     }
 
     public Map<String,List<MemberApprovalRequestDTO>> getAllMemberApprovalRequests()
@@ -266,7 +266,7 @@ public class RequestService
         }
 
         // checking if already responded
-        if(borrowRequest.getOwnerApproval()!=Approval.UNRESPONDED)
+        if(borrowRequest.getStatus()!= BorrowRequestStatus.UNRESPONDED)
         {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Request is already responded to");
         }
@@ -279,7 +279,7 @@ public class RequestService
         }
 
         // now can approve
-        borrowRequest.setOwnerApproval(Approval.APPROVED);
+        borrowRequest.setStatus(BorrowRequestStatus.APPROVED);
 
         // set requester as next borrower
         BookCopy bookCopy = borrowRequest.getBookCopy();
@@ -304,6 +304,28 @@ public class RequestService
                 "Instruction to forward your borrowed book",
                 "You are instructed by the owner to pass on your borrowed book "+borrowRequest.getBookCopy().getBook().getBookTitle()+" to "+borrowRequest.getRequester().getFullName()
         );
+
+        // now reject all other active borrow requests of the book copy
+        List<BorrowRequest> brl = bookCopy.getBorrowRequests();
+        List<BorrowRequest> active = new ArrayList<>();
+        List<User> obsoleteBorrowers = new ArrayList<>();
+        for(BorrowRequest br: brl)
+        {
+            if((br.getStatus()==BorrowRequestStatus.UNRESPONDED) && (br.getId()!=borrowRequestId))
+            {
+                br.setStatus(BorrowRequestStatus.REJECTED);
+                active.add(br);
+                // since will reject, set current borrow request to null
+                br.getRequester().setCurrentBorrowRequest(null);
+                obsoleteBorrowers.add(br.getRequester());
+            }
+        }
+
+        // save all
+        borrowRequestRepository.saveAll(active);
+        userRepository.saveAll(obsoleteBorrowers);
+
+        // TODO: send emails to all those whose requests are rejected
 
         return "Borrow Request Approved";
 
@@ -330,15 +352,21 @@ public class RequestService
         }
 
         // checking if already responded
-        if(borrowRequest.getOwnerApproval()!=Approval.UNRESPONDED)
+        if(borrowRequest.getStatus()!=BorrowRequestStatus.UNRESPONDED)
         {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Request is already responded to");
         }
 
         // can reject
-        borrowRequest.setOwnerApproval(Approval.REJECTED);
+        borrowRequest.setStatus(BorrowRequestStatus.REJECTED);
 
+        // also set the requester's current borrow request to null
+        User requester = borrowRequest.getRequester();
+        requester.setCurrentBorrowRequest(null);
+
+        // save
         borrowRequestRepository.save(borrowRequest);
+        userRepository.save(requester);
 
         // send email to requester
         emailService.sendEmail(

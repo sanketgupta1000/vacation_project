@@ -77,8 +77,7 @@ public class Mapper
                 borrowRequest.getBookCopy().getBook().getBookTitle(),
                 borrowRequest.getRequester().getId(),
                 borrowRequest.getRequester().getFullName(),
-                borrowRequest.getOwnerApproval().toString(),
-                borrowRequest.getBookCopy().getBorrower().equals(borrowRequest.getBookCopy().getBook().getOwner())
+                borrowRequest.getStatus().toString()
         );
     }
 
