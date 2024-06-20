@@ -51,8 +51,9 @@ public class RequestService
     {
 
         User reference = request.getMember().getReferrer();
-        if(!currentUser.getEmail().equals(reference.getEmail()))
+        if((reference==null) || (!currentUser.getEmail().equals(reference.getEmail())))
         {
+            // either the request has no referrer or the person who sent this http request is not the referrer
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User does not have access to this member approval request");
         }
 
@@ -78,8 +79,9 @@ public class RequestService
     {
 
         User reference = request.getMember().getReferrer();
-        if(!currentUser.getEmail().equals(reference.getEmail()))
+        if((reference==null) || (!currentUser.getEmail().equals(reference.getEmail())))
         {
+            // either the request has no referrer or the person who sent this http request is not the referrer
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User does not have access to this member approval request");
         }
 
@@ -144,12 +146,14 @@ public class RequestService
     }
 
     @Transactional
-    public List<BookDTO> getAllBookUploadRequests() {
+    public Map<String, List<BookDTO>> getAllBookUploadRequests() {
 
-        return bookRepository.findByAdminApproval(Approval.UNRESPONDED)
-                .stream()
-                .map(mapper::bookToBookDTO)
-                .toList();
+        Map<String, List<BookDTO>> map = new HashMap<>();
+        map.put("unresponded", bookRepository.findByAdminApproval(Approval.UNRESPONDED).stream().map(mapper::bookToBookDTO).toList());
+        map.put("approved", bookRepository.findByAdminApproval(Approval.APPROVED).stream().map(mapper::bookToBookDTO).toList());
+        map.put("rejected", bookRepository.findByAdminApproval(Approval.REJECTED).stream().map(mapper::bookToBookDTO).toList());
+
+        return map;
     }
 
     @Transactional
@@ -226,22 +230,15 @@ public class RequestService
     // method to get all borrow requests of the current user
     // TODO: implement a query in a custom repository for this
     @Transactional
-    public List<BorrowRequestDTO> getAllBorrowRequests(User user)
+    public Map<String, List<BorrowRequestDTO>> getAllBorrowRequests(User user)
     {
-        List<BorrowRequest> borrowRequests = new ArrayList<BorrowRequest>();
+        Map<String, List<BorrowRequestDTO>> map = new HashMap<>();
 
-        for(Book b: user.getUploadedBooks())
-        {
-            for(BookCopy bookCopy: b.getBookCopies())
-            {
-                borrowRequests.addAll(bookCopy.getBorrowRequests());
-            }
-        }
+        map.put("unresponded", borrowRequestRepository.findByBookCopy_Book_OwnerAndStatusIn(user, List.of(BorrowRequestStatus.UNRESPONDED)).stream().map(mapper::borrowRequestToBorrowRequestDTO).toList());
+        map.put("approved", borrowRequestRepository.findByBookCopy_Book_OwnerAndStatusIn(user, List.of(BorrowRequestStatus.APPROVED, BorrowRequestStatus.RECEIVED, BorrowRequestStatus.COMPLETED)).stream().map(mapper::borrowRequestToBorrowRequestDTO).toList());
+        map.put("rejected", borrowRequestRepository.findByBookCopy_Book_OwnerAndStatusIn(user, List.of(BorrowRequestStatus.REJECTED)).stream().map(mapper::borrowRequestToBorrowRequestDTO).toList());
 
-        return borrowRequests
-                .stream()
-                .map(mapper::borrowRequestToBorrowRequestDTO)
-                .toList();
+        return map;
     }
 
     // method to let the book owner approve a borrow request
@@ -306,9 +303,18 @@ public class RequestService
         );
 
         // now reject all other active borrow requests of the book copy
+
+        // list of all borrow requests on the book copy
         List<BorrowRequest> brl = bookCopy.getBorrowRequests();
+
+        // list of unresponded borrow requests
         List<BorrowRequest> active = new ArrayList<>();
+
+        // their borrowers/requesters
         List<User> obsoleteBorrowers = new ArrayList<>();
+
+        // their email addresses
+        List<String> bccAddresses = new ArrayList<>();
         for(BorrowRequest br: brl)
         {
             if((br.getStatus()==BorrowRequestStatus.UNRESPONDED) && (br.getId()!=borrowRequestId))
@@ -318,6 +324,7 @@ public class RequestService
                 // since will reject, set current borrow request to null
                 br.getRequester().setCurrentBorrowRequest(null);
                 obsoleteBorrowers.add(br.getRequester());
+                bccAddresses.add(br.getRequester().getEmail());
             }
         }
 
@@ -325,7 +332,15 @@ public class RequestService
         borrowRequestRepository.saveAll(active);
         userRepository.saveAll(obsoleteBorrowers);
 
-        // TODO: send emails to all those whose requests are rejected
+        if(!bccAddresses.isEmpty())
+        {
+            // sending rejection mails
+            emailService.sendBatchMail(
+                    bccAddresses.toArray(String[]::new),
+                    "Borrow Request Rejected",
+                    "Sorry! Your borrow request for book "+borrowRequest.getBookCopy().getBook().getBookTitle()+" has been rejected."
+            );
+        }
 
         return "Borrow Request Approved";
 
@@ -379,17 +394,25 @@ public class RequestService
 
     }
 
-    public List<BorrowRequestDTO> getMyBorrowRequest(User user)
+    public Map<String, List<BorrowRequestDTO>> getMyBorrowRequests(User user)
     {
-        return user.getBorrowRequests()
-                .stream()
-                .map(mapper::borrowRequestToBorrowRequestDTO)
-                .toList();
+        Map<String, List<BorrowRequestDTO>> map = new HashMap<>();
+
+        map.put("unresponded", borrowRequestRepository.findByRequesterAndStatusIn(user, List.of(BorrowRequestStatus.UNRESPONDED)).stream().map(mapper::borrowRequestToBorrowRequestDTO).toList());
+        map.put("approved", borrowRequestRepository.findByRequesterAndStatusIn(user, List.of(BorrowRequestStatus.APPROVED, BorrowRequestStatus.RECEIVED, BorrowRequestStatus.COMPLETED)).stream().map(mapper::borrowRequestToBorrowRequestDTO).toList());
+        map.put("rejected", borrowRequestRepository.findByRequesterAndStatusIn(user, List.of(BorrowRequestStatus.REJECTED)).stream().map(mapper::borrowRequestToBorrowRequestDTO).toList());
+
+        return map;
     }
 
-    public List<BookDTO> getMyUploadRequests(User user) {
+    public Map<String, List<BookDTO>> getMyUploadRequests(User user) {
 
-        return user.getUploadedBooks().stream().map(mapper::bookToBookDTO).toList();
+        Map<String, List<BookDTO>> map = new HashMap<>();
+        map.put("unresponded", bookRepository.findByOwnerAndAdminApproval(user, Approval.UNRESPONDED).stream().map(mapper::bookToBookDTO).toList());
+        map.put("approved", bookRepository.findByOwnerAndAdminApproval(user, Approval.APPROVED).stream().map(mapper::bookToBookDTO).toList());
+        map.put("rejected", bookRepository.findByOwnerAndAdminApproval(user, Approval.REJECTED).stream().map(mapper::bookToBookDTO).toList());
+
+        return map;
 
     }
 }

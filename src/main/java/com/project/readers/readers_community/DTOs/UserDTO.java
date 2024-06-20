@@ -6,134 +6,134 @@ import com.project.readers.readers_community.entities.User;
 
 public class UserDTO {
 
-	private int userId;
-	private String email;
-	private String fullName;
-	  private String phoneNumber;
-	  private String referrerName;
-	  	//address field
-	    private String houseNo;
-	    private String street;
-	    private String landmark;
-	    private String city;
-	    private String state;
-	    private String country;
-	  
-	    private Date dateOfBirth;
+    private int userId;
+    private String email;
+    private String fullName;
+    private String phoneNumber;
+    private String referrerName;
+    //address field
+    private String houseNo;
+    private String street;
+    private String landmark;
+    private String city;
+    private String state;
+    private String country;
 
-		public int getUserId() {
-			return userId;
-		}
+    private Date dateOfBirth;
 
-		public String getEmail() {
-			return email;
-		}
+    public int getUserId() {
+        return userId;
+    }
 
-		public String getFullName() {
-			return fullName;
-		}
+    public String getEmail() {
+        return email;
+    }
 
-		public String getPhoneNumber() {
-			return phoneNumber;
-		}
+    public String getFullName() {
+        return fullName;
+    }
 
-		public String getReferrerName() {
-			return referrerName;
-		}
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
 
-		public String getHouseNo() {
-			return houseNo;
-		}
+    public String getReferrerName() {
+        return referrerName;
+    }
 
-		public String getStreet() {
-			return street;
-		}
+    public String getHouseNo() {
+        return houseNo;
+    }
 
-		public String getLandmark() {
-			return landmark;
-		}
+    public String getStreet() {
+        return street;
+    }
 
-		public String getCity() {
-			return city;
-		}
+    public String getLandmark() {
+        return landmark;
+    }
 
-		public String getState() {
-			return state;
-		}
+    public String getCity() {
+        return city;
+    }
 
-		public String getCountry() {
-			return country;
-		}
+    public String getState() {
+        return state;
+    }
 
-		public Date getDateOfBirth() {
-			return dateOfBirth;
-		}
+    public String getCountry() {
+        return country;
+    }
 
-		public void setUserId(int userId) {
-			this.userId = userId;
-		}
+    public Date getDateOfBirth() {
+        return dateOfBirth;
+    }
 
-		public void setEmail(String email) {
-			this.email = email;
-		}
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
 
-		public void setFullName(String fullName) {
-			this.fullName = fullName;
-		}
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-		public void setPhoneNumber(String phoneNumber) {
-			this.phoneNumber = phoneNumber;
-		}
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
 
-		public void setReferrerName(String referrerName) {
-			this.referrerName = referrerName;
-		}
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
 
-		public void setHouseNo(String houseNo) {
-			this.houseNo = houseNo;
-		}
+    public void setReferrerName(String referrerName) {
+        this.referrerName = referrerName;
+    }
 
-		public void setStreet(String street) {
-			this.street = street;
-		}
+    public void setHouseNo(String houseNo) {
+        this.houseNo = houseNo;
+    }
 
-		public void setLandmark(String landmark) {
-			this.landmark = landmark;
-		}
+    public void setStreet(String street) {
+        this.street = street;
+    }
 
-		public void setCity(String city) {
-			this.city = city;
-		}
+    public void setLandmark(String landmark) {
+        this.landmark = landmark;
+    }
 
-		public void setState(String state) {
-			this.state = state;
-		}
+    public void setCity(String city) {
+        this.city = city;
+    }
 
-		public void setCountry(String country) {
-			this.country = country;
-		}
+    public void setState(String state) {
+        this.state = state;
+    }
 
-		public void setDateOfBirth(Date dateOfBirth) {
-			this.dateOfBirth = dateOfBirth;
-		}
+    public void setCountry(String country) {
+        this.country = country;
+    }
 
-		public UserDTO(int userId, String email, String fullName, String phoneNumber, String referrerName,
-				String houseNo, String street, String landmark, String city, String state, String country,
-				Date dateOfBirth) {
-			super();
-			this.userId = userId;
-			this.email = email;
-			this.fullName = fullName;
-			this.phoneNumber = phoneNumber;
-			this.referrerName = referrerName;
-			this.houseNo = houseNo;
-			this.street = street;
-			this.landmark = landmark;
-			this.city = city;
-			this.state = state;
-			this.country = country;
-			this.dateOfBirth = dateOfBirth;
-		}
-	    
-	    
+    public void setDateOfBirth(Date dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public UserDTO(int userId, String email, String fullName, String phoneNumber, String referrerName,
+                   String houseNo, String street, String landmark, String city, String state, String country,
+                   Date dateOfBirth) {
+        super();
+        this.userId = userId;
+        this.email = email;
+        this.fullName = fullName;
+        this.phoneNumber = phoneNumber;
+        this.referrerName = referrerName;
+        this.houseNo = houseNo;
+        this.street = street;
+        this.landmark = landmark;
+        this.city = city;
+        this.state = state;
+        this.country = country;
+        this.dateOfBirth = dateOfBirth;
+    }
+
+
 }

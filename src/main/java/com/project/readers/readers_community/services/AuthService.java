@@ -74,10 +74,17 @@ public class AuthService
 
         // set id to 0
         user.setId(0);
+        // set address
+        user.setAddress(null);
+        // set date of birth
+        user.setDateOfBirth(null);
         // hash the password
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         // set user type
         user.setUserType(UserType.NEW_MEMBER);
+
+        // set current borrow request to null
+        user.setCurrentBorrowRequest(null);
 
         // generating otp
         String otp = otpService.generateOtp(6);
@@ -201,7 +208,7 @@ public class AuthService
             }
 
             if ((user.getMemberApprovalRequest().getAdminApproval() != Approval.APPROVED)) {
-                throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Your membersip is not yet approved by admin");
+                throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Your membership is not yet approved by admin");
             }
         }
     	Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(),loginRequest.getPassword()));

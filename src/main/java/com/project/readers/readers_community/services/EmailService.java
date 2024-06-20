@@ -27,4 +27,15 @@ public class EmailService {
         
     }
 
+    // method to send batch mail with a bcc list
+    public void sendBatchMail(String[] bccList, String subject, String message)
+    {
+        SimpleMailMessage mail = new SimpleMailMessage();
+        mail.setBcc(bccList);
+        mail.setSubject(subject);
+        mail.setText(message);
+
+        mailSender.send(mail);
+    }
+
 }
