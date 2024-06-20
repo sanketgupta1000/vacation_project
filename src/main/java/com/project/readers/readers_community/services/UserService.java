@@ -12,11 +12,7 @@ import com.project.readers.readers_community.repositories.MemberApprovalRequestR
 import com.project.readers.readers_community.repositories.UserRepository;
 import jakarta.transaction.Transactional;
 
-import com.project.readers.readers_community.entities.User;
-import com.project.readers.readers_community.repositories.UserRepository;
-
 import com.project.readers.readers_community.utilities.UpdatableUserPersonalDetails;
-import jakarta.transaction.Transactional;
 
 
 import org.springframework.stereotype.Service;
@@ -44,7 +40,7 @@ public class UserService {
     // will also update the role to MEMBER from NEW_MEMBER
     // and so, will need to return updated jwt
     @Transactional
-    public String profileComplete(Address address, Date dateOfBirth, User user) {
+    public String completeProfile(Address address, Date dateOfBirth, User user) {
         // setting new info
         user.setAddress(address);
         user.setDateOfBirth(dateOfBirth);
@@ -57,48 +53,47 @@ public class UserService {
     }
 
     @Transactional
-    public UserDTO getCurrentUserDetail(User current_user) {
-        return mapper.userToUserDTO(current_user);
+    public UserDTO getUser(User currentUser) {
+        return mapper.userToUserDTO(currentUser);
     }
 
     @Transactional
-    public UserDTO updateUserProfile(UpdatableUserPersonalDetails updatedDetails, User currentUser) {
+    public UserDTO updateProfile(UpdatableUserPersonalDetails updatedDetails, User currentUser) {
         currentUser.setFullName(updatedDetails.getFullName());
         currentUser.setPhoneNumber(updatedDetails.getPhoneNumber());
         currentUser.setAddress(updatedDetails.getAddress());
-        currentUser.setDateOfBirth(updatedDetails.getDateOfBirth());
         User user = userRepository.save(currentUser);
 
         return mapper.userToUserDTO(user);
     }
 
-    @Transactional
-    public String deleteUserProfile(User currentUser) {
-        userRepository.delete(currentUser);
-        return "Your account has been successfully deleted.";
-    }
+//    @Transactional
+//    public String deleteUserProfile(User currentUser) {
+//        userRepository.delete(currentUser);
+//        return "Your account has been successfully deleted.";
+//    }
 
-	public Map<String, List<MemberApprovalRequestDTO>> getallreference(User user) {
+	public Map<String, List<MemberApprovalRequestDTO>> getAllReferrals(User user) {
 		
 	    // create a new hashmap
         Map<String, List<MemberApprovalRequestDTO>> map = new HashMap<>();
 
         map.put("unresponded",
-                memberApprovalRequestRepository.findByReferrerApproval(Approval.UNRESPONDED)
+                memberApprovalRequestRepository.findByMember_ReferrerAndReferrerApproval(user, Approval.UNRESPONDED)
                         .stream()
                         .map(mapper::memberApprovalRequestToMemberApprovalRequestDTO)
                         .toList()
                 );
 
         map.put("approved",
-                memberApprovalRequestRepository.findByReferrerApproval(Approval.APPROVED)
+                memberApprovalRequestRepository.findByMember_ReferrerAndReferrerApproval(user, Approval.APPROVED)
                         .stream()
                         .map(mapper::memberApprovalRequestToMemberApprovalRequestDTO)
                         .toList()
         );
 
         map.put("rejected",
-                memberApprovalRequestRepository.findByReferrerApproval(Approval.REJECTED)
+                memberApprovalRequestRepository.findByMember_ReferrerAndReferrerApproval(user, Approval.REJECTED)
                         .stream()
                         .map(mapper::memberApprovalRequestToMemberApprovalRequestDTO)
                         .toList()

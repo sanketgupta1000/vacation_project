@@ -1,8 +1,9 @@
 package com.project.readers.readers_community.controllers;
 
+import com.project.readers.readers_community.DTOs.BookCopiesDTO;
 import com.project.readers.readers_community.DTOs.BookCopyDTO;
 import com.project.readers.readers_community.DTOs.BookDTO;
-import com.project.readers.readers_community.DTOs.BookTransactionDTO;
+import com.project.readers.readers_community.DTOs.BookTransactionsDTO;
 import com.project.readers.readers_community.entities.*;
 import org.springframework.web.bind.annotation.*;
 import com.project.readers.readers_community.annotations.CurrentUser;
@@ -22,15 +23,15 @@ public class BookController
 	}
 
 	//request for book upload
-	@PostMapping("/uploadBook")
-	public String upload_boook(@RequestBody Book book , @CurrentUser User currentUser)
+	@PostMapping
+	public String uploadBook(@RequestBody Book book , @CurrentUser User currentUser)
 	{
-		return bookService.bookUpload(book,currentUser);
+		return bookService.uploadBook(book,currentUser);
 	}
 
-	//to get all books
-	@GetMapping("/getAllBooks")
-	public List<BookDTO> getallbooks()
+	//to get all approved books
+	@GetMapping
+	public List<BookDTO> getAllBooks()
 	{
 		return bookService.getAllBooks();
 	}
@@ -43,23 +44,23 @@ public class BookController
 	}
 
 	// method to get all book copies of a book
-	@GetMapping("/{book_id}/view-copies")
-	public List<BookCopyDTO> getBookCopies(@PathVariable("book_id") long bookId)
+	@GetMapping("/{book_id}/bookCopies")
+	public BookCopiesDTO getBookCopies(@PathVariable("book_id") long bookId, @CurrentUser User currentUser)
 	{
-		return bookService.getBookCopies(bookId);
+		return bookService.getBookCopies(bookId, currentUser);
 	}
 
 	// method to request for a book copy (a physical book)
-	@PostMapping("/{book_copy_id}/borrow-request")
+	@PostMapping("/{book_copy_id}/borrowRequest")
 	public String requestForBorrow(@PathVariable("book_copy_id") int bookCopyId, @CurrentUser User user)
 	{
 		return bookService.requestForBorrow(bookCopyId, user);
 	}
 
-	@PostMapping("/{book_copy_id}/initiate_handover")
-	public String initiate_handover(@PathVariable("book_copy_id")BookCopy bookCopy, @CurrentUser User currentUser)
+	@PostMapping("/{book_copy_id}/initiateHandover")
+	public String initiateHandover(@PathVariable("book_copy_id")BookCopy bookCopy, @CurrentUser User currentUser)
 	{
-		return bookService.initiate_handover(bookCopy, currentUser);
+		return bookService.initiateHandover(bookCopy, currentUser);
 	}
 
 	@PostMapping("/{book_copy_id}/handover")
@@ -68,21 +69,21 @@ public class BookController
 		return bookService.handoverBookCopy(bookCopy, currentUser, otp);
 	}
 
-	@GetMapping("/{book_copy_id}/transaction_history")
-	public List<BookTransactionDTO> getBookTransactions(@PathVariable("book_copy_id")BookCopy bookCopy, @CurrentUser User currentUser)
+	@GetMapping("/{book_copy_id}/transactions")
+	public BookTransactionsDTO getBookCopyTransactions(@PathVariable("book_copy_id")BookCopy bookCopy, @CurrentUser User currentUser)
 	{
-		return bookService.getBookTransactions(bookCopy, currentUser);
+		return bookService.getBookCopyTransactions(bookCopy, currentUser);
 	}
 
 	// method to get uploaded and approved books of the current user
-	@GetMapping("/getMyUploadedBooks")
+	@GetMapping("/myUploadedBooks")
 	public List<BookDTO> getMyUploadedBooks(@CurrentUser User user)
 	{
 		return bookService.getMyUploadedBooks(user);
 	}
 
 	// method to get the borrowed book copies of current user
-	@GetMapping("/getMyBorrowedBookCopies")
+	@GetMapping("/myBorrowedBookCopies")
 	public List<BookCopyDTO> getMyBorrowedBookCopies(@CurrentUser User user)
 	{
 		return bookService.getMyBorrowedBookCopies(user);

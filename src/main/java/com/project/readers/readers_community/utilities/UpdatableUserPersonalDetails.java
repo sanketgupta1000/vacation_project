@@ -9,16 +9,14 @@ public class UpdatableUserPersonalDetails
     private String fullName;
     private String phoneNumber;
     private Address address;
-    private Date dateOfBirth;
 
     public UpdatableUserPersonalDetails() {
     }
 
-    public UpdatableUserPersonalDetails(String fullName, String phoneNumber, Address address, Date dateOfBirth) {
+    public UpdatableUserPersonalDetails(String fullName, String phoneNumber, Address address) {
         this.fullName = fullName;
         this.phoneNumber = phoneNumber;
         this.address = address;
-        this.dateOfBirth = dateOfBirth;
     }
 
     public String getFullName() {
@@ -45,21 +43,12 @@ public class UpdatableUserPersonalDetails
         this.address = address;
     }
 
-    public Date getDateOfBirth() {
-        return dateOfBirth;
-    }
-
-    public void setDateOfBirth(Date dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
-    }
-
     @Override
     public String toString() {
         return "UpdatableUserPersonalDetails{" +
                 "fullName='" + fullName + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", address=" + address +
-                ", dateOfBirth=" + dateOfBirth +
                 '}';
     }
 }

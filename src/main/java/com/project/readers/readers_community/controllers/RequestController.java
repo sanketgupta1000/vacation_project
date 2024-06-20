@@ -25,7 +25,7 @@ public class RequestController
         this.requestService = requestService;
     }
 
-    //endpoint to get all pending MemberApprovalRequests
+    //endpoint to get all MemberApprovalRequests
     @GetMapping("/memberApprovalRequests")
     public Map<String,List<MemberApprovalRequestDTO>> getAllMemberApprovalRequests()
     {
@@ -60,9 +60,9 @@ public class RequestController
         return requestService.rejectMemberApprovalRequestFromAdmin(request);
     }
 
-    //endpoint to get all not responded book upload requests
+    //endpoint to get all book upload requests
     @GetMapping("/bookUploadRequests")
-    public List<BookDTO> getAllBookUploadRequests()
+    public Map<String, List<BookDTO>> getAllBookUploadRequests()
     {
         return requestService.getAllBookUploadRequests();
     }
@@ -83,7 +83,7 @@ public class RequestController
 
     // endpoint to get all the borrow requests of current user's books
     @GetMapping("/borrowRequests")
-    public List<BorrowRequestDTO> getAllBorrowRequests(@CurrentUser User user)
+    public Map<String, List<BorrowRequestDTO>> getAllBorrowRequests(@CurrentUser User user)
     {
         return requestService.getAllBorrowRequests(user);
     }
@@ -102,16 +102,16 @@ public class RequestController
         return requestService.rejectBorrowRequest(borrowRequestId, user);
     }
 
-    // method to get the current user's borrow requests
-    @GetMapping("/getMyBorrowRequests")
-    public List<BorrowRequestDTO> getMyBorrowRequests(@CurrentUser User user)
+    // method to get the borrow requests created by the current user
+    @GetMapping("/myBorrowRequests")
+    public Map<String, List<BorrowRequestDTO>> getMyBorrowRequests(@CurrentUser User user)
     {
-        return requestService.getMyBorrowRequest(user);
+        return requestService.getMyBorrowRequests(user);
     }
 
     //endpoint to see my/current user's upload book requests
-    @GetMapping("/getMyUploadRequests")
-    public List<BookDTO> getMyUploadRequests(@CurrentUser User user)
+    @GetMapping("/myUploadRequests")
+    public Map<String, List<BookDTO>> getMyUploadRequests(@CurrentUser User user)
     {
         return requestService.getMyUploadRequests(user);
     }

@@ -1,9 +1,6 @@
 package com.project.readers.readers_community.services;
 
-import com.project.readers.readers_community.DTOs.BookCopyDTO;
-import com.project.readers.readers_community.DTOs.BookDTO;
-import com.project.readers.readers_community.DTOs.BookTransactionDTO;
-import com.project.readers.readers_community.DTOs.Mapper;
+import com.project.readers.readers_community.DTOs.*;
 import com.project.readers.readers_community.entities.BookCopy;
 import com.project.readers.readers_community.enums.BorrowRequestStatus;
 import com.project.readers.readers_community.repositories.*;
@@ -45,20 +42,25 @@ public class BookService {
     }
 
     @Transactional
-    public String bookUpload(Book book, User cureentUser) {
+    public String uploadBook(Book book, User cureentUser) {
 
         book.setId(0L);
         book.setOwner(cureentUser);
         book.setAdminApproval(Approval.UNRESPONDED);
-
+        book.setBookCopies(null);
         long bookcategory_id = book.getCategory().getId();
 
-        BookCategory bc = bookCategoryRepository.findById(bookcategory_id).get();
+        Optional<BookCategory> bookCategoryOptional = bookCategoryRepository.findById(bookcategory_id);
+        if(bookCategoryOptional.isEmpty())
+        {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Book category not found");
+        }
+
+        BookCategory bc = bookCategoryOptional.get();
 
         book.setCategory(bc);
 
         bookRepository.save(book);
-
 
         return "your book upload request is sent to admin";
 
@@ -87,15 +89,16 @@ public class BookService {
 
     // method to get book copies of a book
     @Transactional
-    public List<BookCopyDTO> getBookCopies(long bookId) {
+    public BookCopiesDTO getBookCopies(long bookId, User currentUser) {
         // first, will get the book
         Optional<Book> bookOptional = bookRepository.findById(bookId);
 
         if (bookOptional.isPresent() && bookOptional.get().getAdminApproval() == Approval.APPROVED) {
-            return bookOptional.get().getBookCopies()
-                    .stream()
-                    .map(mapper::bookCopyToBookCopyDTO)
-                    .toList();
+
+            // current user can only borrow if he/she has no current borrow request, need to take care of this while deciding requestable
+            boolean canCurrentUserRequest = (currentUser.getCurrentBorrowRequest()==null);
+
+            return mapper.bookToBookCopiesDTO(bookOptional.get(), canCurrentUserRequest);
         }
         // not found
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found");
@@ -130,7 +133,7 @@ public class BookService {
             else if(currentBorrowRequest.getStatus()==BorrowRequestStatus.RECEIVED)
             {
                 canRequest = false;
-                message = "You already a book borrowed. Please return it to request for another";
+                message = "You already have a book borrowed. Please return it to request for another";
             }
         }
 
@@ -161,7 +164,7 @@ public class BookService {
         borrowRequest.setStatus(BorrowRequestStatus.UNRESPONDED);
 
         // save
-        borrowRequestRepository.save(borrowRequest);
+        borrowRequest = borrowRequestRepository.save(borrowRequest);
 
         // also set the user's current borrow request
         user.setCurrentBorrowRequest(borrowRequest);
@@ -178,7 +181,7 @@ public class BookService {
     }
 
     @Transactional
-    public String initiate_handover(BookCopy bookCopy, User currentUser) {
+    public String initiateHandover(BookCopy bookCopy, User currentUser) {
         //getting both parties taking part in handover
         User holder = bookCopy.getHolder();
         User borrower = bookCopy.getBorrower();
@@ -258,7 +261,9 @@ public class BookService {
 
         // holder borrow request can be null, in the case when it is just uploaded (by default, owner himself is the holder for newly uploaded books)
         // in that case, no need to do anything
-        if(holderBorrowRequest!=null)
+        // also need to check if the current borrow requested book copy is same as the one being handed over
+        // this is because if owner himself has the book initially, and owner has requested the book elsewhere, then it will be a different borrow request
+        if((holderBorrowRequest!=null) && (holderBorrowRequest.getBookCopy().getId()==bookCopy.getId()))
         {
             // mark as completed
             holderBorrowRequest.setStatus(BorrowRequestStatus.COMPLETED);
@@ -270,7 +275,9 @@ public class BookService {
 
         // borrower borrow request can be null, in the case when the book is returned to the owner himself (by default, owner is the borrower for a book copy)
         // in that case, no need to do anything
-        if(borrowerBorrowRequest!=null)
+        // also need to check if the current borrow requested book copy is same as the one being handed over
+        // this is because if owner himself is about to receive the book, and owner has requested the book elsewhere, then it will be a different borrow request
+        if((borrowerBorrowRequest!=null) && (borrowerBorrowRequest.getBookCopy().getId()==bookCopy.getId()))
         {
             // mark as received
             borrowerBorrowRequest.setStatus(BorrowRequestStatus.RECEIVED);
@@ -318,30 +325,50 @@ public class BookService {
     }
 
     @Transactional
-    public List<BookTransactionDTO> getBookTransactions(BookCopy bookCopy, User currentUser) {
+    public BookTransactionsDTO getBookCopyTransactions(BookCopy bookCopy, User currentUser) {
         User owner = bookCopy.getBook().getOwner();
+
+        // can the current user request for borrow
+        boolean canRequest = (!owner.equals(currentUser))
+                && (currentUser.getCurrentBorrowRequest()==null)
+                && (bookCopy.getBorrower().equals(owner));
 
         //check: request is coming from owner
         if (!owner.equals(currentUser)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User does not have access to this book's history");
+
+            // request not coming from the owner, so will not send transactions array in BookTransactionsDTO
+            return mapper.bookCopyToBookTransactionsDTO(bookCopy, canRequest, false, (txn1, txn2)->0);
+
         }
 
+        return mapper.bookCopyToBookTransactionsDTO
+                (bookCopy,
+                canRequest,
+                true,
+                // comparator to sort transactions with most recent ones being on top of the list
+                new Comparator<BookTransaction>() {
+                @Override
+                    public int compare(BookTransaction o1, BookTransaction o2) {
+                        return o1.getTransactionDateTime().compareTo(o2.getTransactionDateTime());
+                    }
+                }.reversed());
+
         //get transactions
-        List<BookTransaction> transactions = bookCopy.getTransactions();
-
-        //sort transactions with most recent ones being on top of the list
-        transactions.sort(new Comparator<BookTransaction>() {
-            @Override
-            public int compare(BookTransaction o1, BookTransaction o2) {
-                return o1.getTransactionDateTime().compareTo(o2.getTransactionDateTime());
-            }
-        }.reversed());
-
-        //return transactions
-        return transactions
-                .stream()
-                .map(mapper::bookTransactionToBookTransactionDTO)
-                .toList();
+//        List<BookTransaction> transactions = bookCopy.getTransactions();
+//
+//        //sort transactions with most recent ones being on top of the list
+//        transactions.sort(new Comparator<BookTransaction>() {
+//            @Override
+//            public int compare(BookTransaction o1, BookTransaction o2) {
+//                return o1.getTransactionDateTime().compareTo(o2.getTransactionDateTime());
+//            }
+//        }.reversed());
+//
+//        //return transactions
+//        return transactions
+//                .stream()
+//                .map(mapper::bookTransactionToBookTransactionDTO)
+//                .toList();
     }
 
     // to find the current user's approved books
@@ -358,7 +385,7 @@ public class BookService {
     {
         return user.getBorrowedBookCopies()
                 .stream()
-                .map(mapper::bookCopyToBookCopyDTO)
+                .map(bookCopy -> mapper.bookCopyToBookCopyDTO(bookCopy, false))
                 .toList();
     }
 

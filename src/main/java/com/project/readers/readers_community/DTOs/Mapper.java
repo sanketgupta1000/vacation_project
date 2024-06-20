@@ -1,14 +1,11 @@
 package com.project.readers.readers_community.DTOs;
 
-import com.project.readers.readers_community.entities.Book;
-import com.project.readers.readers_community.entities.BookCopy;
-import com.project.readers.readers_community.entities.BorrowRequest;
-import com.project.readers.readers_community.entities.BookTransaction;
-import com.project.readers.readers_community.entities.MemberApprovalRequest;
-import com.project.readers.readers_community.entities.User;
+import com.project.readers.readers_community.entities.*;
 
 import org.springframework.stereotype.Component;
 import java.text.SimpleDateFormat;
+import java.util.Comparator;
+import java.util.List;
 
 // to map entities to dtos
 @Component
@@ -32,32 +29,19 @@ public class Mapper
     }
     public UserDTO userToUserDTO(User user)
     {
-    	String referername="";
-    	if(user.getReferrer()==null)
-    	{
-    		 referername="no reference person";
-    		 return new UserDTO(
-    	    			user.getId(),
-    	    			user.getEmail(),
-    	    			user.getFullName(),
-    	    			user.getPhoneNumber(),
-    	    			referername,
-    	    			user.getAddress().getHouseNo(),
-    	    			user.getAddress().getStreet(),
-    	    			user.getAddress().getLandmark(),
-    	    			user.getAddress().getCity(),
-    	    			user.getAddress().getState(),
-    	    			user.getAddress().getCountry(),
-    	    			user.getDateOfBirth()
-    	    			);
-    	}
+    	String referrerName=null;
+
+		if(user.getReferrer()!=null)
+		{
+			referrerName = user.getReferrer().getFullName();
+		}
     	
     	return new UserDTO(
     			user.getId(),
     			user.getEmail(),
     			user.getFullName(),
     			user.getPhoneNumber(),
-    			user.getReferrer().getFullName(),
+    			referrerName,
     			user.getAddress().getHouseNo(),
     			user.getAddress().getStreet(),
     			user.getAddress().getLandmark(),
@@ -81,7 +65,7 @@ public class Mapper
         );
     }
 
-    public BookCopyDTO bookCopyToBookCopyDTO(BookCopy bookCopy)
+    public BookCopyDTO bookCopyToBookCopyDTO(BookCopy bookCopy, boolean canCurrentUserRequest)
     {
         return new BookCopyDTO(
                 bookCopy.getId(),
@@ -91,7 +75,8 @@ public class Mapper
                 bookCopy.getHolder().getFullName(),
                 bookCopy.getBorrower().getId(),
                 bookCopy.getBorrower().getFullName(),
-                bookCopy.getBorrower().equals(bookCopy.getBook().getOwner())
+                // can request if the book is not borrowed and the current user does not have any current borrow request
+                canCurrentUserRequest && bookCopy.getBorrower().equals(bookCopy.getBook().getOwner())
         );
     }
 
@@ -118,17 +103,78 @@ public class Mapper
 
     public MemberApprovalRequestDTO memberApprovalRequestToMemberApprovalRequestDTO(MemberApprovalRequest memberApprovalRequest)
     {
+		Integer referrerId = null;
+		String referrerName = null;
+		String referrerEmail = null;
+
+		if(memberApprovalRequest.getMember().getReferrer()!=null)
+		{
+			referrerId = memberApprovalRequest.getMember().getReferrer().getId();
+			referrerName = memberApprovalRequest.getMember().getReferrer().getFullName();
+			referrerEmail = memberApprovalRequest.getMember().getReferrer().getEmail();
+		}
+
         return new MemberApprovalRequestDTO(
                 memberApprovalRequest.getId(),
                 memberApprovalRequest.getMember().getId(),
                 memberApprovalRequest.getMember().getFullName(),
                 memberApprovalRequest.getMember().getEmail(),
-                memberApprovalRequest.getMember().getReferrer().getId(),
-                memberApprovalRequest.getMember().getReferrer().getFullName(),
-                memberApprovalRequest.getMember().getReferrer().getEmail(),
+                referrerId,
+				referrerName,
+				referrerEmail,
                 memberApprovalRequest.getReferrerApproval().name(),
                 memberApprovalRequest.getAdminApproval().name()
         );
     }
 
+    public CategoryDTO categoryToCategoryDTO(BookCategory bookCategory)
+    {
+        return new CategoryDTO(
+                bookCategory.getId(),
+                bookCategory.getName()
+        );
+    }
+
+    public BookCopiesDTO bookToBookCopiesDTO(Book book, boolean canCurrentUserRequest)
+    {
+        return new BookCopiesDTO(
+                book.getId(),
+                book.getBookTitle(),
+                book.getAuthorName(),
+                book.getPageCount(),
+                book.getQuantity(),
+                book.getCategory().getId(),
+                book.getCategory().getName(),
+                book.getAdminApproval().toString(),
+                book.getOwner().getId(),
+                book.getOwner().getFullName(),
+                book.getBookCopies().stream().map(bookCopy -> bookCopyToBookCopyDTO(bookCopy, canCurrentUserRequest)).toList()
+        );
+
+    }
+
+    public BookTransactionsDTO bookCopyToBookTransactionsDTO(BookCopy bookCopy, boolean canRequest, boolean showTransactions, Comparator<BookTransaction> bookTransactionComparator)
+    {
+
+        List<BookTransaction> bookTransactions = null;
+
+        if(showTransactions)
+        {
+            bookTransactions = bookCopy.getTransactions();
+            bookTransactions.sort(bookTransactionComparator);
+        }
+
+        return new BookTransactionsDTO(
+                bookCopy.getId(),
+                bookCopy.getBook().getId(),
+                bookCopy.getBook().getBookTitle(),
+                bookCopy.getHolder().getId(),
+                bookCopy.getHolder().getFullName(),
+                bookCopy.getBorrower().getId(),
+                bookCopy.getBorrower().getFullName(),
+                canRequest,
+                showTransactions ? bookTransactions.stream().map(this::bookTransactionToBookTransactionDTO).toList() : null
+        );
+
+    }
 }

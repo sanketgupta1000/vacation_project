@@ -30,14 +30,14 @@ public class AuthController
     }
 
     // method to verify otp
-    @PostMapping("/verify-otp")
+    @PostMapping("/verifyOtp")
     public String verifyOtp(@RequestParam("email") String email, @RequestParam("otp") String otp)
     {
         return authService.verifyOtp(email, otp);
     }
 
     // method to send otp again for signup
-    @PostMapping("/send-otp")
+    @PostMapping("/sendOtp")
     public String sendOtp(@RequestParam("email") String email)
     {
         return authService.sendOtp(email);

@@ -34,38 +34,39 @@ public class UserController
 
 
     // endpoint to let user complete his/her profile by providing additional information like address, dob
-    @PostMapping("/profile-complete")
-    public String profileComplete(
+    @PostMapping("/completeProfile")
+    public String completeProfile(
             @RequestPart("address") Address address,
             @RequestParam("dateOfBirth") @DateTimeFormat(pattern = "dd-MM-yyyy") Date dateOfBirth,
             @CurrentUser User user)
     {
-        return userService.profileComplete(address, dateOfBirth, user);
+        return userService.completeProfile(address, dateOfBirth, user);
     }
 
-	@GetMapping("/getUserDetails")
-	public UserDTO getUserDetails(@CurrentUser User current_user)
+	@GetMapping
+	public UserDTO getUser(@CurrentUser User currentUser)
 	{
-		return userService.getCurrentUserDetail(current_user);
+		return userService.getUser(currentUser);
 	}
 
-	@PutMapping("/updateUserProfile")
-	public UserDTO updateUserProfile(@RequestBody UpdatableUserPersonalDetails updatedDetails, @CurrentUser User currentUser)
+	@PutMapping("/updateProfile")
+	public UserDTO updateProfile(@RequestBody UpdatableUserPersonalDetails updatedDetails, @CurrentUser User currentUser)
 	{
-		return userService.updateUserProfile(updatedDetails, currentUser);
+		return userService.updateProfile(updatedDetails, currentUser);
 	}
 
 
-	@DeleteMapping("/deleteUserProfile")
-	public String deleteUserProfile(@CurrentUser User currentUser)
-	{
-		return userService.deleteUserProfile(currentUser);
-	}
+	// TODO: this needs to be updated
+//	@DeleteMapping("/deleteUserProfile")
+//	public String deleteUserProfile(@CurrentUser User currentUser)
+//	{
+//		return userService.deleteUserProfile(currentUser);
+//	}
 	
-	//endpoint to see all persons who has registered themselves as his reference
-	@GetMapping("/getAllreferences")
-	public Map<String, List<MemberApprovalRequestDTO>> seeAllReferences(@CurrentUser User user)
+	//endpoint to see all persons who have mentioned the current user as referrer
+	@GetMapping("/referrals")
+	public Map<String, List<MemberApprovalRequestDTO>> getAllReferrals(@CurrentUser User user)
 	{
-		return userService.getallreference(user);
+		return userService.getAllReferrals(user);
 	}
 }
