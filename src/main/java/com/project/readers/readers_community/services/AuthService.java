@@ -60,6 +60,7 @@ public class AuthService
         {
             // referrer provided
             // get the referrer
+            System.out.println("referrer id: "+user.getReferrer().getId());
             Optional<User> referrer = userRepository.findById(user.getReferrer().getId());
 
             if(referrer.isPresent())
