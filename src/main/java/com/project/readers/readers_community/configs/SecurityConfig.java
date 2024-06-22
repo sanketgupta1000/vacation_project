@@ -75,6 +75,7 @@ public class SecurityConfig
                             .requestMatchers(HttpMethod.PUT, "/users/updateProfile").hasAnyAuthority("SCOPE_ROLE_MEMBER", "SCOPE_ROLE_ADMIN")
 //                            .requestMatchers(HttpMethod.DELETE, "/users/deleteUserProfile").hasAnyAuthority("SCOPE_ROLE_MEMBER", "SCOPE_ROLE_ADMIN")
                             .requestMatchers(HttpMethod.GET, "/users/referrals").hasAnyAuthority("SCOPE_ROLE_MEMBER", "SCOPE_ROLE_ADMIN")
+                            .requestMatchers(HttpMethod.GET, "/users/members/search").permitAll()
                             .requestMatchers(HttpMethod.POST, "/books").hasAnyAuthority("SCOPE_ROLE_MEMBER", "SCOPE_ROLE_ADMIN")
                             .requestMatchers(HttpMethod.GET, "/books/getAllRequests").hasAuthority("SCOPE_ROLE_ADMIN")
                             .requestMatchers(HttpMethod.POST, "/books/requests/{book_id}/approveBook").hasAuthority("SCOPE_ROLE_ADMIN")

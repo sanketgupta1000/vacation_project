@@ -3,6 +3,7 @@ package com.project.readers.readers_community.services;
 
 import com.project.readers.readers_community.DTOs.Mapper;
 import com.project.readers.readers_community.DTOs.MemberApprovalRequestDTO;
+import com.project.readers.readers_community.DTOs.MemberSearchDTO;
 import com.project.readers.readers_community.DTOs.UserDTO;
 import com.project.readers.readers_community.embeddables.Address;
 import com.project.readers.readers_community.entities.User;
@@ -102,4 +103,17 @@ public class UserService {
         return map;
 		
 	}
+
+    // method to search members by name or email containing, useful to get a list while selecting referrer
+    public List<MemberSearchDTO> searchMembers(String searchStr)
+    {
+        return userRepository.findByUserTypeAndFullNameContainingIgnoreCaseOrUserTypeAndEmailContainingIgnoreCase
+                (
+                        UserType.MEMBER, searchStr,
+                        UserType.MEMBER, searchStr
+                )
+                .stream()
+                .map(mapper::userToMemberSearchDTO)
+                .toList();
+    }
 }

@@ -177,4 +177,13 @@ public class Mapper
         );
 
     }
+
+    public MemberSearchDTO userToMemberSearchDTO(User user)
+    {
+        return new MemberSearchDTO(
+                user.getId(),
+                user.getFullName(),
+                user.getEmail()
+        );
+    }
 }
