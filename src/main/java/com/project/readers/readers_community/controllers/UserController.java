@@ -2,6 +2,7 @@ package com.project.readers.readers_community.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.project.readers.readers_community.DTOs.MemberApprovalRequestDTO;
+import com.project.readers.readers_community.DTOs.MemberSearchDTO;
 import com.project.readers.readers_community.DTOs.UserDTO;
 import com.project.readers.readers_community.annotations.CurrentUser;
 
@@ -16,13 +17,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import com.project.readers.readers_community.entities.User;
-import com.project.readers.readers_community.services.UserService;
-
 import com.project.readers.readers_community.utilities.UpdatableUserPersonalDetails;
-import org.springframework.web.bind.annotation.*;
-
-import javax.swing.plaf.IconUIResource;
 
 @RestController
 @RequestMapping("/users")
@@ -72,4 +67,12 @@ public class UserController
 	{
 		return userService.getAllReferrals(user);
 	}
+
+	// endpoint to search members by name or email containing, useful to get a list while selecting referrer
+	@GetMapping("/members/search")
+	public List<MemberSearchDTO> searchMembers(@RequestParam("searchStr") String searchStr)
+	{
+		return userService.searchMembers(searchStr);
+	}
+
 }
