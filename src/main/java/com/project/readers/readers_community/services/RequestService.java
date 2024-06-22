@@ -398,9 +398,12 @@ public class RequestService
     {
         Map<String, List<BorrowRequestDTO>> map = new HashMap<>();
 
-        map.put("unresponded", borrowRequestRepository.findByRequesterAndStatusIn(user, List.of(BorrowRequestStatus.UNRESPONDED)).stream().map(mapper::borrowRequestToBorrowRequestDTO).toList());
-        map.put("approved", borrowRequestRepository.findByRequesterAndStatusIn(user, List.of(BorrowRequestStatus.APPROVED, BorrowRequestStatus.RECEIVED, BorrowRequestStatus.COMPLETED)).stream().map(mapper::borrowRequestToBorrowRequestDTO).toList());
-        map.put("rejected", borrowRequestRepository.findByRequesterAndStatusIn(user, List.of(BorrowRequestStatus.REJECTED)).stream().map(mapper::borrowRequestToBorrowRequestDTO).toList());
+//        map.put("unresponded", borrowRequestRepository.findByRequesterAndStatusIn(user, List.of(BorrowRequestStatus.UNRESPONDED)).stream().map(mapper::borrowRequestToBorrowRequestDTO).toList());
+//        map.put("approved", borrowRequestRepository.findByRequesterAndStatusIn(user, List.of(BorrowRequestStatus.APPROVED, BorrowRequestStatus.RECEIVED, BorrowRequestStatus.COMPLETED)).stream().map(mapper::borrowRequestToBorrowRequestDTO).toList());
+//        map.put("rejected", borrowRequestRepository.findByRequesterAndStatusIn(user, List.of(BorrowRequestStatus.REJECTED)).stream().map(mapper::borrowRequestToBorrowRequestDTO).toList());
+
+        map.put("currentBorrowRequests", borrowRequestRepository.findByRequesterAndStatusIn(user, List.of(BorrowRequestStatus.UNRESPONDED, BorrowRequestStatus.APPROVED, BorrowRequestStatus.RECEIVED)).stream().map(mapper::borrowRequestToBorrowRequestDTO).toList());
+        map.put("pastBorrowRequests", borrowRequestRepository.findByRequesterAndStatusIn(user, List.of(BorrowRequestStatus.COMPLETED, BorrowRequestStatus.REJECTED)).stream().map(mapper::borrowRequestToBorrowRequestDTO).toList());
 
         return map;
     }
