@@ -10,6 +10,7 @@ public class UserDTO {
     private String email;
     private String fullName;
     private String phoneNumber;
+    private String userType;
     private String referrerName;
     //address field
     private String houseNo;
@@ -85,6 +86,14 @@ public class UserDTO {
         this.phoneNumber = phoneNumber;
     }
 
+    public String getUserType() {
+        return userType;
+    }
+
+    public void setUserType(String userType) {
+        this.userType = userType;
+    }
+
     public void setReferrerName(String referrerName) {
         this.referrerName = referrerName;
     }
@@ -117,7 +126,7 @@ public class UserDTO {
         this.dateOfBirth = dateOfBirth;
     }
 
-    public UserDTO(int userId, String email, String fullName, String phoneNumber, String referrerName,
+    public UserDTO(int userId, String email, String fullName, String phoneNumber, String userType, String referrerName,
                    String houseNo, String street, String landmark, String city, String state, String country,
                    Date dateOfBirth) {
         super();
@@ -125,6 +134,7 @@ public class UserDTO {
         this.email = email;
         this.fullName = fullName;
         this.phoneNumber = phoneNumber;
+        this.userType = userType;
         this.referrerName = referrerName;
         this.houseNo = houseNo;
         this.street = street;
