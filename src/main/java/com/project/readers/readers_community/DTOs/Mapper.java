@@ -41,6 +41,7 @@ public class Mapper
     			user.getEmail(),
     			user.getFullName(),
     			user.getPhoneNumber(),
+                user.getUserType().toString(),
     			referrerName,
     			user.getAddress().getHouseNo(),
     			user.getAddress().getStreet(),
