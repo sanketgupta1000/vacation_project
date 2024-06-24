@@ -90,7 +90,6 @@ public class UserDTO {
 
     public String getHouseNo() {
         return houseNo;
-    }
 
     public void setHouseNo(String houseNo) {
         this.houseNo = houseNo;
@@ -148,6 +147,7 @@ public class UserDTO {
     }
 
     public UserDTO(int userId, String email, String fullName, String phoneNumber, UserType userType, int referrerId, String referrerName, String referrerEmail, String houseNo, String street, String landmark, String city, String state, String country, String dateOfBirth) {
+        super();
         this.userId = userId;
         this.email = email;
         this.fullName = fullName;

@@ -95,10 +95,7 @@ public class BookService {
 
         if (bookOptional.isPresent() && bookOptional.get().getAdminApproval() == Approval.APPROVED) {
 
-            // current user can only borrow if he/she has no current borrow request, need to take care of this while deciding requestable
-            boolean canCurrentUserRequest = (currentUser.getCurrentBorrowRequest()==null);
-
-            return mapper.bookToBookCopiesDTO(bookOptional.get(), canCurrentUserRequest);
+            return mapper.bookToBookCopiesDTO(bookOptional.get(), currentUser);
         }
         // not found
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found");
@@ -333,11 +330,16 @@ public class BookService {
                 && (currentUser.getCurrentBorrowRequest()==null)
                 && (bookCopy.getBorrower().equals(owner));
 
+        // can the current user handover the book
+        boolean canHandover = currentUser.equals(bookCopy.getHolder())
+                                &&
+                                (!currentUser.equals(bookCopy.getBorrower()));
+
         //check: request is coming from owner
         if (!owner.equals(currentUser)) {
 
             // request not coming from the owner, so will not send transactions array in BookTransactionsDTO
-            return mapper.bookCopyToBookTransactionsDTO(bookCopy, canRequest, false, (txn1, txn2)->0);
+            return mapper.bookCopyToBookTransactionsDTO(bookCopy, canRequest, false, (txn1, txn2)->0, canHandover);
 
         }
 
@@ -351,24 +353,8 @@ public class BookService {
                     public int compare(BookTransaction o1, BookTransaction o2) {
                         return o1.getTransactionDateTime().compareTo(o2.getTransactionDateTime());
                     }
-                }.reversed());
-
-        //get transactions
-//        List<BookTransaction> transactions = bookCopy.getTransactions();
-//
-//        //sort transactions with most recent ones being on top of the list
-//        transactions.sort(new Comparator<BookTransaction>() {
-//            @Override
-//            public int compare(BookTransaction o1, BookTransaction o2) {
-//                return o1.getTransactionDateTime().compareTo(o2.getTransactionDateTime());
-//            }
-//        }.reversed());
-//
-//        //return transactions
-//        return transactions
-//                .stream()
-//                .map(mapper::bookTransactionToBookTransactionDTO)
-//                .toList();
+                }.reversed(),
+                canHandover);
     }
 
     // to find the current user's approved books
@@ -389,5 +375,4 @@ public class BookService {
                 .map(bookCopy -> mapper.bookCopyToBookCopyDTO(bookCopy, false))
                 .toList();
     }
-
 }

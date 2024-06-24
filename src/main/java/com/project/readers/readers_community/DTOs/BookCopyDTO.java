@@ -11,8 +11,9 @@ public class BookCopyDTO
     private Integer borrowerId;
     private String borrowerName;
     private boolean requestable;
+    private boolean canHandover;
 
-    public BookCopyDTO(Integer bookCopyId, Long bookId, String bookTitle, Integer holderId, String holderName, Integer borrowerId, String borrowerName, boolean requestable) {
+    public BookCopyDTO(Integer bookCopyId, Long bookId, String bookTitle, Integer holderId, String holderName, Integer borrowerId, String borrowerName, boolean requestable, boolean canHandover) {
         this.bookCopyId = bookCopyId;
         this.bookId = bookId;
         this.bookTitle = bookTitle;
@@ -21,6 +22,7 @@ public class BookCopyDTO
         this.borrowerId = borrowerId;
         this.borrowerName = borrowerName;
         this.requestable = requestable;
+        this.canHandover = canHandover;
     }
 
     public BookCopyDTO() {}
@@ -89,6 +91,14 @@ public class BookCopyDTO
         this.requestable = requestable;
     }
 
+    public boolean getCanHandover() {
+        return canHandover;
+    }
+
+    public void setCanHandover(boolean canHandover) {
+        this.canHandover = canHandover;
+    }
+
     @Override
     public String toString() {
         return "BookCopyDTO{" +
@@ -100,6 +110,7 @@ public class BookCopyDTO
                 ", borrowerId='" + borrowerId + '\'' +
                 ", borrowerName='" + borrowerName + '\'' +
                 ", requestable='" + requestable + '\'' +
+                ", canHandover='" + canHandover + '\'' +
                 '}';
     }
 }
