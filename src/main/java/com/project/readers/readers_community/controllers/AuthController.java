@@ -1,5 +1,6 @@
 package com.project.readers.readers_community.controllers;
 
+import com.project.readers.readers_community.DTOs.AuthDTO;
 import com.project.readers.readers_community.annotations.CurrentUser;
 import com.project.readers.readers_community.entities.MemberApprovalRequest;
 import com.project.readers.readers_community.entities.User;
@@ -20,6 +21,13 @@ public class AuthController
     public AuthController(AuthService authService)
     {
         this.authService = authService;
+    }
+
+    //endpoint to verify JWT and fetch basic user identification details
+    @GetMapping
+    public AuthDTO getAuthDetails(@CurrentUser User currentUser)
+    {
+        return authService.getAuthDetails(currentUser);
     }
 
     // method to sign up

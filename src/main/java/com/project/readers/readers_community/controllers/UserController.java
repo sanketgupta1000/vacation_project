@@ -34,23 +34,24 @@ public class UserController
     @PostMapping("/completeProfile")
     public String completeProfile(
             @RequestParam("address") String addressStr,
-            @RequestParam("dateOfBirth") @DateTimeFormat(pattern = "dd-MM-yyyy") Date dateOfBirth,
+            @RequestParam("dateOfBirth") @DateTimeFormat(pattern = "yyyy-MM-dd") Date dateOfBirth,
             @CurrentUser User user) throws JsonProcessingException {
 		ObjectMapper objectMapper = new ObjectMapper();
 		Address address = objectMapper.readValue(addressStr, Address.class);
         return userService.completeProfile(address, dateOfBirth, user);
     }
 
-	@GetMapping
-	public UserDTO getUser(@CurrentUser User currentUser)
+	@GetMapping("/{userId}")
+	public UserDTO getUser(@PathVariable int userId)
 	{
-		return userService.getUser(currentUser);
+		return userService.getUser(userId);
 	}
 
 	@PutMapping("/updateProfile")
-	public UserDTO updateProfile(@RequestBody UpdatableUserPersonalDetails updatedDetails, @CurrentUser User currentUser)
-	{
-		return userService.updateProfile(updatedDetails, currentUser);
+	public UserDTO updateProfile(@RequestParam("address") String addressStr, @RequestParam("fullName") String fullName, @RequestParam("phoneNumber") String phoneNumber, @RequestParam("dateOfBirth") @DateTimeFormat(pattern = "yyyy-MM-dd") Date dateOfBirth, @CurrentUser User currentUser) throws JsonProcessingException {
+		ObjectMapper objectMapper = new ObjectMapper();
+		Address address = objectMapper.readValue(addressStr, Address.class);
+		return userService.updateProfile(fullName, phoneNumber, address, dateOfBirth, currentUser);
 	}
 
 

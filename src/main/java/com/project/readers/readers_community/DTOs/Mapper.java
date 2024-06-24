@@ -29,29 +29,35 @@ public class Mapper
     }
     public UserDTO userToUserDTO(User user)
     {
-    	String referrerName=null;
+        SimpleDateFormat dayFormat = new SimpleDateFormat("dd-MM-yyyy");
+        int referrerId = 0;
+    	  String referrerName=null;
+        String referrerEmail=null;
 
-		if(user.getReferrer()!=null)
-		{
-			referrerName = user.getReferrer().getFullName();
-		}
-    	
-    	return new UserDTO(
-    			user.getId(),
-    			user.getEmail(),
-    			user.getFullName(),
-    			user.getPhoneNumber(),
-                user.getUserType().toString(),
-    			referrerName,
-    			user.getAddress().getHouseNo(),
-    			user.getAddress().getStreet(),
-    			user.getAddress().getLandmark(),
-    			user.getAddress().getCity(),
-    			user.getAddress().getState(),
-    			user.getAddress().getCountry(),
-    			user.getDateOfBirth()
-    			);
-    			
+        if(user.getReferrer()!=null)
+        {
+                referrerId = user.getReferrer().getId();
+          referrerName = user.getReferrer().getFullName();
+                referrerEmail = user.getReferrer().getEmail();
+        }
+
+        return new UserDTO(
+            user.getId(),
+            user.getEmail(),
+            user.getFullName(),
+            user.getPhoneNumber(),
+            user.getUserType(),
+            referrerId,
+            referrerName,
+            referrerEmail,
+            user.getAddress().getHouseNo(),
+            user.getAddress().getStreet(),
+            user.getAddress().getLandmark(),
+            user.getAddress().getCity(),
+            user.getAddress().getState(),
+            user.getAddress().getCountry(),
+            dayFormat.format(user.getDateOfBirth())
+            );
     }
 
     public BorrowRequestDTO borrowRequestToBorrowRequestDTO(BorrowRequest borrowRequest)
@@ -202,6 +208,14 @@ public class Mapper
                 user.getId(),
                 user.getFullName(),
                 user.getEmail()
+        );
+    }
+
+    public  AuthDTO userToAuthDTO(User user)
+    {
+        return new AuthDTO(
+                user.getId(),
+                user.getUserType()
         );
     }
 }
