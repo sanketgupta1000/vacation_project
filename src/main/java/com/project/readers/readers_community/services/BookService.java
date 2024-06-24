@@ -372,7 +372,7 @@ public class BookService {
         return user.getBorrowedBookCopies()
                 .stream()
                 .filter(bookCopy -> !(bookCopy.getBook().getOwner()).equals(user))
-                .map(bookCopy -> mapper.bookCopyToBookCopyDTO(bookCopy, false))
+                .map(bookCopy -> mapper.bookCopyToBookCopyDTO(bookCopy, false, (!bookCopy.getBorrower().equals(user))))
                 .toList();
     }
 }

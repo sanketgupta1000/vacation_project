@@ -90,6 +90,7 @@ public class UserDTO {
 
     public String getHouseNo() {
         return houseNo;
+    }
 
     public void setHouseNo(String houseNo) {
         this.houseNo = houseNo;
