@@ -8,6 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface UserRepository extends JpaRepository<User, Integer>
 {
     User findByEmail(String email);
-
     List<User> findByUserTypeAndFullNameContainingIgnoreCaseOrUserTypeAndEmailContainingIgnoreCase(UserType userType, String name, UserType userType2, String email);
 }

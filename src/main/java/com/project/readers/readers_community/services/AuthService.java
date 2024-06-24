@@ -1,5 +1,7 @@
 package com.project.readers.readers_community.services;
 
+import com.project.readers.readers_community.DTOs.AuthDTO;
+import com.project.readers.readers_community.DTOs.Mapper;
 import com.project.readers.readers_community.entities.MemberApprovalRequest;
 import com.project.readers.readers_community.entities.User;
 import com.project.readers.readers_community.enums.Approval;
@@ -30,9 +32,11 @@ public class AuthService
     private final EmailService emailService;
     private final AuthenticationManager authenticationManager;
     private final TokenService tokenService;
+    private final Mapper mapper;
+
 
     // DI
-    public AuthService(UserRepository userRepository,PasswordEncoder passwordEncoder, OtpService otpService, EmailService emailService, AuthenticationManager authenticationManager, TokenService tokenService)
+    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, OtpService otpService, EmailService emailService, AuthenticationManager authenticationManager, TokenService tokenService, Mapper mapper)
     {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
@@ -40,6 +44,13 @@ public class AuthService
         this.emailService = emailService;
         this.authenticationManager = authenticationManager;
         this.tokenService = tokenService;
+        this.mapper = mapper;
+    }
+
+    @Transactional
+    public AuthDTO getAuthDetails(User currentUser)
+    {
+        return mapper.userToAuthDTO(currentUser);
     }
 
     // method to signup

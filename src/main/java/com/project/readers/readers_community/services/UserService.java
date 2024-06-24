@@ -16,12 +16,11 @@ import jakarta.transaction.Transactional;
 import com.project.readers.readers_community.utilities.UpdatableUserPersonalDetails;
 
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class UserService {
@@ -54,15 +53,21 @@ public class UserService {
     }
 
     @Transactional
-    public UserDTO getUser(User currentUser) {
-        return mapper.userToUserDTO(currentUser);
+    public UserDTO getUser(int userId) {
+        Optional<User> userOptional = userRepository.findById(userId);
+        if(userOptional.isPresent())
+        {
+            return mapper.userToUserDTO(userOptional.get());
+        }
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
     }
 
     @Transactional
-    public UserDTO updateProfile(UpdatableUserPersonalDetails updatedDetails, User currentUser) {
-        currentUser.setFullName(updatedDetails.getFullName());
-        currentUser.setPhoneNumber(updatedDetails.getPhoneNumber());
-        currentUser.setAddress(updatedDetails.getAddress());
+    public UserDTO updateProfile(String fullName, String phoneNumber, Address address, Date dateOfBirth, User currentUser) {
+        currentUser.setFullName(fullName);
+        currentUser.setPhoneNumber(phoneNumber);
+        currentUser.setAddress(address);
+        currentUser.setDateOfBirth(dateOfBirth);
         User user = userRepository.save(currentUser);
 
         return mapper.userToUserDTO(user);

@@ -29,11 +29,16 @@ public class Mapper
     }
     public UserDTO userToUserDTO(User user)
     {
+        SimpleDateFormat dayFormat = new SimpleDateFormat("dd-MM-yyyy");
+        int referrerId = 0;
     	String referrerName=null;
+        String referrerEmail=null;
 
 		if(user.getReferrer()!=null)
 		{
+            referrerId = user.getReferrer().getId();
 			referrerName = user.getReferrer().getFullName();
+            referrerEmail = user.getReferrer().getEmail();
 		}
     	
     	return new UserDTO(
@@ -41,14 +46,17 @@ public class Mapper
     			user.getEmail(),
     			user.getFullName(),
     			user.getPhoneNumber(),
+                user.getUserType(),
+                referrerId,
     			referrerName,
+                referrerEmail,
     			user.getAddress().getHouseNo(),
     			user.getAddress().getStreet(),
     			user.getAddress().getLandmark(),
     			user.getAddress().getCity(),
     			user.getAddress().getState(),
     			user.getAddress().getCountry(),
-    			user.getDateOfBirth()
+    		    dayFormat.format(user.getDateOfBirth())
     			);
     			
     }
@@ -184,6 +192,14 @@ public class Mapper
                 user.getId(),
                 user.getFullName(),
                 user.getEmail()
+        );
+    }
+
+    public  AuthDTO userToAuthDTO(User user)
+    {
+        return new AuthDTO(
+                user.getId(),
+                user.getUserType()
         );
     }
 }
