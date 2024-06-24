@@ -66,7 +66,7 @@ public class Mapper
         );
     }
 
-    public BookCopyDTO bookCopyToBookCopyDTO(BookCopy bookCopy, boolean canCurrentUserRequest)
+    public BookCopyDTO bookCopyToBookCopyDTO(BookCopy bookCopy, boolean canCurrentUserRequest, boolean canHandover)
     {
         return new BookCopyDTO(
                 bookCopy.getId(),
@@ -76,8 +76,8 @@ public class Mapper
                 bookCopy.getHolder().getFullName(),
                 bookCopy.getBorrower().getId(),
                 bookCopy.getBorrower().getFullName(),
-                // can request if the book is not borrowed and the current user does not have any current borrow request
-                canCurrentUserRequest && bookCopy.getBorrower().equals(bookCopy.getBook().getOwner())
+                canCurrentUserRequest,
+                canHandover
         );
     }
 
@@ -136,25 +136,41 @@ public class Mapper
         );
     }
 
-    public BookCopiesDTO bookToBookCopiesDTO(Book book, boolean canCurrentUserRequest)
+    public BookCopiesDTO bookToBookCopiesDTO(Book book, User currentUser)
     {
+
+        // Check if the current user can request for a book copy
+        boolean canCurrentUserRequest = (!book.getOwner().equals(currentUser))
+                                        &&
+                                        (currentUser.getCurrentBorrowRequest()==null);
+
+        List<BookCopyDTO> bookCopyDTOList= book
+            .getBookCopies()
+            .stream()
+            .map(bookCopy ->
+                    bookCopyToBookCopyDTO(
+                            bookCopy,
+                            canCurrentUserRequest && (book.getOwner().equals(bookCopy.getBorrower())),
+                            currentUser.equals(bookCopy.getHolder()) && !(currentUser.equals(bookCopy.getBorrower()))))
+            .toList();
+
         return new BookCopiesDTO(
-                book.getId(),
-                book.getBookTitle(),
-                book.getAuthorName(),
-                book.getPageCount(),
-                book.getQuantity(),
-                book.getCategory().getId(),
-                book.getCategory().getName(),
-                book.getAdminApproval().toString(),
-                book.getOwner().getId(),
-                book.getOwner().getFullName(),
-                book.getBookCopies().stream().map(bookCopy -> bookCopyToBookCopyDTO(bookCopy, canCurrentUserRequest)).toList()
+            book.getId(),
+            book.getBookTitle(),
+            book.getAuthorName(),
+            book.getPageCount(),
+            book.getQuantity(),
+            book.getCategory().getId(),
+            book.getCategory().getName(),
+            book.getAdminApproval().toString(),
+            book.getOwner().getId(),
+            book.getOwner().getFullName(),
+            bookCopyDTOList
         );
 
     }
 
-    public BookTransactionsDTO bookCopyToBookTransactionsDTO(BookCopy bookCopy, boolean canRequest, boolean showTransactions, Comparator<BookTransaction> bookTransactionComparator)
+    public BookTransactionsDTO bookCopyToBookTransactionsDTO(BookCopy bookCopy, boolean canRequest, boolean showTransactions, Comparator<BookTransaction> bookTransactionComparator, boolean canHandover)
     {
 
         List<BookTransaction> bookTransactions = null;
@@ -174,7 +190,8 @@ public class Mapper
                 bookCopy.getBorrower().getId(),
                 bookCopy.getBorrower().getFullName(),
                 canRequest,
-                showTransactions ? bookTransactions.stream().map(this::bookTransactionToBookTransactionDTO).toList() : null
+                showTransactions ? bookTransactions.stream().map(this::bookTransactionToBookTransactionDTO).toList() : null,
+                canHandover
         );
 
     }
