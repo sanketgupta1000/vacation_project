@@ -9,29 +9,36 @@ public class BookTransactionsDTO
     private Integer bookCopyId;
     private Long bookId;
     private String bookTitle;
+    private String coverPhotoURL;
     private Integer holderId;
     private String holderName;
+    private String holderEmail;
+    private String holderProfilePhotoURL;
     private Integer borrowerId;
     private String borrowerName;
+    private String borrowerEmail;
+    private String borrowerProfilePhotoURL;
     private boolean requestable;
     private boolean canHandover;
-
     private List<BookTransactionDTO> bookCopyTransactions;
 
-    public BookTransactionsDTO(Integer bookCopyId, Long bookId, String bookTitle, Integer holderId, String holderName, Integer borrowerId, String borrowerName, boolean requestable, List<BookTransactionDTO> bookCopyTransactions, boolean canHandover) {
+    public BookTransactionsDTO(Integer bookCopyId, Long bookId, String bookTitle, String coverPhotoURL, Integer holderId, String holderName, String holderEmail, String holderProfilePhotoURL, Integer borrowerId, String borrowerName, String borrowerEmail, String borrowerProfilePhotoURL, boolean requestable, boolean canHandover, List<BookTransactionDTO> bookCopyTransactions) {
         this.bookCopyId = bookCopyId;
         this.bookId = bookId;
         this.bookTitle = bookTitle;
+        this.coverPhotoURL = coverPhotoURL;
         this.holderId = holderId;
         this.holderName = holderName;
+        this.holderEmail = holderEmail;
+        this.holderProfilePhotoURL = holderProfilePhotoURL;
         this.borrowerId = borrowerId;
         this.borrowerName = borrowerName;
+        this.borrowerEmail = borrowerEmail;
+        this.borrowerProfilePhotoURL = borrowerProfilePhotoURL;
         this.requestable = requestable;
-        this.bookCopyTransactions = bookCopyTransactions;
         this.canHandover = canHandover;
+        this.bookCopyTransactions = bookCopyTransactions;
     }
-
-    public BookTransactionsDTO() {}
 
     public Integer getBookCopyId() {
         return bookCopyId;
@@ -57,6 +64,14 @@ public class BookTransactionsDTO
         this.bookTitle = bookTitle;
     }
 
+    public String getCoverPhotoURL() {
+        return coverPhotoURL;
+    }
+
+    public void setCoverPhotoURL(String coverPhotoURL) {
+        this.coverPhotoURL = coverPhotoURL;
+    }
+
     public Integer getHolderId() {
         return holderId;
     }
@@ -71,6 +86,22 @@ public class BookTransactionsDTO
 
     public void setHolderName(String holderName) {
         this.holderName = holderName;
+    }
+
+    public String getHolderEmail() {
+        return holderEmail;
+    }
+
+    public void setHolderEmail(String holderEmail) {
+        this.holderEmail = holderEmail;
+    }
+
+    public String getHolderProfilePhotoURL() {
+        return holderProfilePhotoURL;
+    }
+
+    public void setHolderProfilePhotoURL(String holderProfilePhotoURL) {
+        this.holderProfilePhotoURL = holderProfilePhotoURL;
     }
 
     public Integer getBorrowerId() {
@@ -89,20 +120,28 @@ public class BookTransactionsDTO
         this.borrowerName = borrowerName;
     }
 
+    public String getBorrowerEmail() {
+        return borrowerEmail;
+    }
+
+    public void setBorrowerEmail(String borrowerEmail) {
+        this.borrowerEmail = borrowerEmail;
+    }
+
+    public String getBorrowerProfilePhotoURL() {
+        return borrowerProfilePhotoURL;
+    }
+
+    public void setBorrowerProfilePhotoURL(String borrowerProfilePhotoURL) {
+        this.borrowerProfilePhotoURL = borrowerProfilePhotoURL;
+    }
+
     public boolean isRequestable() {
         return requestable;
     }
 
     public void setRequestable(boolean requestable) {
         this.requestable = requestable;
-    }
-
-    public List<BookTransactionDTO> getBookCopyTransactions() {
-        return bookCopyTransactions;
-    }
-
-    public void setBookCopyTransactions(List<BookTransactionDTO> bookCopyTransactions) {
-        this.bookCopyTransactions = bookCopyTransactions;
     }
 
     public boolean isCanHandover() {
@@ -113,19 +152,32 @@ public class BookTransactionsDTO
         this.canHandover = canHandover;
     }
 
+    public List<BookTransactionDTO> getBookCopyTransactions() {
+        return bookCopyTransactions;
+    }
+
+    public void setBookCopyTransactions(List<BookTransactionDTO> bookCopyTransactions) {
+        this.bookCopyTransactions = bookCopyTransactions;
+    }
+
     @Override
     public String toString() {
         return "BookTransactionsDTO{" +
                 "bookCopyId=" + bookCopyId +
                 ", bookId=" + bookId +
                 ", bookTitle='" + bookTitle + '\'' +
+                ", coverPhotoURL='" + coverPhotoURL + '\'' +
                 ", holderId=" + holderId +
                 ", holderName='" + holderName + '\'' +
+                ", holderEmail='" + holderEmail + '\'' +
+                ", holderProfilePhotoURL='" + holderProfilePhotoURL + '\'' +
                 ", borrowerId=" + borrowerId +
                 ", borrowerName='" + borrowerName + '\'' +
+                ", borrowerEmail='" + borrowerEmail + '\'' +
+                ", borrowerProfilePhotoURL='" + borrowerProfilePhotoURL + '\'' +
                 ", requestable=" + requestable +
-                ", bookCopyTransactions=" + bookCopyTransactions +
                 ", canHandover=" + canHandover +
+                ", bookCopyTransactions=" + bookCopyTransactions +
                 '}';
     }
 }

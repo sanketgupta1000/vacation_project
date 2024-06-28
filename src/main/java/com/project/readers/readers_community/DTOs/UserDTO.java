@@ -12,17 +12,38 @@ public class UserDTO {
     private String fullName;
     private String phoneNumber;
     private UserType userType;
-    private int referrerId;
-    private String referrerName;
-    private  String referrerEmail;
-    //address field
+    private String dateOfBirth;
+    private String profilePhotoURL;
     private String houseNo;
     private String street;
     private String landmark;
     private String city;
     private String state;
     private String country;
-    private String dateOfBirth;
+    private int referrerId;
+    private String referrerName;
+    private  String referrerEmail;
+    private  String referrerProfilePhotoURL;
+
+    public UserDTO(int userId, String email, String fullName, String phoneNumber, UserType userType, String dateOfBirth, String profilePhotoURL, String houseNo, String street, String landmark, String city, String state, String country, int referrerId, String referrerName, String referrerEmail, String referrerProfilePhotoURL) {
+        this.userId = userId;
+        this.email = email;
+        this.fullName = fullName;
+        this.phoneNumber = phoneNumber;
+        this.userType = userType;
+        this.dateOfBirth = dateOfBirth;
+        this.profilePhotoURL = profilePhotoURL;
+        this.houseNo = houseNo;
+        this.street = street;
+        this.landmark = landmark;
+        this.city = city;
+        this.state = state;
+        this.country = country;
+        this.referrerId = referrerId;
+        this.referrerName = referrerName;
+        this.referrerEmail = referrerEmail;
+        this.referrerProfilePhotoURL = referrerProfilePhotoURL;
+    }
 
     public int getUserId() {
         return userId;
@@ -64,28 +85,20 @@ public class UserDTO {
         this.userType = userType;
     }
 
-    public int getReferrerId() {
-        return referrerId;
+    public String getDateOfBirth() {
+        return dateOfBirth;
     }
 
-    public void setReferrerId(int referrerId) {
-        this.referrerId = referrerId;
+    public void setDateOfBirth(String dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
     }
 
-    public String getReferrerName() {
-        return referrerName;
+    public String getProfilePhotoURL() {
+        return profilePhotoURL;
     }
 
-    public void setReferrerName(String referrerName) {
-        this.referrerName = referrerName;
-    }
-
-    public String getReferrerEmail() {
-        return referrerEmail;
-    }
-
-    public void setReferrerEmail(String referrerEmail) {
-        this.referrerEmail = referrerEmail;
+    public void setProfilePhotoURL(String profilePhotoURL) {
+        this.profilePhotoURL = profilePhotoURL;
     }
 
     public String getHouseNo() {
@@ -136,34 +149,36 @@ public class UserDTO {
         this.country = country;
     }
 
-    public String getDateOfBirth() {
-        return dateOfBirth;
+    public int getReferrerId() {
+        return referrerId;
     }
 
-    public void setDateOfBirth(String dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
-    }
-
-    public UserDTO() {
-    }
-
-    public UserDTO(int userId, String email, String fullName, String phoneNumber, UserType userType, int referrerId, String referrerName, String referrerEmail, String houseNo, String street, String landmark, String city, String state, String country, String dateOfBirth) {
-        super();
-        this.userId = userId;
-        this.email = email;
-        this.fullName = fullName;
-        this.phoneNumber = phoneNumber;
-        this.userType = userType;
+    public void setReferrerId(int referrerId) {
         this.referrerId = referrerId;
+    }
+
+    public String getReferrerName() {
+        return referrerName;
+    }
+
+    public void setReferrerName(String referrerName) {
         this.referrerName = referrerName;
+    }
+
+    public String getReferrerEmail() {
+        return referrerEmail;
+    }
+
+    public void setReferrerEmail(String referrerEmail) {
         this.referrerEmail = referrerEmail;
-        this.houseNo = houseNo;
-        this.street = street;
-        this.landmark = landmark;
-        this.city = city;
-        this.state = state;
-        this.country = country;
-        this.dateOfBirth = dateOfBirth;
+    }
+
+    public String getReferrerProfilePhotoURL() {
+        return referrerProfilePhotoURL;
+    }
+
+    public void setReferrerProfilePhotoURL(String referrerProfilePhotoURL) {
+        this.referrerProfilePhotoURL = referrerProfilePhotoURL;
     }
 
     @Override
@@ -174,16 +189,18 @@ public class UserDTO {
                 ", fullName='" + fullName + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", userType=" + userType +
-                ", referrerId=" + referrerId +
-                ", referrerName='" + referrerName + '\'' +
-                ", referrerEmail='" + referrerEmail + '\'' +
+                ", dateOfBirth='" + dateOfBirth + '\'' +
+                ", profilePhotoURL='" + profilePhotoURL + '\'' +
                 ", houseNo='" + houseNo + '\'' +
                 ", street='" + street + '\'' +
                 ", landmark='" + landmark + '\'' +
                 ", city='" + city + '\'' +
                 ", state='" + state + '\'' +
                 ", country='" + country + '\'' +
-                ", dateOfBirth=" + dateOfBirth +
+                ", referrerId=" + referrerId +
+                ", referrerName='" + referrerName + '\'' +
+                ", referrerEmail='" + referrerEmail + '\'' +
+                ", referrerProfilePhotoURL='" + referrerProfilePhotoURL + '\'' +
                 '}';
     }
 }

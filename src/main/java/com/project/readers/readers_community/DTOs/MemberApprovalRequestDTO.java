@@ -6,23 +6,24 @@ public class MemberApprovalRequestDTO
     private Integer memberId;
     private String memberFullName;
     private String memberEmail;
+    private String memberPhoneNumber;
     private Integer memberReferrerId;
     private String memberReferrerFullName;
     private String memberReferrerEmail;
+    private String memberReferrerProfilePhotoURL;
     private String referrerApproval;
     private String adminApproval;
 
-    public MemberApprovalRequestDTO() {
-    }
-
-    public MemberApprovalRequestDTO(Integer memberApprovalRequestId, Integer memberId, String memberFullName, String memberEmail, Integer memberReferrerId, String memberReferrerFullName, String memberReferrerEmail, String referrerApproval, String adminApproval) {
+    public MemberApprovalRequestDTO(Integer memberApprovalRequestId, Integer memberId, String memberFullName, String memberEmail, String memberPhoneNumber, Integer memberReferrerId, String memberReferrerFullName, String memberReferrerEmail, String memberReferrerProfilePhotoURL, String referrerApproval, String adminApproval) {
         this.memberApprovalRequestId = memberApprovalRequestId;
         this.memberId = memberId;
         this.memberFullName = memberFullName;
         this.memberEmail = memberEmail;
+        this.memberPhoneNumber = memberPhoneNumber;
         this.memberReferrerId = memberReferrerId;
         this.memberReferrerFullName = memberReferrerFullName;
         this.memberReferrerEmail = memberReferrerEmail;
+        this.memberReferrerProfilePhotoURL = memberReferrerProfilePhotoURL;
         this.referrerApproval = referrerApproval;
         this.adminApproval = adminApproval;
     }
@@ -59,6 +60,14 @@ public class MemberApprovalRequestDTO
         this.memberEmail = memberEmail;
     }
 
+    public String getMemberPhoneNumber() {
+        return memberPhoneNumber;
+    }
+
+    public void setMemberPhoneNumber(String memberPhoneNumber) {
+        this.memberPhoneNumber = memberPhoneNumber;
+    }
+
     public Integer getMemberReferrerId() {
         return memberReferrerId;
     }
@@ -81,6 +90,14 @@ public class MemberApprovalRequestDTO
 
     public void setMemberReferrerEmail(String memberReferrerEmail) {
         this.memberReferrerEmail = memberReferrerEmail;
+    }
+
+    public String getMemberReferrerProfilePhotoURL() {
+        return memberReferrerProfilePhotoURL;
+    }
+
+    public void setMemberReferrerProfilePhotoURL(String memberReferrerProfilePhotoURL) {
+        this.memberReferrerProfilePhotoURL = memberReferrerProfilePhotoURL;
     }
 
     public String getReferrerApproval() {
@@ -106,9 +123,11 @@ public class MemberApprovalRequestDTO
                 ", memberId=" + memberId +
                 ", memberFullName='" + memberFullName + '\'' +
                 ", memberEmail='" + memberEmail + '\'' +
+                ", memberPhoneNumber='" + memberPhoneNumber + '\'' +
                 ", memberReferrerId=" + memberReferrerId +
                 ", memberReferrerFullName='" + memberReferrerFullName + '\'' +
                 ", memberReferrerEmail='" + memberReferrerEmail + '\'' +
+                ", memberReferrerProfilePhotoURL='" + memberReferrerProfilePhotoURL + '\'' +
                 ", referrerApproval='" + referrerApproval + '\'' +
                 ", adminApproval='" + adminApproval + '\'' +
                 '}';

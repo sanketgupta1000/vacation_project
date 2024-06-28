@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.project.readers.readers_community.utilities.UpdatableUserPersonalDetails;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/users")
@@ -33,12 +34,13 @@ public class UserController
     // endpoint to let user complete his/her profile by providing additional information like address, dob
     @PostMapping("/completeProfile")
     public String completeProfile(
+			@RequestParam("profilePhoto") MultipartFile profilePhoto,
             @RequestParam("address") String addressStr,
             @RequestParam("dateOfBirth") @DateTimeFormat(pattern = "yyyy-MM-dd") Date dateOfBirth,
             @CurrentUser User user) throws JsonProcessingException {
 		ObjectMapper objectMapper = new ObjectMapper();
 		Address address = objectMapper.readValue(addressStr, Address.class);
-        return userService.completeProfile(address, dateOfBirth, user);
+        return userService.completeProfile(address, dateOfBirth, profilePhoto, user);
     }
 
 	@GetMapping("/{userId}")
@@ -48,10 +50,16 @@ public class UserController
 	}
 
 	@PutMapping("/updateProfile")
-	public UserDTO updateProfile(@RequestParam("address") String addressStr, @RequestParam("fullName") String fullName, @RequestParam("phoneNumber") String phoneNumber, @RequestParam("dateOfBirth") @DateTimeFormat(pattern = "yyyy-MM-dd") Date dateOfBirth, @CurrentUser User currentUser) throws JsonProcessingException {
+	public UserDTO updateProfile(
+			@RequestParam(name="profilePhoto", required = false) MultipartFile profilePhoto,
+			@RequestParam("address") String addressJSON,
+			@RequestParam("fullName") String fullName,
+			@RequestParam("phoneNumber") String phoneNumber,
+			@RequestParam("dateOfBirth") @DateTimeFormat(pattern = "yyyy-MM-dd") Date dateOfBirth,
+			@CurrentUser User currentUser) throws JsonProcessingException {
 		ObjectMapper objectMapper = new ObjectMapper();
-		Address address = objectMapper.readValue(addressStr, Address.class);
-		return userService.updateProfile(fullName, phoneNumber, address, dateOfBirth, currentUser);
+		Address address = objectMapper.readValue(addressJSON, Address.class);
+		return userService.updateProfile(fullName, phoneNumber, address, dateOfBirth, profilePhoto, currentUser);
 	}
 
 

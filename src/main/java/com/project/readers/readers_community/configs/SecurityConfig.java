@@ -62,6 +62,7 @@ public class SecurityConfig
                 .authorizeHttpRequests(auth->{
                     // all requests authenticated for now
                     auth
+                            .requestMatchers(HttpMethod.POST, "/demo/fileUpload").permitAll()
                             .requestMatchers(HttpMethod.POST, "/auth/signup").permitAll()
                             .requestMatchers(HttpMethod.POST, "/auth/verifyOtp").permitAll()
                             .requestMatchers(HttpMethod.POST, "/auth/sendOtp").permitAll()

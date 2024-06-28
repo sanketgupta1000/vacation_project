@@ -38,6 +38,10 @@ public class Book
 	@JoinColumn(name = "category_id")
 	private BookCategory category;
 
+	//cover photo of the book
+	@Column(name = "cover_photo_url")
+	private  String coverPhotoURL;
+
 	//is it approved or rejected by the admin
 	@Column(name = "adminApproval")
 	private Approval adminApproval;
@@ -54,13 +58,14 @@ public class Book
 	public Book() {
 	}
 
-	public Book(Long id, String bookTitle, String authorName, int pageCount, int quantity, BookCategory category, Approval adminApproval, User owner) {
+	public Book(Long id, String bookTitle, String authorName, int pageCount, int quantity, BookCategory category, String coverPhotoURL, Approval adminApproval, User owner) {
 		this.id = id;
 		this.bookTitle = bookTitle;
 		this.authorName = authorName;
 		this.pageCount = pageCount;
 		this.quantity = quantity;
 		this.category = category;
+		this.coverPhotoURL = coverPhotoURL;
 		this.adminApproval = adminApproval;
 		this.owner = owner;
 	}
@@ -113,6 +118,14 @@ public class Book
 		this.category = category;
 	}
 
+	public String getCoverPhotoURL() {
+		return coverPhotoURL;
+	}
+
+	public void setCoverPhotoURL(String coverPhotoURL) {
+		this.coverPhotoURL = coverPhotoURL;
+	}
+
 	public Approval getAdminApproval() {
 		return adminApproval;
 	}
@@ -146,11 +159,12 @@ public class Book
 				", pageCount=" + pageCount +
 				", quantity=" + quantity +
 				", category=" + category +
+				", coverPhotoURL='" + coverPhotoURL + '\'' +
 				", adminApproval=" + adminApproval +
 				", owner=" + owner +
+				", bookCopies=" + bookCopies +
 				'}';
 	}
-	
 }
 		
 		

@@ -1,5 +1,7 @@
 package com.project.readers.readers_community.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.readers.readers_community.DTOs.BookCopiesDTO;
 import com.project.readers.readers_community.DTOs.BookCopyDTO;
 import com.project.readers.readers_community.DTOs.BookDTO;
@@ -8,6 +10,7 @@ import com.project.readers.readers_community.entities.*;
 import org.springframework.web.bind.annotation.*;
 import com.project.readers.readers_community.annotations.CurrentUser;
 import com.project.readers.readers_community.services.BookService;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -24,9 +27,12 @@ public class BookController
 
 	//request for book upload
 	@PostMapping
-	public String uploadBook(@RequestBody Book book , @CurrentUser User currentUser)
-	{
-		return bookService.uploadBook(book,currentUser);
+	public String uploadBook(@RequestParam(name="coverPhoto", required = false)MultipartFile coverPhoto,
+							 @RequestParam("bookJSON") String bookJSON,
+							 @CurrentUser User currentUser) throws JsonProcessingException {
+		ObjectMapper objectMapper = new ObjectMapper();
+		Book book = objectMapper.readValue(bookJSON,Book.class);
+		return bookService.uploadBook(book, coverPhoto,currentUser);
 	}
 
 	//to get all approved books

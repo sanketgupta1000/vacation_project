@@ -71,6 +71,10 @@ public class User {
     @Column(name = "date_of_birth")
     private Date dateOfBirth;
 
+    //path to the user's profile photo stored in a file system
+    @Column(name = "profile_photo_url")
+    private String profilePhotoURL;
+
     //books uploaded by user
     @OneToMany(mappedBy = "owner")
     private List<Book> uploadedBooks;
@@ -103,7 +107,7 @@ public class User {
     // TODO: add profile photo too
 
     // constructor
-    public User(User referrer, String phoneNumber, UserType userType, String fullName, String password, String email, Integer id, String otp, MemberApprovalRequest memberApprovalRequest, boolean isOtpVerified, Address address, Date dateOfBirth, List<Book> uploadedBooks, BorrowRequest currentBorrowRequest) {
+    public User(User referrer, String phoneNumber, UserType userType, String fullName, String password, String email, Integer id, String otp, MemberApprovalRequest memberApprovalRequest, boolean isOtpVerified, Address address, Date dateOfBirth, List<Book> uploadedBooks, BorrowRequest currentBorrowRequest, String profilePhotopath) {
         this.referrer = referrer;
         this.phoneNumber = phoneNumber;
         this.userType = userType;
@@ -118,6 +122,7 @@ public class User {
         this.dateOfBirth = dateOfBirth;
         this.uploadedBooks = uploadedBooks;
         this.currentBorrowRequest = currentBorrowRequest;
+        this.profilePhotoURL = profilePhotoURL;
     }
 
     // no args
@@ -276,6 +281,14 @@ public class User {
         this.currentBorrowRequest = currentBorrowRequest;
     }
 
+    public String getProfilePhotoURL() {
+        return profilePhotoURL;
+    }
+
+    public void setProfilePhotoURL(String profilePhotoURL) {
+        this.profilePhotoURL = profilePhotoURL;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -298,6 +311,7 @@ public class User {
                 ", bookReceivingTransactions=" + bookReceivingTransactions +
                 ", borrowRequests=" + borrowRequests +
                 ", currentBorrowRequest=" + currentBorrowRequest +
+                ", profilePhotoURL=" + profilePhotoURL +
                 '}';
     }
 

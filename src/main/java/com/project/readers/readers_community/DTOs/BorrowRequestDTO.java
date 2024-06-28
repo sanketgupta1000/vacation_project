@@ -6,20 +6,24 @@ public class BorrowRequestDTO
     private Integer borrowRequestId;
     private Integer bookCopyId;
     private String bookCopyName;
+    private String coverPhotoURL;
     private Integer requesterId;
     private String requesterName;
+    private String requesterEmail;
+    private String requesterProfilePhotoURL;
     private String status;
 
-    public BorrowRequestDTO(Integer borrowRequestId, Integer bookCopyId, String bookCopyName, Integer requesterId, String requesterName, String status) {
+    public BorrowRequestDTO(Integer borrowRequestId, Integer bookCopyId, String bookCopyName, String coverPhotoURL, Integer requesterId, String requesterName, String requesterEmail, String requesterProfilePhotoURL, String status) {
         this.borrowRequestId = borrowRequestId;
         this.bookCopyId = bookCopyId;
         this.bookCopyName = bookCopyName;
+        this.coverPhotoURL = coverPhotoURL;
         this.requesterId = requesterId;
         this.requesterName = requesterName;
+        this.requesterEmail = requesterEmail;
+        this.requesterProfilePhotoURL = requesterProfilePhotoURL;
         this.status = status;
     }
-
-    public BorrowRequestDTO(){}
 
     public Integer getBorrowRequestId() {
         return borrowRequestId;
@@ -45,6 +49,14 @@ public class BorrowRequestDTO
         this.bookCopyName = bookCopyName;
     }
 
+    public String getCoverPhotoURL() {
+        return coverPhotoURL;
+    }
+
+    public void setCoverPhotoURL(String coverPhotoURL) {
+        this.coverPhotoURL = coverPhotoURL;
+    }
+
     public Integer getRequesterId() {
         return requesterId;
     }
@@ -61,11 +73,27 @@ public class BorrowRequestDTO
         this.requesterName = requesterName;
     }
 
-    public String getstatus() {
+    public String getRequesterEmail() {
+        return requesterEmail;
+    }
+
+    public void setRequesterEmail(String requesterEmail) {
+        this.requesterEmail = requesterEmail;
+    }
+
+    public String getRequesterProfilePhotoURL() {
+        return requesterProfilePhotoURL;
+    }
+
+    public void setRequesterProfilePhotoURL(String requesterProfilePhotoURL) {
+        this.requesterProfilePhotoURL = requesterProfilePhotoURL;
+    }
+
+    public String getStatus() {
         return status;
     }
 
-    public void setstatus(String status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 
@@ -75,9 +103,12 @@ public class BorrowRequestDTO
                 "borrowRequestId=" + borrowRequestId +
                 ", bookCopyId=" + bookCopyId +
                 ", bookCopyName='" + bookCopyName + '\'' +
+                ", coverPhotoURL='" + coverPhotoURL + '\'' +
                 ", requesterId=" + requesterId +
                 ", requesterName='" + requesterName + '\'' +
-                ", status='" + status +
+                ", requesterEmail='" + requesterEmail + '\'' +
+                ", requesterProfilePhotoURL='" + requesterProfilePhotoURL + '\'' +
+                ", status='" + status + '\'' +
                 '}';
     }
 }
