@@ -11,13 +11,14 @@ public class BookDTO
     private int bookQuantity;
     private Long bookCategoryId;
     private String bookCategoryName;
+    private String coverPhotoURL;
     private String bookApprovalStatus;
     private Integer bookOwnerId;
     private String bookOwnerName;
     private String bookOwnerEmail;
     private String bookOwnerProfilePhotoURL;
 
-    public BookDTO(Long bookId, String bookTitle, String bookAuthor, int bookPageCount, int bookQuantity, Long bookCategoryId, String bookCategoryName, String bookApprovalStatus, Integer bookOwnerId, String bookOwnerName, String bookOwnerEmail, String bookOwnerProfilePhotoURL) {
+    public BookDTO(Long bookId, String bookTitle, String bookAuthor, int bookPageCount, int bookQuantity, Long bookCategoryId, String bookCategoryName, String coverPhotoURL, String bookApprovalStatus, Integer bookOwnerId, String bookOwnerName, String bookOwnerEmail, String bookOwnerProfilePhotoURL) {
         this.bookId = bookId;
         this.bookTitle = bookTitle;
         this.bookAuthor = bookAuthor;
@@ -25,6 +26,7 @@ public class BookDTO
         this.bookQuantity = bookQuantity;
         this.bookCategoryId = bookCategoryId;
         this.bookCategoryName = bookCategoryName;
+        this.coverPhotoURL = coverPhotoURL;
         this.bookApprovalStatus = bookApprovalStatus;
         this.bookOwnerId = bookOwnerId;
         this.bookOwnerName = bookOwnerName;
@@ -88,6 +90,14 @@ public class BookDTO
         this.bookCategoryName = bookCategoryName;
     }
 
+    public String getCoverPhotoURL() {
+        return coverPhotoURL;
+    }
+
+    public void setCoverPhotoURL(String coverPhotoURL) {
+        this.coverPhotoURL = coverPhotoURL;
+    }
+
     public String getBookApprovalStatus() {
         return bookApprovalStatus;
     }
@@ -138,6 +148,7 @@ public class BookDTO
                 ", bookQuantity=" + bookQuantity +
                 ", bookCategoryId=" + bookCategoryId +
                 ", bookCategoryName='" + bookCategoryName + '\'' +
+                ", coverPhotoURL='" + coverPhotoURL + '\'' +
                 ", bookApprovalStatus='" + bookApprovalStatus + '\'' +
                 ", bookOwnerId=" + bookOwnerId +
                 ", bookOwnerName='" + bookOwnerName + '\'' +

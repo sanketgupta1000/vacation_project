@@ -13,6 +13,7 @@ import com.project.readers.readers_community.entities.Book;
 import com.project.readers.readers_community.entities.BookCategory;
 import com.project.readers.readers_community.entities.User;
 import com.project.readers.readers_community.enums.Approval;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
@@ -28,8 +29,9 @@ public class BookService {
     private final BorrowRequestRepository borrowRequestRepository;
     private final Mapper mapper;
     private final UserRepository userRepository;
+    private final FileService fileService;
 
-    public BookService(BookRepository bookRepository, OtpService otpService, EmailService emailService, BookCopyRepository bookCopyRepository, BookTransactionRepository bookTransactionRepository, BorrowRequestRepository borrowRequestRepository, BookCategoryRepository bookCategoryRepository, Mapper mapper, UserRepository userRepository) {
+    public BookService(BookRepository bookRepository, OtpService otpService, EmailService emailService, BookCopyRepository bookCopyRepository, BookTransactionRepository bookTransactionRepository, BorrowRequestRepository borrowRequestRepository, BookCategoryRepository bookCategoryRepository, Mapper mapper, UserRepository userRepository, FileService fileService) {
         this.bookRepository = bookRepository;
         this.otpService = otpService;
         this.emailService = emailService;
@@ -39,10 +41,11 @@ public class BookService {
         this.bookCategoryRepository = bookCategoryRepository;
         this.mapper = mapper;
         this.userRepository = userRepository;
+        this.fileService = fileService;
     }
 
     @Transactional
-    public String uploadBook(Book book, User cureentUser) {
+    public String uploadBook(Book book, MultipartFile coverPhoto, User cureentUser) {
 
         book.setId(0L);
         book.setOwner(cureentUser);
@@ -60,10 +63,31 @@ public class BookService {
 
         book.setCategory(bc);
 
+        uploadBookCoverPhoto(coverPhoto, book);
+
         bookRepository.save(book);
 
         return "your book upload request is sent to admin";
 
+    }
+
+    @Transactional
+    public void uploadBookCoverPhoto(MultipartFile coverPhoto, Book book)
+    {
+        if(coverPhoto.isEmpty() || coverPhoto.getContentType() == null || !coverPhoto.getContentType().startsWith("image"))
+        {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Please upload a valid Image file");
+        }
+        try
+        {
+            String coverPhotoURL = fileService.uploadFile(coverPhoto, "readers/cover_photos", null);
+            book.setCoverPhotoURL(coverPhotoURL);
+        }
+        catch(Exception exp)
+        {
+            System.out.println("\n\n\nFile Upload error : exp.getMessage()\n\n\n");
+            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "Unable to upload Image, please try again later");
+        }
     }
 
     @Transactional

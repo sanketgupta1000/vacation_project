@@ -52,13 +52,13 @@ public class UserController
 	@PutMapping("/updateProfile")
 	public UserDTO updateProfile(
 			@RequestParam(name="profilePhoto", required = false) MultipartFile profilePhoto,
-			@RequestParam("address") String addressStr,
+			@RequestParam("address") String addressJSON,
 			@RequestParam("fullName") String fullName,
 			@RequestParam("phoneNumber") String phoneNumber,
 			@RequestParam("dateOfBirth") @DateTimeFormat(pattern = "yyyy-MM-dd") Date dateOfBirth,
 			@CurrentUser User currentUser) throws JsonProcessingException {
 		ObjectMapper objectMapper = new ObjectMapper();
-		Address address = objectMapper.readValue(addressStr, Address.class);
+		Address address = objectMapper.readValue(addressJSON, Address.class);
 		return userService.updateProfile(fullName, phoneNumber, address, dateOfBirth, profilePhoto, currentUser);
 	}
 

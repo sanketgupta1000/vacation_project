@@ -6,16 +6,18 @@ public class BorrowRequestDTO
     private Integer borrowRequestId;
     private Integer bookCopyId;
     private String bookCopyName;
+    private String coverPhotoURL;
     private Integer requesterId;
     private String requesterName;
     private String requesterEmail;
     private String requesterProfilePhotoURL;
     private String status;
 
-    public BorrowRequestDTO(Integer borrowRequestId, Integer bookCopyId, String bookCopyName, Integer requesterId, String requesterName, String requesterEmail, String requesterProfilePhotoURL, String status) {
+    public BorrowRequestDTO(Integer borrowRequestId, Integer bookCopyId, String bookCopyName, String coverPhotoURL, Integer requesterId, String requesterName, String requesterEmail, String requesterProfilePhotoURL, String status) {
         this.borrowRequestId = borrowRequestId;
         this.bookCopyId = bookCopyId;
         this.bookCopyName = bookCopyName;
+        this.coverPhotoURL = coverPhotoURL;
         this.requesterId = requesterId;
         this.requesterName = requesterName;
         this.requesterEmail = requesterEmail;
@@ -45,6 +47,14 @@ public class BorrowRequestDTO
 
     public void setBookCopyName(String bookCopyName) {
         this.bookCopyName = bookCopyName;
+    }
+
+    public String getCoverPhotoURL() {
+        return coverPhotoURL;
+    }
+
+    public void setCoverPhotoURL(String coverPhotoURL) {
+        this.coverPhotoURL = coverPhotoURL;
     }
 
     public Integer getRequesterId() {
@@ -93,6 +103,7 @@ public class BorrowRequestDTO
                 "borrowRequestId=" + borrowRequestId +
                 ", bookCopyId=" + bookCopyId +
                 ", bookCopyName='" + bookCopyName + '\'' +
+                ", coverPhotoURL='" + coverPhotoURL + '\'' +
                 ", requesterId=" + requesterId +
                 ", requesterName='" + requesterName + '\'' +
                 ", requesterEmail='" + requesterEmail + '\'' +

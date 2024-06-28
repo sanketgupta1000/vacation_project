@@ -6,6 +6,7 @@ public class BookTransactionDTO
     private int bookCopyId;
     private Long bookId;
     private String bookTitle;
+    private String coverPhotoURL;
     private Integer bookGiverId;
     private String bookGiverFullName;
     private String bookGiverEmail;
@@ -17,11 +18,12 @@ public class BookTransactionDTO
     private String transactionDate;
     private String transactionTime;
 
-    public BookTransactionDTO(Long transactionId, int bookCopyId, Long bookId, String bookTitle, Integer bookGiverId, String bookGiverFullName, String bookGiverEmail, String bookGiverProfilePhotoURL, Integer bookReceiverId, String bookReceiverFullName, String bookReceiverEmail, String bookReceiverProfilePhotoURL, String transactionDate, String transactionTime) {
+    public BookTransactionDTO(Long transactionId, int bookCopyId, Long bookId, String bookTitle, String coverPhotoURL, Integer bookGiverId, String bookGiverFullName, String bookGiverEmail, String bookGiverProfilePhotoURL, Integer bookReceiverId, String bookReceiverFullName, String bookReceiverEmail, String bookReceiverProfilePhotoURL, String transactionDate, String transactionTime) {
         this.transactionId = transactionId;
         this.bookCopyId = bookCopyId;
         this.bookId = bookId;
         this.bookTitle = bookTitle;
+        this.coverPhotoURL = coverPhotoURL;
         this.bookGiverId = bookGiverId;
         this.bookGiverFullName = bookGiverFullName;
         this.bookGiverEmail = bookGiverEmail;
@@ -64,6 +66,14 @@ public class BookTransactionDTO
 
     public void setBookTitle(String bookTitle) {
         this.bookTitle = bookTitle;
+    }
+
+    public String getCoverPhotoURL() {
+        return coverPhotoURL;
+    }
+
+    public void setCoverPhotoURL(String coverPhotoURL) {
+        this.coverPhotoURL = coverPhotoURL;
     }
 
     public Integer getBookGiverId() {
@@ -153,6 +163,7 @@ public class BookTransactionDTO
                 ", bookCopyId=" + bookCopyId +
                 ", bookId=" + bookId +
                 ", bookTitle='" + bookTitle + '\'' +
+                ", coverPhotoURL='" + coverPhotoURL + '\'' +
                 ", bookGiverId=" + bookGiverId +
                 ", bookGiverFullName='" + bookGiverFullName + '\'' +
                 ", bookGiverEmail='" + bookGiverEmail + '\'' +

@@ -6,6 +6,7 @@ public class BookCopyDTO
     private Integer bookCopyId;
     private Long bookId;
     private String bookTitle;
+    private String coverPhotoURL;
     private Integer holderId;
     private String holderName;
     private String holderEmail;
@@ -17,10 +18,11 @@ public class BookCopyDTO
     private boolean requestable;
     private boolean canHandover;
 
-    public BookCopyDTO(Integer bookCopyId, Long bookId, String bookTitle, Integer holderId, String holderName, String holderEmail, String holderProfilePhotoURL, Integer borrowerId, String borrowerName, String borrowerEmail, String borrowerProfilePhotoURL, boolean requestable, boolean canHandover) {
+    public BookCopyDTO(Integer bookCopyId, Long bookId, String bookTitle, String coverPhotoURL, Integer holderId, String holderName, String holderEmail, String holderProfilePhotoURL, Integer borrowerId, String borrowerName, String borrowerEmail, String borrowerProfilePhotoURL, boolean requestable, boolean canHandover) {
         this.bookCopyId = bookCopyId;
         this.bookId = bookId;
         this.bookTitle = bookTitle;
+        this.coverPhotoURL = coverPhotoURL;
         this.holderId = holderId;
         this.holderName = holderName;
         this.holderEmail = holderEmail;
@@ -55,6 +57,14 @@ public class BookCopyDTO
 
     public void setBookTitle(String bookTitle) {
         this.bookTitle = bookTitle;
+    }
+
+    public String getCoverPhotoURL() {
+        return coverPhotoURL;
+    }
+
+    public void setCoverPhotoURL(String coverPhotoURL) {
+        this.coverPhotoURL = coverPhotoURL;
     }
 
     public Integer getHolderId() {
@@ -143,6 +153,7 @@ public class BookCopyDTO
                 "bookCopyId=" + bookCopyId +
                 ", bookId=" + bookId +
                 ", bookTitle='" + bookTitle + '\'' +
+                ", coverPhotoURL='" + coverPhotoURL + '\'' +
                 ", holderId=" + holderId +
                 ", holderName='" + holderName + '\'' +
                 ", holderEmail='" + holderEmail + '\'' +

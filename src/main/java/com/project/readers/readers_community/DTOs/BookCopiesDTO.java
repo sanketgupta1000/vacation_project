@@ -2,8 +2,7 @@ package com.project.readers.readers_community.DTOs;
 import java.util.List;
 
 // to send the book data as well as all book copies data
-public class BookCopiesDTO
-{
+public class BookCopiesDTO {
 
     private Long bookId;
     private String bookTitle;
@@ -12,6 +11,7 @@ public class BookCopiesDTO
     private int bookQuantity;
     private Long bookCategoryId;
     private String bookCategoryName;
+    private String coverPhotoURL;
     private String bookApprovalStatus;
     private Integer bookOwnerId;
     private String bookOwnerName;
@@ -20,7 +20,8 @@ public class BookCopiesDTO
     private List<BookCopyDTO> bookCopies;
 
     // all args constructor
-    public BookCopiesDTO(Long bookId, String bookTitle, String bookAuthor, int bookPageCount, int bookQuantity, Long bookCategoryId, String bookCategoryName, String bookApprovalStatus, Integer bookOwnerId, String bookOwnerName, String bookOwnerEmail, String bookOwnerProfilePhotoURL , List<BookCopyDTO> bookCopies) {
+
+    public BookCopiesDTO(Long bookId, String bookTitle, String bookAuthor, int bookPageCount, int bookQuantity, Long bookCategoryId, String bookCategoryName, String coverPhotoURL, String bookApprovalStatus, Integer bookOwnerId, String bookOwnerName, String bookOwnerEmail, String bookOwnerProfilePhotoURL, List<BookCopyDTO> bookCopies) {
         this.bookId = bookId;
         this.bookTitle = bookTitle;
         this.bookAuthor = bookAuthor;
@@ -28,6 +29,7 @@ public class BookCopiesDTO
         this.bookQuantity = bookQuantity;
         this.bookCategoryId = bookCategoryId;
         this.bookCategoryName = bookCategoryName;
+        this.coverPhotoURL = coverPhotoURL;
         this.bookApprovalStatus = bookApprovalStatus;
         this.bookOwnerId = bookOwnerId;
         this.bookOwnerName = bookOwnerName;
@@ -35,13 +37,6 @@ public class BookCopiesDTO
         this.bookOwnerProfilePhotoURL = bookOwnerProfilePhotoURL;
         this.bookCopies = bookCopies;
     }
-
-    // no args constructor
-    public BookCopiesDTO() {
-    }
-
-    // getters and setters
-
 
     public Long getBookId() {
         return bookId;
@@ -99,6 +94,14 @@ public class BookCopiesDTO
         this.bookCategoryName = bookCategoryName;
     }
 
+    public String getCoverPhotoURL() {
+        return coverPhotoURL;
+    }
+
+    public void setCoverPhotoURL(String coverPhotoURL) {
+        this.coverPhotoURL = coverPhotoURL;
+    }
+
     public String getBookApprovalStatus() {
         return bookApprovalStatus;
     }
@@ -147,9 +150,6 @@ public class BookCopiesDTO
         this.bookCopies = bookCopies;
     }
 
-
-    // to string
-
     @Override
     public String toString() {
         return "BookCopiesDTO{" +
@@ -160,6 +160,7 @@ public class BookCopiesDTO
                 ", bookQuantity=" + bookQuantity +
                 ", bookCategoryId=" + bookCategoryId +
                 ", bookCategoryName='" + bookCategoryName + '\'' +
+                ", coverPhotoURL='" + coverPhotoURL + '\'' +
                 ", bookApprovalStatus='" + bookApprovalStatus + '\'' +
                 ", bookOwnerId=" + bookOwnerId +
                 ", bookOwnerName='" + bookOwnerName + '\'' +
