@@ -18,6 +18,7 @@ import com.project.readers.readers_community.utilities.UpdatableUserPersonalDeta
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
@@ -28,28 +29,52 @@ public class UserService {
     private final TokenService tokenService;
     private final Mapper mapper;
     private final MemberApprovalRequestRepository memberApprovalRequestRepository;
+    private final FileService fileService;
 
-    public UserService(UserRepository userRepository, TokenService tokenService, Mapper mapper, MemberApprovalRequestRepository memberApprovalRequestRepository) {
+
+    public UserService(UserRepository userRepository, TokenService tokenService, Mapper mapper, MemberApprovalRequestRepository memberApprovalRequestRepository, FileService fileService) {
         this.userRepository = userRepository;
         this.tokenService = tokenService;
         this.mapper = mapper;
         this.memberApprovalRequestRepository = memberApprovalRequestRepository;
+        this.fileService = fileService;
     }
 
     // to let user complete his/her profile by providing additional information like address, dob
     // will also update the role to MEMBER from NEW_MEMBER
     // and so, will need to return updated jwt
     @Transactional
-    public String completeProfile(Address address, Date dateOfBirth, User user) {
+    public String completeProfile(Address address, Date dateOfBirth, MultipartFile profilePhoto, User user) {
         // setting new info
         user.setAddress(address);
         user.setDateOfBirth(dateOfBirth);
         // update the role
         user.setUserType(UserType.MEMBER);
+        //update profilePhoto
+        uploadUserProfilePhoto(profilePhoto, user, null);
         // save
         User updatedUser = userRepository.save(user);
         // new jwt
         return tokenService.encode(user.getEmail(), "ROLE_" + updatedUser.getUserType().toString());
+    }
+
+    @Transactional
+    public void uploadUserProfilePhoto(MultipartFile profilePhoto, User user, String public_id)
+    {
+        if(profilePhoto.isEmpty() || profilePhoto.getContentType() == null || !profilePhoto.getContentType().startsWith("image"))
+        {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Please upload a valid Image file");
+        }
+        try
+        {
+            String profilePhotoURL = fileService.uploadFile(profilePhoto, "readers/profile_photos", public_id);
+            user.setProfilePhotoURL(profilePhotoURL);
+        }
+        catch(Exception exp)
+        {
+            System.out.println("\n\n\nFile Upload error : exp.getMessage()\n\n\n");
+            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "Unable to upload Image, please try again later");
+        }
     }
 
     @Transactional
@@ -63,11 +88,19 @@ public class UserService {
     }
 
     @Transactional
-    public UserDTO updateProfile(String fullName, String phoneNumber, Address address, Date dateOfBirth, User currentUser) {
+    public UserDTO updateProfile(String fullName, String phoneNumber, Address address, Date dateOfBirth, MultipartFile profilePhoto, User currentUser) {
         currentUser.setFullName(fullName);
         currentUser.setPhoneNumber(phoneNumber);
         currentUser.setAddress(address);
         currentUser.setDateOfBirth(dateOfBirth);
+
+        if(!profilePhoto.isEmpty()) {
+            String currentProfilePhotoURL = currentUser.getProfilePhotoURL();
+            String[] parts = currentProfilePhotoURL.split("/");
+            String public_id = parts[parts.length - 1].split("\\.")[0];
+            uploadUserProfilePhoto(profilePhoto, currentUser, public_id);
+        }
+
         User user = userRepository.save(currentUser);
 
         return mapper.userToUserDTO(user);

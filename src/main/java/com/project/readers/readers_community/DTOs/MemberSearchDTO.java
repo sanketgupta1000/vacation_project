@@ -2,25 +2,17 @@ package com.project.readers.readers_community.DTOs;
 
 public class MemberSearchDTO
 {
-
     private Integer id;
     private String fullName;
     private String email;
+    private String profilePhotoURL;
 
-    public MemberSearchDTO(Integer id, String fullName, String email)
-    {
+    public MemberSearchDTO(Integer id, String fullName, String email, String profilePhotoURL) {
         this.id = id;
         this.fullName = fullName;
         this.email = email;
+        this.profilePhotoURL = profilePhotoURL;
     }
-
-    // no args
-    public MemberSearchDTO()
-    {
-    }
-
-    // all getters and setters
-
 
     public Integer getId() {
         return id;
@@ -46,10 +38,21 @@ public class MemberSearchDTO
         this.email = email;
     }
 
-    // toString
+    public String getProfilePhotoURL() {
+        return profilePhotoURL;
+    }
+
+    public void setProfilePhotoURL(String profilePhotoURL) {
+        this.profilePhotoURL = profilePhotoURL;
+    }
+
     @Override
-    public String toString()
-    {
-        return "MemberSearchDTO{" + "id=" + id + ", fullName='" + fullName + '\'' + ", email='" + email + '\'' + '}';
+    public String toString() {
+        return "MemberSearchDTO{" +
+                "id=" + id +
+                ", fullName='" + fullName + '\'' +
+                ", email='" + email + '\'' +
+                ", profilePhotoURL='" + profilePhotoURL + '\'' +
+                '}';
     }
 }

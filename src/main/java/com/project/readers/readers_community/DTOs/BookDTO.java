@@ -14,8 +14,10 @@ public class BookDTO
     private String bookApprovalStatus;
     private Integer bookOwnerId;
     private String bookOwnerName;
+    private String bookOwnerEmail;
+    private String bookOwnerProfilePhotoURL;
 
-    public BookDTO(Long bookId, String bookTitle, String bookAuthor, int bookPageCount, int bookQuantity, Long bookCategoryId, String bookCategoryName, String bookApprovalStatus, Integer bookOwnerId, String bookOwnerName) {
+    public BookDTO(Long bookId, String bookTitle, String bookAuthor, int bookPageCount, int bookQuantity, Long bookCategoryId, String bookCategoryName, String bookApprovalStatus, Integer bookOwnerId, String bookOwnerName, String bookOwnerEmail, String bookOwnerProfilePhotoURL) {
         this.bookId = bookId;
         this.bookTitle = bookTitle;
         this.bookAuthor = bookAuthor;
@@ -26,9 +28,9 @@ public class BookDTO
         this.bookApprovalStatus = bookApprovalStatus;
         this.bookOwnerId = bookOwnerId;
         this.bookOwnerName = bookOwnerName;
+        this.bookOwnerEmail = bookOwnerEmail;
+        this.bookOwnerProfilePhotoURL = bookOwnerProfilePhotoURL;
     }
-
-    public BookDTO(){}
 
     public Long getBookId() {
         return bookId;
@@ -110,9 +112,25 @@ public class BookDTO
         this.bookOwnerName = bookOwnerName;
     }
 
+    public String getBookOwnerEmail() {
+        return bookOwnerEmail;
+    }
+
+    public void setBookOwnerEmail(String bookOwnerEmail) {
+        this.bookOwnerEmail = bookOwnerEmail;
+    }
+
+    public String getBookOwnerProfilePhotoURL() {
+        return bookOwnerProfilePhotoURL;
+    }
+
+    public void setBookOwnerProfilePhotoURL(String bookOwnerProfilePhotoURL) {
+        this.bookOwnerProfilePhotoURL = bookOwnerProfilePhotoURL;
+    }
+
     @Override
     public String toString() {
-        return "BookApprovalRequestDTO{" +
+        return "BookDTO{" +
                 "bookId=" + bookId +
                 ", bookTitle='" + bookTitle + '\'' +
                 ", bookAuthor='" + bookAuthor + '\'' +
@@ -123,6 +141,8 @@ public class BookDTO
                 ", bookApprovalStatus='" + bookApprovalStatus + '\'' +
                 ", bookOwnerId=" + bookOwnerId +
                 ", bookOwnerName='" + bookOwnerName + '\'' +
+                ", bookOwnerEmail='" + bookOwnerEmail + '\'' +
+                ", bookOwnerProfilePhotoURL='" + bookOwnerProfilePhotoURL + '\'' +
                 '}';
     }
 }

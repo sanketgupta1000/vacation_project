@@ -24,40 +24,45 @@ public class Mapper
                 book.getCategory().getName(),
                 book.getAdminApproval().toString(),
                 book.getOwner().getId(),
-                book.getOwner().getFullName()
+                book.getOwner().getFullName(),
+                book.getOwner().getEmail(),
+                book.getOwner().getProfilePhotoURL()
         );
     }
     public UserDTO userToUserDTO(User user)
     {
         SimpleDateFormat dayFormat = new SimpleDateFormat("dd-MM-yyyy");
         int referrerId = 0;
-    	  String referrerName=null;
+        String referrerName=null;
         String referrerEmail=null;
+        String referrerProfilePhotoURL = null;
 
         if(user.getReferrer()!=null)
         {
-                referrerId = user.getReferrer().getId();
-          referrerName = user.getReferrer().getFullName();
-                referrerEmail = user.getReferrer().getEmail();
+            referrerId = user.getReferrer().getId();
+            referrerName = user.getReferrer().getFullName();
+            referrerEmail = user.getReferrer().getEmail();
+            referrerProfilePhotoURL = user.getReferrer().getProfilePhotoURL();
         }
 
         return new UserDTO(
-            user.getId(),
-            user.getEmail(),
-            user.getFullName(),
-            user.getPhoneNumber(),
-            user.getUserType(),
-            referrerId,
-            referrerName,
-            referrerEmail,
-            user.getAddress().getHouseNo(),
-            user.getAddress().getStreet(),
-            user.getAddress().getLandmark(),
-            user.getAddress().getCity(),
-            user.getAddress().getState(),
-            user.getAddress().getCountry(),
-            dayFormat.format(user.getDateOfBirth())
-            );
+        user.getId(),
+        user.getEmail(),
+        user.getFullName(),
+        user.getPhoneNumber(),
+        user.getUserType(),
+        dayFormat.format(user.getDateOfBirth()),
+        user.getProfilePhotoURL(),
+        user.getAddress().getHouseNo(),
+        user.getAddress().getStreet(),
+        user.getAddress().getLandmark(),
+        user.getAddress().getCity(),
+        user.getAddress().getState(),
+        user.getAddress().getCountry(),
+        referrerId,
+        referrerName,
+        referrerEmail,
+        referrerProfilePhotoURL);
     }
 
     public BorrowRequestDTO borrowRequestToBorrowRequestDTO(BorrowRequest borrowRequest)
@@ -68,6 +73,8 @@ public class Mapper
                 borrowRequest.getBookCopy().getBook().getBookTitle(),
                 borrowRequest.getRequester().getId(),
                 borrowRequest.getRequester().getFullName(),
+                borrowRequest.getRequester().getEmail(),
+                borrowRequest.getRequester().getProfilePhotoURL(),
                 borrowRequest.getStatus().toString()
         );
     }
@@ -80,8 +87,12 @@ public class Mapper
                 bookCopy.getBook().getBookTitle(),
                 bookCopy.getHolder().getId(),
                 bookCopy.getHolder().getFullName(),
+                bookCopy.getHolder().getEmail(),
+                bookCopy.getHolder().getProfilePhotoURL(),
                 bookCopy.getBorrower().getId(),
                 bookCopy.getBorrower().getFullName(),
+                bookCopy.getBorrower().getEmail(),
+                bookCopy.getBorrower().getProfilePhotoURL(),
                 canCurrentUserRequest,
                 canHandover
         );
@@ -100,9 +111,11 @@ public class Mapper
                 bookTransaction.getBookGiver().getId(),
                 bookTransaction.getBookGiver().getFullName(),
                 bookTransaction.getBookGiver().getEmail(),
+                bookTransaction.getBookGiver().getProfilePhotoURL(),
                 bookTransaction.getBookReceiver().getId(),
                 bookTransaction.getBookReceiver().getFullName(),
                 bookTransaction.getBookReceiver().getEmail(),
+                bookTransaction.getBookReceiver().getProfilePhotoURL(),
                 dayFormat.format(bookTransaction.getTransactionDateTime()),
                 timeFormat.format(bookTransaction.getTransactionDateTime())
         );
@@ -113,12 +126,14 @@ public class Mapper
 		Integer referrerId = null;
 		String referrerName = null;
 		String referrerEmail = null;
+        String referrerProfilePhotoURL = null;
 
 		if(memberApprovalRequest.getMember().getReferrer()!=null)
 		{
 			referrerId = memberApprovalRequest.getMember().getReferrer().getId();
 			referrerName = memberApprovalRequest.getMember().getReferrer().getFullName();
 			referrerEmail = memberApprovalRequest.getMember().getReferrer().getEmail();
+            referrerProfilePhotoURL = memberApprovalRequest.getMember().getReferrer().getProfilePhotoURL();
 		}
 
         return new MemberApprovalRequestDTO(
@@ -126,9 +141,11 @@ public class Mapper
                 memberApprovalRequest.getMember().getId(),
                 memberApprovalRequest.getMember().getFullName(),
                 memberApprovalRequest.getMember().getEmail(),
+                memberApprovalRequest.getMember().getPhoneNumber(),
                 referrerId,
 				referrerName,
 				referrerEmail,
+                referrerProfilePhotoURL,
                 memberApprovalRequest.getReferrerApproval().name(),
                 memberApprovalRequest.getAdminApproval().name()
         );
@@ -171,6 +188,8 @@ public class Mapper
             book.getAdminApproval().toString(),
             book.getOwner().getId(),
             book.getOwner().getFullName(),
+            book.getOwner().getEmail(),
+            book.getOwner().getProfilePhotoURL(),
             bookCopyDTOList
         );
 
@@ -193,11 +212,15 @@ public class Mapper
                 bookCopy.getBook().getBookTitle(),
                 bookCopy.getHolder().getId(),
                 bookCopy.getHolder().getFullName(),
+                bookCopy.getHolder().getEmail(),
+                bookCopy.getHolder().getProfilePhotoURL(),
                 bookCopy.getBorrower().getId(),
                 bookCopy.getBorrower().getFullName(),
+                bookCopy.getBorrower().getEmail(),
+                bookCopy.getBorrower().getProfilePhotoURL(),
                 canRequest,
-                showTransactions ? bookTransactions.stream().map(this::bookTransactionToBookTransactionDTO).toList() : null,
-                canHandover
+                canHandover,
+                showTransactions ? bookTransactions.stream().map(this::bookTransactionToBookTransactionDTO).toList() : null
         );
 
     }
@@ -207,7 +230,8 @@ public class Mapper
         return new MemberSearchDTO(
                 user.getId(),
                 user.getFullName(),
-                user.getEmail()
+                user.getEmail(),
+                user.getProfilePhotoURL()
         );
     }
 
@@ -215,7 +239,8 @@ public class Mapper
     {
         return new AuthDTO(
                 user.getId(),
-                user.getUserType()
+                user.getUserType(),
+                user.getProfilePhotoURL()
         );
     }
 }

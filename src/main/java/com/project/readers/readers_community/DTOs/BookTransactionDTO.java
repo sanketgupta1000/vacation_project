@@ -9,16 +9,15 @@ public class BookTransactionDTO
     private Integer bookGiverId;
     private String bookGiverFullName;
     private String bookGiverEmail;
+    private String bookGiverProfilePhotoURL;
     private Integer bookReceiverId;
     private String bookReceiverFullName;
     private String bookReceiverEmail;
+    private String bookReceiverProfilePhotoURL;
     private String transactionDate;
     private String transactionTime;
 
-    public BookTransactionDTO() {
-    }
-
-    public BookTransactionDTO(Long transactionId, int bookCopyId, Long bookId, String bookTitle, Integer bookGiverId, String bookGiverFullName, String bookGiverEmail, Integer bookReceiverId, String bookReceiverFullName, String bookReceiverEmail, String transactionDate, String transactionTime) {
+    public BookTransactionDTO(Long transactionId, int bookCopyId, Long bookId, String bookTitle, Integer bookGiverId, String bookGiverFullName, String bookGiverEmail, String bookGiverProfilePhotoURL, Integer bookReceiverId, String bookReceiverFullName, String bookReceiverEmail, String bookReceiverProfilePhotoURL, String transactionDate, String transactionTime) {
         this.transactionId = transactionId;
         this.bookCopyId = bookCopyId;
         this.bookId = bookId;
@@ -26,9 +25,11 @@ public class BookTransactionDTO
         this.bookGiverId = bookGiverId;
         this.bookGiverFullName = bookGiverFullName;
         this.bookGiverEmail = bookGiverEmail;
+        this.bookGiverProfilePhotoURL = bookGiverProfilePhotoURL;
         this.bookReceiverId = bookReceiverId;
         this.bookReceiverFullName = bookReceiverFullName;
         this.bookReceiverEmail = bookReceiverEmail;
+        this.bookReceiverProfilePhotoURL = bookReceiverProfilePhotoURL;
         this.transactionDate = transactionDate;
         this.transactionTime = transactionTime;
     }
@@ -89,6 +90,14 @@ public class BookTransactionDTO
         this.bookGiverEmail = bookGiverEmail;
     }
 
+    public String getBookGiverProfilePhotoURL() {
+        return bookGiverProfilePhotoURL;
+    }
+
+    public void setBookGiverProfilePhotoURL(String bookGiverProfilePhotoURL) {
+        this.bookGiverProfilePhotoURL = bookGiverProfilePhotoURL;
+    }
+
     public Integer getBookReceiverId() {
         return bookReceiverId;
     }
@@ -111,6 +120,14 @@ public class BookTransactionDTO
 
     public void setBookReceiverEmail(String bookReceiverEmail) {
         this.bookReceiverEmail = bookReceiverEmail;
+    }
+
+    public String getBookReceiverProfilePhotoURL() {
+        return bookReceiverProfilePhotoURL;
+    }
+
+    public void setBookReceiverProfilePhotoURL(String bookReceiverProfilePhotoURL) {
+        this.bookReceiverProfilePhotoURL = bookReceiverProfilePhotoURL;
     }
 
     public String getTransactionDate() {
@@ -139,9 +156,11 @@ public class BookTransactionDTO
                 ", bookGiverId=" + bookGiverId +
                 ", bookGiverFullName='" + bookGiverFullName + '\'' +
                 ", bookGiverEmail='" + bookGiverEmail + '\'' +
+                ", bookGiverProfilePhotoURL='" + bookGiverProfilePhotoURL + '\'' +
                 ", bookReceiverId=" + bookReceiverId +
                 ", bookReceiverFullName='" + bookReceiverFullName + '\'' +
                 ", bookReceiverEmail='" + bookReceiverEmail + '\'' +
+                ", bookReceiverProfilePhotoURL='" + bookReceiverProfilePhotoURL + '\'' +
                 ", transactionDate='" + transactionDate + '\'' +
                 ", transactionTime='" + transactionTime + '\'' +
                 '}';

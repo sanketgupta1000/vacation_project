@@ -15,10 +15,12 @@ public class BookCopiesDTO
     private String bookApprovalStatus;
     private Integer bookOwnerId;
     private String bookOwnerName;
+    private String bookOwnerEmail;
+    private String bookOwnerProfilePhotoURL;
     private List<BookCopyDTO> bookCopies;
 
     // all args constructor
-    public BookCopiesDTO(Long bookId, String bookTitle, String bookAuthor, int bookPageCount, int bookQuantity, Long bookCategoryId, String bookCategoryName, String bookApprovalStatus, Integer bookOwnerId, String bookOwnerName, List<BookCopyDTO> bookCopies) {
+    public BookCopiesDTO(Long bookId, String bookTitle, String bookAuthor, int bookPageCount, int bookQuantity, Long bookCategoryId, String bookCategoryName, String bookApprovalStatus, Integer bookOwnerId, String bookOwnerName, String bookOwnerEmail, String bookOwnerProfilePhotoURL , List<BookCopyDTO> bookCopies) {
         this.bookId = bookId;
         this.bookTitle = bookTitle;
         this.bookAuthor = bookAuthor;
@@ -29,6 +31,8 @@ public class BookCopiesDTO
         this.bookApprovalStatus = bookApprovalStatus;
         this.bookOwnerId = bookOwnerId;
         this.bookOwnerName = bookOwnerName;
+        this.bookOwnerEmail = bookOwnerEmail;
+        this.bookOwnerProfilePhotoURL = bookOwnerProfilePhotoURL;
         this.bookCopies = bookCopies;
     }
 
@@ -119,6 +123,22 @@ public class BookCopiesDTO
         this.bookOwnerName = bookOwnerName;
     }
 
+    public String getBookOwnerEmail() {
+        return bookOwnerEmail;
+    }
+
+    public void setBookOwnerEmail(String bookOwnerEmail) {
+        this.bookOwnerEmail = bookOwnerEmail;
+    }
+
+    public String getBookOwnerProfilePhotoURL() {
+        return bookOwnerProfilePhotoURL;
+    }
+
+    public void setBookOwnerProfilePhotoURL(String bookOwnerProfilePhotoURL) {
+        this.bookOwnerProfilePhotoURL = bookOwnerProfilePhotoURL;
+    }
+
     public List<BookCopyDTO> getBookCopies() {
         return bookCopies;
     }
@@ -127,7 +147,9 @@ public class BookCopiesDTO
         this.bookCopies = bookCopies;
     }
 
+
     // to string
+
     @Override
     public String toString() {
         return "BookCopiesDTO{" +
@@ -141,6 +163,8 @@ public class BookCopiesDTO
                 ", bookApprovalStatus='" + bookApprovalStatus + '\'' +
                 ", bookOwnerId=" + bookOwnerId +
                 ", bookOwnerName='" + bookOwnerName + '\'' +
+                ", bookOwnerEmail='" + bookOwnerEmail + '\'' +
+                ", bookOwnerProfilePhotoURL='" + bookOwnerProfilePhotoURL + '\'' +
                 ", bookCopies=" + bookCopies +
                 '}';
     }
