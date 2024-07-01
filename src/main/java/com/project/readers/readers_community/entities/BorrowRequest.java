@@ -4,6 +4,8 @@ import com.project.readers.readers_community.enums.Approval;
 import com.project.readers.readers_community.enums.BorrowRequestStatus;
 import jakarta.persistence.*;
 
+import java.util.Date;
+
 // represents the request to borrow a physical book
 @Entity
 @Table(name = "borrow_requests")
@@ -30,22 +32,35 @@ public class BorrowRequest
     @Column(name = "status")
     private BorrowRequestStatus status;
 
-    // no args constructor
-    public BorrowRequest()
-    {
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "request_date_time")
+    private Date requestDateTime;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "response_date_time")
+    private Date responseDateTime;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "receive_date_time")
+    private Date receiveDateTime;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "return_date_time")
+    private Date returnDateTime;
+
+    public BorrowRequest() {
     }
 
-    // all args
-    public BorrowRequest(Integer id, BookCopy bookCopy, User requester, BorrowRequestStatus status) {
+    public BorrowRequest(Integer id, BookCopy bookCopy, User requester, BorrowRequestStatus status, Date requestDateTime, Date responseDateTime, Date receiveDateTime, Date returnDateTime) {
         this.id = id;
         this.bookCopy = bookCopy;
         this.requester = requester;
         this.status = status;
+        this.requestDateTime = requestDateTime;
+        this.responseDateTime = responseDateTime;
+        this.receiveDateTime = receiveDateTime;
+        this.returnDateTime = returnDateTime;
     }
-
-
-    // getters and setters
 
     public Integer getId() {
         return id;
@@ -78,8 +93,39 @@ public class BorrowRequest
     public void setStatus(BorrowRequestStatus status) {
         this.status = status;
     }
-    
-    //to string
+
+    public Date getRequestDateTime() {
+        return requestDateTime;
+    }
+
+    public void setRequestDateTime(Date requestDateTime) {
+        this.requestDateTime = requestDateTime;
+    }
+
+    public Date getResponseDateTime() {
+        return responseDateTime;
+    }
+
+    public void setResponseDateTime(Date responseDateTime) {
+        this.responseDateTime = responseDateTime;
+    }
+
+    public Date getReceiveDateTime() {
+        return receiveDateTime;
+    }
+
+    public void setReceiveDateTime(Date receiveDateTime) {
+        this.receiveDateTime = receiveDateTime;
+    }
+
+    public Date getReturnDateTime() {
+        return returnDateTime;
+    }
+
+    public void setReturnDateTime(Date returnDateTime) {
+        this.returnDateTime = returnDateTime;
+    }
+
     @Override
     public String toString() {
         return "BorrowRequest{" +
@@ -87,6 +133,10 @@ public class BorrowRequest
                 ", bookCopy=" + bookCopy +
                 ", requester=" + requester +
                 ", status=" + status +
+                ", requestDateTime=" + requestDateTime +
+                ", responseDateTime=" + responseDateTime +
+                ", receiveDateTime=" + receiveDateTime +
+                ", returnDateTime=" + returnDateTime +
                 '}';
     }
 }

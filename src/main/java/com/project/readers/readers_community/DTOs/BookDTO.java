@@ -17,8 +17,10 @@ public class BookDTO
     private String bookOwnerName;
     private String bookOwnerEmail;
     private String bookOwnerProfilePhotoURL;
+    private String bookUploadDate;
+    private String bookUploadTime;
 
-    public BookDTO(Long bookId, String bookTitle, String bookAuthor, int bookPageCount, int bookQuantity, Long bookCategoryId, String bookCategoryName, String coverPhotoURL, String bookApprovalStatus, Integer bookOwnerId, String bookOwnerName, String bookOwnerEmail, String bookOwnerProfilePhotoURL) {
+    public BookDTO(Long bookId, String bookTitle, String bookAuthor, int bookPageCount, int bookQuantity, Long bookCategoryId, String bookCategoryName, String coverPhotoURL, String bookApprovalStatus, Integer bookOwnerId, String bookOwnerName, String bookOwnerEmail, String bookOwnerProfilePhotoURL, String bookUploadDate, String bookUploadTime) {
         this.bookId = bookId;
         this.bookTitle = bookTitle;
         this.bookAuthor = bookAuthor;
@@ -32,6 +34,8 @@ public class BookDTO
         this.bookOwnerName = bookOwnerName;
         this.bookOwnerEmail = bookOwnerEmail;
         this.bookOwnerProfilePhotoURL = bookOwnerProfilePhotoURL;
+        this.bookUploadDate = bookUploadDate;
+        this.bookUploadTime = bookUploadTime;
     }
 
     public Long getBookId() {
@@ -138,6 +142,22 @@ public class BookDTO
         this.bookOwnerProfilePhotoURL = bookOwnerProfilePhotoURL;
     }
 
+    public String getBookUploadDate() {
+        return bookUploadDate;
+    }
+
+    public void setBookUploadDate(String bookUploadDate) {
+        this.bookUploadDate = bookUploadDate;
+    }
+
+    public String getBookUploadTime() {
+        return bookUploadTime;
+    }
+
+    public void setBookUploadTime(String bookUploadTime) {
+        this.bookUploadTime = bookUploadTime;
+    }
+
     @Override
     public String toString() {
         return "BookDTO{" +
@@ -154,6 +174,8 @@ public class BookDTO
                 ", bookOwnerName='" + bookOwnerName + '\'' +
                 ", bookOwnerEmail='" + bookOwnerEmail + '\'' +
                 ", bookOwnerProfilePhotoURL='" + bookOwnerProfilePhotoURL + '\'' +
+                ", bookUploadDate='" + bookUploadDate + '\'' +
+                ", bookUploadTime='" + bookUploadTime + '\'' +
                 '}';
     }
 }

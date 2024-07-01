@@ -24,8 +24,10 @@ public class UserDTO {
     private String referrerName;
     private  String referrerEmail;
     private  String referrerProfilePhotoURL;
+    private String joinDate;
+    private String joinTime;
 
-    public UserDTO(int userId, String email, String fullName, String phoneNumber, UserType userType, String dateOfBirth, String profilePhotoURL, String houseNo, String street, String landmark, String city, String state, String country, int referrerId, String referrerName, String referrerEmail, String referrerProfilePhotoURL) {
+    public UserDTO(int userId, String email, String fullName, String phoneNumber, UserType userType, String dateOfBirth, String profilePhotoURL, String houseNo, String street, String landmark, String city, String state, String country, int referrerId, String referrerName, String referrerEmail, String referrerProfilePhotoURL, String joinDate, String joinTime) {
         this.userId = userId;
         this.email = email;
         this.fullName = fullName;
@@ -43,6 +45,8 @@ public class UserDTO {
         this.referrerName = referrerName;
         this.referrerEmail = referrerEmail;
         this.referrerProfilePhotoURL = referrerProfilePhotoURL;
+        this.joinDate = joinDate;
+        this.joinTime = joinTime;
     }
 
     public int getUserId() {
@@ -181,6 +185,22 @@ public class UserDTO {
         this.referrerProfilePhotoURL = referrerProfilePhotoURL;
     }
 
+    public String getJoinDate() {
+        return joinDate;
+    }
+
+    public void setJoinDate(String joinDate) {
+        this.joinDate = joinDate;
+    }
+
+    public String getJoinTime() {
+        return joinTime;
+    }
+
+    public void setJoinTime(String joinTime) {
+        this.joinTime = joinTime;
+    }
+
     @Override
     public String toString() {
         return "UserDTO{" +
@@ -201,6 +221,8 @@ public class UserDTO {
                 ", referrerName='" + referrerName + '\'' +
                 ", referrerEmail='" + referrerEmail + '\'' +
                 ", referrerProfilePhotoURL='" + referrerProfilePhotoURL + '\'' +
+                ", joinDate='" + joinDate + '\'' +
+                ", joinTime='" + joinTime + '\'' +
                 '}';
     }
 }

@@ -13,8 +13,12 @@ public class MemberApprovalRequestDTO
     private String memberReferrerProfilePhotoURL;
     private String referrerApproval;
     private String adminApproval;
+    private String requestDate;
+    private String requestTime;
+    private String responseDate;
+    private String responseTime;
 
-    public MemberApprovalRequestDTO(Integer memberApprovalRequestId, Integer memberId, String memberFullName, String memberEmail, String memberPhoneNumber, Integer memberReferrerId, String memberReferrerFullName, String memberReferrerEmail, String memberReferrerProfilePhotoURL, String referrerApproval, String adminApproval) {
+    public MemberApprovalRequestDTO(Integer memberApprovalRequestId, Integer memberId, String memberFullName, String memberEmail, String memberPhoneNumber, Integer memberReferrerId, String memberReferrerFullName, String memberReferrerEmail, String memberReferrerProfilePhotoURL, String referrerApproval, String adminApproval, String requestDate, String requestTime, String responseDate, String responseTime) {
         this.memberApprovalRequestId = memberApprovalRequestId;
         this.memberId = memberId;
         this.memberFullName = memberFullName;
@@ -26,6 +30,10 @@ public class MemberApprovalRequestDTO
         this.memberReferrerProfilePhotoURL = memberReferrerProfilePhotoURL;
         this.referrerApproval = referrerApproval;
         this.adminApproval = adminApproval;
+        this.requestDate = requestDate;
+        this.requestTime = requestTime;
+        this.responseDate = responseDate;
+        this.responseTime = responseTime;
     }
 
     public Integer getMemberApprovalRequestId() {
@@ -116,6 +124,38 @@ public class MemberApprovalRequestDTO
         this.adminApproval = adminApproval;
     }
 
+    public String getRequestDate() {
+        return requestDate;
+    }
+
+    public void setRequestDate(String requestDate) {
+        this.requestDate = requestDate;
+    }
+
+    public String getRequestTime() {
+        return requestTime;
+    }
+
+    public void setRequestTime(String requestTime) {
+        this.requestTime = requestTime;
+    }
+
+    public String getResponseDate() {
+        return responseDate;
+    }
+
+    public void setResponseDate(String responseDate) {
+        this.responseDate = responseDate;
+    }
+
+    public String getResponseTime() {
+        return responseTime;
+    }
+
+    public void setResponseTime(String responseTime) {
+        this.responseTime = responseTime;
+    }
+
     @Override
     public String toString() {
         return "MemberApprovalRequestDTO{" +
@@ -130,6 +170,10 @@ public class MemberApprovalRequestDTO
                 ", memberReferrerProfilePhotoURL='" + memberReferrerProfilePhotoURL + '\'' +
                 ", referrerApproval='" + referrerApproval + '\'' +
                 ", adminApproval='" + adminApproval + '\'' +
+                ", requestDate='" + requestDate + '\'' +
+                ", requestTime='" + requestTime + '\'' +
+                ", responseDate='" + responseDate + '\'' +
+                ", responseTime='" + responseTime + '\'' +
                 '}';
     }
 }

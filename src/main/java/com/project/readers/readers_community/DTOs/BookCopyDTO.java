@@ -7,6 +7,8 @@ public class BookCopyDTO
     private Long bookId;
     private String bookTitle;
     private String coverPhotoURL;
+    private String bookUploadDate;
+    private String bookUploadTime;
     private Integer holderId;
     private String holderName;
     private String holderEmail;
@@ -18,11 +20,13 @@ public class BookCopyDTO
     private boolean requestable;
     private boolean canHandover;
 
-    public BookCopyDTO(Integer bookCopyId, Long bookId, String bookTitle, String coverPhotoURL, Integer holderId, String holderName, String holderEmail, String holderProfilePhotoURL, Integer borrowerId, String borrowerName, String borrowerEmail, String borrowerProfilePhotoURL, boolean requestable, boolean canHandover) {
+    public BookCopyDTO(Integer bookCopyId, Long bookId, String bookTitle, String coverPhotoURL, String bookUploadDate, String bookUploadTime, Integer holderId, String holderName, String holderEmail, String holderProfilePhotoURL, Integer borrowerId, String borrowerName, String borrowerEmail, String borrowerProfilePhotoURL, boolean requestable, boolean canHandover) {
         this.bookCopyId = bookCopyId;
         this.bookId = bookId;
         this.bookTitle = bookTitle;
         this.coverPhotoURL = coverPhotoURL;
+        this.bookUploadDate = bookUploadDate;
+        this.bookUploadTime = bookUploadTime;
         this.holderId = holderId;
         this.holderName = holderName;
         this.holderEmail = holderEmail;
@@ -65,6 +69,22 @@ public class BookCopyDTO
 
     public void setCoverPhotoURL(String coverPhotoURL) {
         this.coverPhotoURL = coverPhotoURL;
+    }
+
+    public String getBookUploadDate() {
+        return bookUploadDate;
+    }
+
+    public void setBookUploadDate(String bookUploadDate) {
+        this.bookUploadDate = bookUploadDate;
+    }
+
+    public String getBookUploadTime() {
+        return bookUploadTime;
+    }
+
+    public void setBookUploadTime(String bookUploadTime) {
+        this.bookUploadTime = bookUploadTime;
     }
 
     public Integer getHolderId() {
@@ -154,6 +174,8 @@ public class BookCopyDTO
                 ", bookId=" + bookId +
                 ", bookTitle='" + bookTitle + '\'' +
                 ", coverPhotoURL='" + coverPhotoURL + '\'' +
+                ", bookUploadDate='" + bookUploadDate + '\'' +
+                ", bookUploadTime='" + bookUploadTime + '\'' +
                 ", holderId=" + holderId +
                 ", holderName='" + holderName + '\'' +
                 ", holderEmail='" + holderEmail + '\'' +

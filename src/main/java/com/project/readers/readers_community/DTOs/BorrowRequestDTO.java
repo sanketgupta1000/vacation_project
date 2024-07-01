@@ -11,9 +11,17 @@ public class BorrowRequestDTO
     private String requesterName;
     private String requesterEmail;
     private String requesterProfilePhotoURL;
+    private String requestDate;
+    private String requestTime;
+    private String responseDate;
+    private String responseTime;
+    private String receiveDate;
+    private String receiveTime;
+    private String returnDate;
+    private String returnTime;
     private String status;
 
-    public BorrowRequestDTO(Integer borrowRequestId, Integer bookCopyId, String bookCopyName, String coverPhotoURL, Integer requesterId, String requesterName, String requesterEmail, String requesterProfilePhotoURL, String status) {
+    public BorrowRequestDTO(Integer borrowRequestId, Integer bookCopyId, String bookCopyName, String coverPhotoURL, Integer requesterId, String requesterName, String requesterEmail, String requesterProfilePhotoURL, String requestDate, String requestTime, String responseDate, String responseTime, String receiveDate, String receiveTime, String returnDate, String returnTime, String status) {
         this.borrowRequestId = borrowRequestId;
         this.bookCopyId = bookCopyId;
         this.bookCopyName = bookCopyName;
@@ -22,6 +30,14 @@ public class BorrowRequestDTO
         this.requesterName = requesterName;
         this.requesterEmail = requesterEmail;
         this.requesterProfilePhotoURL = requesterProfilePhotoURL;
+        this.requestDate = requestDate;
+        this.requestTime = requestTime;
+        this.responseDate = responseDate;
+        this.responseTime = responseTime;
+        this.receiveDate = receiveDate;
+        this.receiveTime = receiveTime;
+        this.returnDate = returnDate;
+        this.returnTime = returnTime;
         this.status = status;
     }
 
@@ -89,6 +105,70 @@ public class BorrowRequestDTO
         this.requesterProfilePhotoURL = requesterProfilePhotoURL;
     }
 
+    public String getRequestDate() {
+        return requestDate;
+    }
+
+    public void setRequestDate(String requestDate) {
+        this.requestDate = requestDate;
+    }
+
+    public String getRequestTime() {
+        return requestTime;
+    }
+
+    public void setRequestTime(String requestTime) {
+        this.requestTime = requestTime;
+    }
+
+    public String getResponseDate() {
+        return responseDate;
+    }
+
+    public void setResponseDate(String responseDate) {
+        this.responseDate = responseDate;
+    }
+
+    public String getResponseTime() {
+        return responseTime;
+    }
+
+    public void setResponseTime(String responseTime) {
+        this.responseTime = responseTime;
+    }
+
+    public String getReceiveDate() {
+        return receiveDate;
+    }
+
+    public void setReceiveDate(String receiveDate) {
+        this.receiveDate = receiveDate;
+    }
+
+    public String getReceiveTime() {
+        return receiveTime;
+    }
+
+    public void setReceiveTime(String receiveTime) {
+        this.receiveTime = receiveTime;
+    }
+
+    public String getReturnDate() {
+        return returnDate;
+    }
+
+    public void setReturnDate(String returnDate) {
+        this.returnDate = returnDate;
+    }
+
+    public String getReturnTime() {
+        return returnTime;
+    }
+
+    public void setReturnTime(String returnTime) {
+        this.returnTime = returnTime;
+    }
+
     public String getStatus() {
         return status;
     }
@@ -108,6 +188,14 @@ public class BorrowRequestDTO
                 ", requesterName='" + requesterName + '\'' +
                 ", requesterEmail='" + requesterEmail + '\'' +
                 ", requesterProfilePhotoURL='" + requesterProfilePhotoURL + '\'' +
+                ", requestDate='" + requestDate + '\'' +
+                ", requestTime='" + requestTime + '\'' +
+                ", responseDate='" + responseDate + '\'' +
+                ", responseTime='" + responseTime + '\'' +
+                ", receiveDate='" + receiveDate + '\'' +
+                ", receiveTime='" + receiveTime + '\'' +
+                ", returnDate='" + returnDate + '\'' +
+                ", returnTime='" + returnTime + '\'' +
                 ", status='" + status + '\'' +
                 '}';
     }

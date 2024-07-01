@@ -4,6 +4,7 @@ import com.project.readers.readers_community.enums.Approval;
 
 import jakarta.persistence.*;
 
+import java.util.Date;
 import java.util.List;
 
 //represents the information about a book, not the actual physical book
@@ -46,6 +47,14 @@ public class Book
 	@Column(name = "adminApproval")
 	private Approval adminApproval;
 
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "request_date_time")
+	private Date requestDateTime;
+
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "response_date_time")
+	private Date responseDateTime;
+
 	//user that owns the book
 	@ManyToOne
 	@JoinColumn(name = "owner_id")
@@ -58,7 +67,7 @@ public class Book
 	public Book() {
 	}
 
-	public Book(Long id, String bookTitle, String authorName, int pageCount, int quantity, BookCategory category, String coverPhotoURL, Approval adminApproval, User owner) {
+	public Book(Long id, String bookTitle, String authorName, int pageCount, int quantity, BookCategory category, String coverPhotoURL, Approval adminApproval, Date requestDateTime, Date responseDateTime, User owner, List<BookCopy> bookCopies) {
 		this.id = id;
 		this.bookTitle = bookTitle;
 		this.authorName = authorName;
@@ -67,7 +76,10 @@ public class Book
 		this.category = category;
 		this.coverPhotoURL = coverPhotoURL;
 		this.adminApproval = adminApproval;
+		this.requestDateTime = requestDateTime;
+		this.responseDateTime = responseDateTime;
 		this.owner = owner;
+		this.bookCopies = bookCopies;
 	}
 
 	public Long getId() {
@@ -134,6 +146,22 @@ public class Book
 		this.adminApproval = adminApproval;
 	}
 
+	public Date getRequestDateTime() {
+		return requestDateTime;
+	}
+
+	public void setRequestDateTime(Date requestDateTime) {
+		this.requestDateTime = requestDateTime;
+	}
+
+	public Date getResponseDateTime() {
+		return responseDateTime;
+	}
+
+	public void setResponseDateTime(Date responseDateTime) {
+		this.responseDateTime = responseDateTime;
+	}
+
 	public User getOwner() {
 		return owner;
 	}
@@ -161,6 +189,8 @@ public class Book
 				", category=" + category +
 				", coverPhotoURL='" + coverPhotoURL + '\'' +
 				", adminApproval=" + adminApproval +
+				", requestDateTime=" + requestDateTime +
+				", responseDateTime=" + responseDateTime +
 				", owner=" + owner +
 				", bookCopies=" + bookCopies +
 				'}';

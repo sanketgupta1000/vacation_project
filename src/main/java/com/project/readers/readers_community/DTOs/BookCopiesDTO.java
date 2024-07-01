@@ -17,11 +17,12 @@ public class BookCopiesDTO {
     private String bookOwnerName;
     private String bookOwnerEmail;
     private String bookOwnerProfilePhotoURL;
+    private String bookUploadDate;
+    private String bookUploadTime;
     private List<BookCopyDTO> bookCopies;
 
     // all args constructor
-
-    public BookCopiesDTO(Long bookId, String bookTitle, String bookAuthor, int bookPageCount, int bookQuantity, Long bookCategoryId, String bookCategoryName, String coverPhotoURL, String bookApprovalStatus, Integer bookOwnerId, String bookOwnerName, String bookOwnerEmail, String bookOwnerProfilePhotoURL, List<BookCopyDTO> bookCopies) {
+    public BookCopiesDTO(Long bookId, String bookTitle, String bookAuthor, int bookPageCount, int bookQuantity, Long bookCategoryId, String bookCategoryName, String coverPhotoURL, String bookApprovalStatus, Integer bookOwnerId, String bookOwnerName, String bookOwnerEmail, String bookOwnerProfilePhotoURL, String bookUploadDate, String bookUploadTime, List<BookCopyDTO> bookCopies) {
         this.bookId = bookId;
         this.bookTitle = bookTitle;
         this.bookAuthor = bookAuthor;
@@ -35,6 +36,8 @@ public class BookCopiesDTO {
         this.bookOwnerName = bookOwnerName;
         this.bookOwnerEmail = bookOwnerEmail;
         this.bookOwnerProfilePhotoURL = bookOwnerProfilePhotoURL;
+        this.bookUploadDate = bookUploadDate;
+        this.bookUploadTime = bookUploadTime;
         this.bookCopies = bookCopies;
     }
 
@@ -142,6 +145,22 @@ public class BookCopiesDTO {
         this.bookOwnerProfilePhotoURL = bookOwnerProfilePhotoURL;
     }
 
+    public String getBookUploadDate() {
+        return bookUploadDate;
+    }
+
+    public void setBookUploadDate(String bookUploadDate) {
+        this.bookUploadDate = bookUploadDate;
+    }
+
+    public String getBookUploadTime() {
+        return bookUploadTime;
+    }
+
+    public void setBookUploadTime(String bookUploadTime) {
+        this.bookUploadTime = bookUploadTime;
+    }
+
     public List<BookCopyDTO> getBookCopies() {
         return bookCopies;
     }
@@ -166,6 +185,8 @@ public class BookCopiesDTO {
                 ", bookOwnerName='" + bookOwnerName + '\'' +
                 ", bookOwnerEmail='" + bookOwnerEmail + '\'' +
                 ", bookOwnerProfilePhotoURL='" + bookOwnerProfilePhotoURL + '\'' +
+                ", bookUploadDate='" + bookUploadDate + '\'' +
+                ", bookUploadTime='" + bookUploadTime + '\'' +
                 ", bookCopies=" + bookCopies +
                 '}';
     }
