@@ -18,6 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Optional;
 
@@ -146,6 +147,8 @@ public class AuthService
         MemberApprovalRequest approvalRequest = new MemberApprovalRequest();
         approvalRequest.setId(0);
         approvalRequest.setMember(user);
+        approvalRequest.setRequestDateTime(new Date());
+
         // check if any referrer
         if(user.getReferrer()!=null)
         {

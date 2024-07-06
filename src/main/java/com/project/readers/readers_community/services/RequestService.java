@@ -112,6 +112,7 @@ public class RequestService
         }
 
         request.setAdminApproval(Approval.APPROVED);
+        request.setResponseDateTime(new Date());
 
         memberApprovalRequestRepository.save(request);
 
@@ -134,6 +135,7 @@ public class RequestService
         }
 
         request.setAdminApproval(Approval.REJECTED);
+        request.setResponseDateTime(new Date());
 
         memberApprovalRequestRepository.save(request);
 
@@ -168,6 +170,7 @@ public class RequestService
 
         if (book.get().getAdminApproval() == Approval.UNRESPONDED) {
             book.get().setAdminApproval(Approval.APPROVED);
+            book.get().setResponseDateTime(new Date());
             bookRepository.save(book.get());
 
             //create copy of books equals to quantity
@@ -206,7 +209,7 @@ public class RequestService
         }
         if (book.get().getAdminApproval() == Approval.UNRESPONDED) {
             book.get().setAdminApproval(Approval.REJECTED);
-
+            book.get().setResponseDateTime(new Date());
             bookRepository.save(book.get());
 
             Book bookObj = book.get();
@@ -277,6 +280,7 @@ public class RequestService
 
         // now can approve
         borrowRequest.setStatus(BorrowRequestStatus.APPROVED);
+        borrowRequest.setResponseDateTime(new Date());
 
         // set requester as next borrower
         BookCopy bookCopy = borrowRequest.getBookCopy();
@@ -374,6 +378,7 @@ public class RequestService
 
         // can reject
         borrowRequest.setStatus(BorrowRequestStatus.REJECTED);
+        borrowRequest.setResponseDateTime(new Date());
 
         // also set the requester's current borrow request to null
         User requester = borrowRequest.getRequester();

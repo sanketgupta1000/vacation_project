@@ -11,6 +11,13 @@ import java.util.List;
 @Component
 public class Mapper
 {
+    SimpleDateFormat dateFormat;
+    SimpleDateFormat timeFormat;
+
+    public Mapper() {
+        this.dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        this.timeFormat = new SimpleDateFormat("HH:mm:ss");
+    }
 
     public BookDTO bookToBookDTO(Book book)
     {
@@ -27,16 +34,21 @@ public class Mapper
                 book.getOwner().getId(),
                 book.getOwner().getFullName(),
                 book.getOwner().getEmail(),
-                book.getOwner().getProfilePhotoURL()
+                book.getOwner().getProfilePhotoURL(),
+                dateFormat.format(book.getRequestDateTime()),
+                timeFormat.format(book.getRequestDateTime()),
+                dateFormat.format(book.getResponseDateTime()),
+                timeFormat.format(book.getResponseDateTime())
         );
     }
     public UserDTO userToUserDTO(User user)
     {
-        SimpleDateFormat dayFormat = new SimpleDateFormat("dd-MM-yyyy");
         int referrerId = 0;
         String referrerName=null;
         String referrerEmail=null;
         String referrerProfilePhotoURL = null;
+        String joinDate = null;
+        String joinTime = null;
 
         if(user.getReferrer()!=null)
         {
@@ -45,6 +57,11 @@ public class Mapper
             referrerEmail = user.getReferrer().getEmail();
             referrerProfilePhotoURL = user.getReferrer().getProfilePhotoURL();
         }
+        if(user.getMemberApprovalRequest() != null)
+        {
+            joinDate =  dateFormat.format(user.getMemberApprovalRequest().getResponseDateTime());
+            joinTime = timeFormat.format(user.getMemberApprovalRequest().getResponseDateTime());
+        }
 
         return new UserDTO(
         user.getId(),
@@ -52,7 +69,7 @@ public class Mapper
         user.getFullName(),
         user.getPhoneNumber(),
         user.getUserType(),
-        dayFormat.format(user.getDateOfBirth()),
+        dateFormat.format(user.getDateOfBirth()),
         user.getProfilePhotoURL(),
         user.getAddress().getHouseNo(),
         user.getAddress().getStreet(),
@@ -63,11 +80,44 @@ public class Mapper
         referrerId,
         referrerName,
         referrerEmail,
-        referrerProfilePhotoURL);
+        referrerProfilePhotoURL,
+        joinDate,
+        joinTime
+        );
     }
 
     public BorrowRequestDTO borrowRequestToBorrowRequestDTO(BorrowRequest borrowRequest)
     {
+        String requestDate = null;
+        String requestTime = null;
+        String responseDate = null;
+        String responseTime = null;
+        String receiveDate = null;
+        String receiveTime = null;
+        String returnDate = null;
+        String returnTime = null;
+
+        if(borrowRequest.getRequestDateTime() != null)
+        {
+            requestDate = dateFormat.format(borrowRequest.getRequestDateTime());
+            requestTime = timeFormat.format(borrowRequest.getRequestDateTime());
+        }
+        if(borrowRequest.getResponseDateTime() != null)
+        {
+            responseDate = dateFormat.format(borrowRequest.getResponseDateTime());
+            responseTime = timeFormat.format(borrowRequest.getResponseDateTime());
+        }
+        if(borrowRequest.getReceiveDateTime() != null)
+        {
+            receiveDate = dateFormat.format(borrowRequest.getReceiveDateTime());
+            receiveTime = timeFormat.format(borrowRequest.getReceiveDateTime());
+        }
+        if(borrowRequest.getReturnDateTime() != null)
+        {
+            returnDate = dateFormat.format(borrowRequest.getReturnDateTime());
+            returnTime = timeFormat.format(borrowRequest.getReturnDateTime());
+        }
+
         return new BorrowRequestDTO(
                 borrowRequest.getId(),
                 borrowRequest.getBookCopy().getId(),
@@ -77,6 +127,14 @@ public class Mapper
                 borrowRequest.getRequester().getFullName(),
                 borrowRequest.getRequester().getEmail(),
                 borrowRequest.getRequester().getProfilePhotoURL(),
+                requestDate,
+                requestTime,
+                responseDate,
+                responseTime,
+                receiveDate,
+                receiveTime,
+                returnDate,
+                returnTime,
                 borrowRequest.getStatus().toString()
         );
     }
@@ -88,6 +146,8 @@ public class Mapper
                 bookCopy.getBook().getId(),
                 bookCopy.getBook().getBookTitle(),
                 bookCopy.getBook().getCoverPhotoURL(),
+                dateFormat.format(bookCopy.getBook().getResponseDateTime()),
+                timeFormat.format(bookCopy.getBook().getResponseDateTime()),
                 bookCopy.getHolder().getId(),
                 bookCopy.getHolder().getFullName(),
                 bookCopy.getHolder().getEmail(),
@@ -132,6 +192,9 @@ public class Mapper
 		String referrerEmail = null;
         String referrerProfilePhotoURL = null;
 
+        String responseDate = null;
+        String responseTime = null;
+
 		if(memberApprovalRequest.getMember().getReferrer()!=null)
 		{
 			referrerId = memberApprovalRequest.getMember().getReferrer().getId();
@@ -139,6 +202,12 @@ public class Mapper
 			referrerEmail = memberApprovalRequest.getMember().getReferrer().getEmail();
             referrerProfilePhotoURL = memberApprovalRequest.getMember().getReferrer().getProfilePhotoURL();
 		}
+
+        if(memberApprovalRequest.getResponseDateTime() != null)
+        {
+            responseDate = dateFormat.format(memberApprovalRequest.getResponseDateTime());
+            responseTime = timeFormat.format(memberApprovalRequest.getResponseDateTime());
+        }
 
         return new MemberApprovalRequestDTO(
                 memberApprovalRequest.getId(),
@@ -151,7 +220,11 @@ public class Mapper
 				referrerEmail,
                 referrerProfilePhotoURL,
                 memberApprovalRequest.getReferrerApproval().name(),
-                memberApprovalRequest.getAdminApproval().name()
+                memberApprovalRequest.getAdminApproval().name(),
+                dateFormat.format(memberApprovalRequest.getRequestDateTime()),
+                timeFormat.format(memberApprovalRequest.getRequestDateTime()),
+                responseDate,
+                responseTime
         );
     }
 
@@ -195,6 +268,8 @@ public class Mapper
             book.getOwner().getFullName(),
             book.getOwner().getEmail(),
             book.getOwner().getProfilePhotoURL(),
+            dateFormat.format(book.getResponseDateTime()),
+            timeFormat.format(book.getResponseDateTime()),
             bookCopyDTOList
         );
 
@@ -216,6 +291,8 @@ public class Mapper
                 bookCopy.getBook().getId(),
                 bookCopy.getBook().getBookTitle(),
                 bookCopy.getBook().getCoverPhotoURL(),
+                dateFormat.format(bookCopy.getBook().getResponseDateTime()),
+                timeFormat.format(bookCopy.getBook().getResponseDateTime()),
                 bookCopy.getHolder().getId(),
                 bookCopy.getHolder().getFullName(),
                 bookCopy.getHolder().getEmail(),

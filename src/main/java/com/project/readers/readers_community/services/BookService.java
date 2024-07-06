@@ -50,6 +50,7 @@ public class BookService {
         book.setId(0L);
         book.setOwner(cureentUser);
         book.setAdminApproval(Approval.UNRESPONDED);
+        book.setRequestDateTime(new Date());
         book.setBookCopies(null);
         long bookcategory_id = book.getCategory().getId();
 
@@ -183,6 +184,7 @@ public class BookService {
         borrowRequest.setRequester(user);
         borrowRequest.setBookCopy(bookCopy);
         borrowRequest.setStatus(BorrowRequestStatus.UNRESPONDED);
+        borrowRequest.setRequestDateTime(new Date());
 
         // save
         borrowRequest = borrowRequestRepository.save(borrowRequest);
@@ -288,6 +290,7 @@ public class BookService {
         {
             // mark as completed
             holderBorrowRequest.setStatus(BorrowRequestStatus.COMPLETED);
+            holderBorrowRequest.setReturnDateTime(new Date());
             // also unset the current borrow request
             holder.setCurrentBorrowRequest(null);
             borrowRequestRepository.save(holderBorrowRequest);
@@ -302,6 +305,7 @@ public class BookService {
         {
             // mark as received
             borrowerBorrowRequest.setStatus(BorrowRequestStatus.RECEIVED);
+            borrowerBorrowRequest.setReceiveDateTime(new Date());
             borrowRequestRepository.save(borrowerBorrowRequest);
         }
 

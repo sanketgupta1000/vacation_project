@@ -3,6 +3,8 @@ package com.project.readers.readers_community.entities;
 import com.project.readers.readers_community.enums.Approval;
 import jakarta.persistence.*;
 
+import java.util.Date;
+
 @Entity
 @Table(name = "member_approval_requests")
 public class MemberApprovalRequest
@@ -26,14 +28,26 @@ public class MemberApprovalRequest
     @Column(name = "admin_approval")
     private Approval adminApproval;
 
-    public MemberApprovalRequest(Integer id, User member, Approval referrerApproval, Approval adminApproval) {
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "request_date_time")
+    private Date requestDateTime;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "response_date_time")
+    private Date responseDateTime;
+
+
+    public MemberApprovalRequest() {
+    }
+
+    public MemberApprovalRequest(Integer id, User member, Approval referrerApproval, Approval adminApproval, Date requestDateTime, Date responseDateTime) {
         this.id = id;
         this.member = member;
         this.referrerApproval = referrerApproval;
         this.adminApproval = adminApproval;
+        this.requestDateTime = requestDateTime;
+        this.responseDateTime = responseDateTime;
     }
-
-    public MemberApprovalRequest() {}
 
     public Integer getId() {
         return id;
@@ -67,6 +81,22 @@ public class MemberApprovalRequest
         this.adminApproval = adminApproval;
     }
 
+    public Date getRequestDateTime() {
+        return requestDateTime;
+    }
+
+    public void setRequestDateTime(Date requestDateTime) {
+        this.requestDateTime = requestDateTime;
+    }
+
+    public Date getResponseDateTime() {
+        return responseDateTime;
+    }
+
+    public void setResponseDateTime(Date responseDateTime) {
+        this.responseDateTime = responseDateTime;
+    }
+
     @Override
     public String toString() {
         return "MemberApprovalRequest{" +
@@ -74,6 +104,8 @@ public class MemberApprovalRequest
                 ", member=" + member +
                 ", referrerApproval=" + referrerApproval +
                 ", adminApproval=" + adminApproval +
+                ", requestDateTime=" + requestDateTime +
+                ", responseDateTime=" + responseDateTime +
                 '}';
     }
 }
