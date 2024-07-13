@@ -61,7 +61,7 @@ public class UserService {
     @Transactional
     public void uploadUserProfilePhoto(MultipartFile profilePhoto, User user, String public_id)
     {
-        if(profilePhoto.isEmpty() || profilePhoto.getContentType() == null || !profilePhoto.getContentType().startsWith("image"))
+        if(profilePhoto == null || profilePhoto.isEmpty() || profilePhoto.getContentType() == null || !profilePhoto.getContentType().startsWith("image"))
         {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Please upload a valid Image file");
         }
@@ -94,7 +94,7 @@ public class UserService {
         currentUser.setAddress(address);
         currentUser.setDateOfBirth(dateOfBirth);
 
-        if(!profilePhoto.isEmpty()) {
+        if(profilePhoto != null) {
             String currentProfilePhotoURL = currentUser.getProfilePhotoURL();
             String[] parts = currentProfilePhotoURL.split("/");
             String public_id = parts[parts.length - 1].split("\\.")[0];
