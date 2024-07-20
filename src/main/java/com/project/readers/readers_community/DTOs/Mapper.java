@@ -21,6 +21,21 @@ public class Mapper
 
     public BookDTO bookToBookDTO(Book book)
     {
+        String requestDate = null;
+        String requestTime = null;
+        String responseDate = null;
+        String responseTime = null;
+
+        if(book.getRequestDateTime() != null)
+        {
+            requestDate = dateFormat.format(book.getRequestDateTime());
+            requestTime = timeFormat.format(book.getRequestDateTime());
+        }
+        if(book.getResponseDateTime() != null)
+        {
+            responseDate = dateFormat.format(book.getResponseDateTime());
+            responseTime = timeFormat.format(book.getResponseDateTime());
+        }
         return new BookDTO(
                 book.getId(),
                 book.getBookTitle(),
@@ -35,10 +50,10 @@ public class Mapper
                 book.getOwner().getFullName(),
                 book.getOwner().getEmail(),
                 book.getOwner().getProfilePhotoURL(),
-                dateFormat.format(book.getRequestDateTime()),
-                timeFormat.format(book.getRequestDateTime()),
-                dateFormat.format(book.getResponseDateTime()),
-                timeFormat.format(book.getResponseDateTime())
+                requestDate,
+                requestTime,
+                responseDate,
+                responseTime
         );
     }
     public UserDTO userToUserDTO(User user)

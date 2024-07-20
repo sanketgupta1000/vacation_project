@@ -75,7 +75,7 @@ public class BookService {
     @Transactional
     public void uploadBookCoverPhoto(MultipartFile coverPhoto, Book book)
     {
-        if(coverPhoto.isEmpty() || coverPhoto.getContentType() == null || !coverPhoto.getContentType().startsWith("image"))
+        if(coverPhoto == null || coverPhoto.isEmpty() || coverPhoto.getContentType() == null || !coverPhoto.getContentType().startsWith("image"))
         {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Please upload a valid Image file");
         }
