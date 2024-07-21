@@ -16,6 +16,9 @@ import jakarta.transaction.Transactional;
 import com.project.readers.readers_community.utilities.UpdatableUserPersonalDetails;
 
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,6 +34,7 @@ public class UserService {
     private final MemberApprovalRequestRepository memberApprovalRequestRepository;
     private final FileService fileService;
 
+    private final int pageSize = 1;
 
     public UserService(UserRepository userRepository, TokenService tokenService, Mapper mapper, MemberApprovalRequestRepository memberApprovalRequestRepository, FileService fileService) {
         this.userRepository = userRepository;
@@ -112,30 +116,25 @@ public class UserService {
 //        return "Your account has been successfully deleted.";
 //    }
 
-	public Map<String, List<MemberApprovalRequestDTO>> getAllReferrals(User user) {
-		
+	public Map<String, Page<MemberApprovalRequestDTO>> getAllReferrals(User user, int pageNumber) {
+
+        Pageable pageable = PageRequest.of(pageNumber-1, pageSize);
 	    // create a new hashmap
-        Map<String, List<MemberApprovalRequestDTO>> map = new HashMap<>();
+        Map<String, Page<MemberApprovalRequestDTO>> map = new HashMap<>();
 
         map.put("unresponded",
-                memberApprovalRequestRepository.findByMember_ReferrerAndReferrerApproval(user, Approval.UNRESPONDED)
-                        .stream()
+                memberApprovalRequestRepository.findByMember_ReferrerAndReferrerApproval(user, Approval.UNRESPONDED, pageable)
                         .map(mapper::memberApprovalRequestToMemberApprovalRequestDTO)
-                        .toList()
                 );
 
         map.put("approved",
-                memberApprovalRequestRepository.findByMember_ReferrerAndReferrerApproval(user, Approval.APPROVED)
-                        .stream()
+                memberApprovalRequestRepository.findByMember_ReferrerAndReferrerApproval(user, Approval.APPROVED, pageable)
                         .map(mapper::memberApprovalRequestToMemberApprovalRequestDTO)
-                        .toList()
         );
 
         map.put("rejected",
-                memberApprovalRequestRepository.findByMember_ReferrerAndReferrerApproval(user, Approval.REJECTED)
-                        .stream()
+                memberApprovalRequestRepository.findByMember_ReferrerAndReferrerApproval(user, Approval.REJECTED, pageable)
                         .map(mapper::memberApprovalRequestToMemberApprovalRequestDTO)
-                        .toList()
         );
 
         return map;

@@ -9,6 +9,7 @@ import com.project.readers.readers_community.annotations.CurrentUser;
 import com.project.readers.readers_community.embeddables.Address;
 import com.project.readers.readers_community.entities.User;
 import com.project.readers.readers_community.services.UserService;
+import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -72,9 +73,9 @@ public class UserController
 	
 	//endpoint to see all persons who have mentioned the current user as referrer
 	@GetMapping("/referrals")
-	public Map<String, List<MemberApprovalRequestDTO>> getAllReferrals(@CurrentUser User user)
+	public Map<String, Page<MemberApprovalRequestDTO>> getAllReferrals(@CurrentUser User user, @RequestParam int pageNumber)
 	{
-		return userService.getAllReferrals(user);
+		return userService.getAllReferrals(user, pageNumber);
 	}
 
 	// endpoint to search members by name or email containing, useful to get a list while selecting referrer

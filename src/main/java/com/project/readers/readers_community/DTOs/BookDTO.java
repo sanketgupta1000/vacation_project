@@ -17,12 +17,13 @@ public class BookDTO
     private String bookOwnerName;
     private String bookOwnerEmail;
     private String bookOwnerProfilePhotoURL;
+    private String bookOwnerCity;
     private String bookRequestDate;
     private String bookRequestTime;
     private String bookUploadDate;
     private String bookUploadTime;
 
-    public BookDTO(Long bookId, String bookTitle, String bookAuthor, int bookPageCount, int bookQuantity, Long bookCategoryId, String bookCategoryName, String coverPhotoURL, String bookApprovalStatus, Integer bookOwnerId, String bookOwnerName, String bookOwnerEmail, String bookOwnerProfilePhotoURL, String bookRequestDate, String bookRequestTime, String bookUploadDate, String bookUploadTime) {
+    public BookDTO(Long bookId, String bookTitle, String bookAuthor, int bookPageCount, int bookQuantity, Long bookCategoryId, String bookCategoryName, String coverPhotoURL, String bookApprovalStatus, Integer bookOwnerId, String bookOwnerName, String bookOwnerEmail, String bookOwnerProfilePhotoURL, String bookOwnerCity, String bookRequestDate, String bookRequestTime, String bookUploadDate, String bookUploadTime) {
         this.bookId = bookId;
         this.bookTitle = bookTitle;
         this.bookAuthor = bookAuthor;
@@ -36,6 +37,7 @@ public class BookDTO
         this.bookOwnerName = bookOwnerName;
         this.bookOwnerEmail = bookOwnerEmail;
         this.bookOwnerProfilePhotoURL = bookOwnerProfilePhotoURL;
+        this.bookOwnerCity = bookOwnerCity;
         this.bookRequestDate = bookRequestDate;
         this.bookRequestTime = bookRequestTime;
         this.bookUploadDate = bookUploadDate;
@@ -146,6 +148,14 @@ public class BookDTO
         this.bookOwnerProfilePhotoURL = bookOwnerProfilePhotoURL;
     }
 
+    public String getBookOwnerCity() {
+        return bookOwnerCity;
+    }
+
+    public void setBookOwnerCity(String bookOwnerCity) {
+        this.bookOwnerCity = bookOwnerCity;
+    }
+
     public String getBookRequestDate() {
         return bookRequestDate;
     }
@@ -194,6 +204,7 @@ public class BookDTO
                 ", bookOwnerName='" + bookOwnerName + '\'' +
                 ", bookOwnerEmail='" + bookOwnerEmail + '\'' +
                 ", bookOwnerProfilePhotoURL='" + bookOwnerProfilePhotoURL + '\'' +
+                ", bookOwnerCity='" + bookOwnerCity + '\'' +
                 ", bookRequestDate='" + bookRequestDate + '\'' +
                 ", bookRequestTime='" + bookRequestTime + '\'' +
                 ", bookUploadDate='" + bookUploadDate + '\'' +

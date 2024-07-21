@@ -9,6 +9,9 @@ import com.project.readers.readers_community.enums.Approval;
 import com.project.readers.readers_community.enums.BorrowRequestStatus;
 import com.project.readers.readers_community.repositories.*;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -26,6 +29,7 @@ public class RequestService
     private final MemberApprovalRequestRepository memberApprovalRequestRepository;
     private final BookRepository bookRepository;
     private final UserRepository userRepository;
+    private final int pageSize = 1;
 
     public RequestService(BorrowRequestRepository borrowRequestRepository, EmailService emailService, BookCopyRepository bookCopyRepository, Mapper mapper, MemberApprovalRequestRepository memberApprovalRequestRepository, BookRepository bookRepository, UserRepository userRepository) {
         this.borrowRequestRepository = borrowRequestRepository;
@@ -37,12 +41,13 @@ public class RequestService
         this.userRepository = userRepository;
     }
 
-    public Map<String,List<MemberApprovalRequestDTO>> getAllMemberApprovalRequests()
+    public Map<String,Page<MemberApprovalRequestDTO>> getAllMemberApprovalRequests(int pageNumber)
     {
-        Map<String, List<MemberApprovalRequestDTO>> requestMap = new HashMap<>();
-        requestMap.put("unresponded", memberApprovalRequestRepository.findByAdminApproval(Approval.UNRESPONDED).stream().map(mapper::memberApprovalRequestToMemberApprovalRequestDTO).toList());
-        requestMap.put("approved", memberApprovalRequestRepository.findByAdminApproval(Approval.APPROVED).stream().map(mapper::memberApprovalRequestToMemberApprovalRequestDTO).toList());
-        requestMap.put("rejected", memberApprovalRequestRepository.findByAdminApproval(Approval.REJECTED).stream().map(mapper::memberApprovalRequestToMemberApprovalRequestDTO).toList());
+        Pageable pageable = PageRequest.of(pageNumber-1, pageSize);
+        Map<String, Page<MemberApprovalRequestDTO>> requestMap = new HashMap<>();
+        requestMap.put("unresponded", memberApprovalRequestRepository.findByAdminApproval(Approval.UNRESPONDED, pageable).map(mapper::memberApprovalRequestToMemberApprovalRequestDTO));
+        requestMap.put("approved", memberApprovalRequestRepository.findByAdminApproval(Approval.APPROVED, pageable).map(mapper::memberApprovalRequestToMemberApprovalRequestDTO));
+        requestMap.put("rejected", memberApprovalRequestRepository.findByAdminApproval(Approval.REJECTED, pageable).map(mapper::memberApprovalRequestToMemberApprovalRequestDTO));
         return requestMap;
     }
 
@@ -148,13 +153,15 @@ public class RequestService
     }
 
     @Transactional
-    public Map<String, List<BookDTO>> getAllBookUploadRequests() {
+    public Map<String, Page<BookDTO>> getAllBookUploadRequests(int pageNumber) {
 
-        Map<String, List<BookDTO>> map = new HashMap<>();
-        map.put("unresponded", bookRepository.findByAdminApproval(Approval.UNRESPONDED).stream().map(mapper::bookToBookDTO).toList());
-        map.put("approved", bookRepository.findByAdminApproval(Approval.APPROVED).stream().map(mapper::bookToBookDTO).toList());
-        map.put("rejected", bookRepository.findByAdminApproval(Approval.REJECTED).stream().map(mapper::bookToBookDTO).toList());
+        Pageable pageable = PageRequest.of(pageNumber-1, pageSize);
 
+        Map<String, Page<BookDTO>> map = new HashMap<>();
+        map.put("unresponded", bookRepository.findByAdminApproval(Approval.UNRESPONDED, pageable).map(mapper::bookToBookDTO));
+        map.put("approved", bookRepository.findByAdminApproval(Approval.APPROVED, pageable).map(mapper::bookToBookDTO));
+        map.put("rejected", bookRepository.findByAdminApproval(Approval.REJECTED, pageable).map(mapper::bookToBookDTO));
+        System.out.println(map);
         return map;
     }
 
@@ -413,12 +420,14 @@ public class RequestService
         return map;
     }
 
-    public Map<String, List<BookDTO>> getMyUploadRequests(User user) {
+    public Map<String, Page<BookDTO>> getMyUploadRequests(int pageNumber, User user) {
 
-        Map<String, List<BookDTO>> map = new HashMap<>();
-        map.put("unresponded", bookRepository.findByOwnerAndAdminApproval(user, Approval.UNRESPONDED).stream().map(mapper::bookToBookDTO).toList());
-        map.put("approved", bookRepository.findByOwnerAndAdminApproval(user, Approval.APPROVED).stream().map(mapper::bookToBookDTO).toList());
-        map.put("rejected", bookRepository.findByOwnerAndAdminApproval(user, Approval.REJECTED).stream().map(mapper::bookToBookDTO).toList());
+        Pageable pageable = PageRequest.of(pageNumber-1, pageSize);
+
+        Map<String, Page<BookDTO>> map = new HashMap<>();
+        map.put("unresponded", bookRepository.findByOwnerAndAdminApproval(user, Approval.UNRESPONDED, pageable).map(mapper::bookToBookDTO));
+        map.put("approved", bookRepository.findByOwnerAndAdminApproval(user, Approval.APPROVED, pageable).map(mapper::bookToBookDTO));
+        map.put("rejected", bookRepository.findByOwnerAndAdminApproval(user, Approval.REJECTED, pageable).map(mapper::bookToBookDTO));
 
         return map;
 

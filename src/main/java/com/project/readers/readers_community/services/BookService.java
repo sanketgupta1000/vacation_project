@@ -6,7 +6,12 @@ import com.project.readers.readers_community.enums.BorrowRequestStatus;
 import com.project.readers.readers_community.repositories.*;
 import com.project.readers.readers_community.entities.BorrowRequest;
 import com.project.readers.readers_community.entities.BookTransaction;
+import com.project.readers.readers_community.specifications.BookFilterSpecification;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import com.project.readers.readers_community.entities.Book;
@@ -30,6 +35,7 @@ public class BookService {
     private final Mapper mapper;
     private final UserRepository userRepository;
     private final FileService fileService;
+    private final int pageSize = 3;
 
     public BookService(BookRepository bookRepository, OtpService otpService, EmailService emailService, BookCopyRepository bookCopyRepository, BookTransactionRepository bookTransactionRepository, BorrowRequestRepository borrowRequestRepository, BookCategoryRepository bookCategoryRepository, Mapper mapper, UserRepository userRepository, FileService fileService) {
         this.bookRepository = bookRepository;
@@ -92,11 +98,13 @@ public class BookService {
     }
 
     @Transactional
-    public List<BookDTO> getAllBooks() {
-        return bookRepository.findByAdminApproval(Approval.APPROVED)
-                .stream()
-                .map(mapper::bookToBookDTO)
-                .toList();
+    public Page<BookDTO> getAllBooks(int pageNumber, String title, String author, String owner, String city, List<Integer> categories, Integer minPageCount, Integer maxPageCount) {
+
+        Specification<Book> spec = BookFilterSpecification.filterBooks(title, author, owner, city, categories, minPageCount, maxPageCount);
+        Pageable pageable = PageRequest.of(pageNumber-1, pageSize);
+        Page<BookDTO> result =  bookRepository.findAll(spec, pageable)
+                .map(mapper::bookToBookDTO);
+        return  result;
     }
 
     // method to get a book by id
@@ -386,13 +394,13 @@ public class BookService {
     }
 
     // to find the current user's approved books
-    public List<BookDTO> getMyUploadedBooks(User user)
-    {
-        return bookRepository.findByOwnerAndAdminApproval(user, Approval.APPROVED)
-                .stream()
-                .map(mapper::bookToBookDTO)
-                .toList();
-    }
+//    public Page<BookDTO> getMyUploadedBooks(User user)
+//    {
+//        return bookRepository.findByOwnerAndAdminApproval(user, Approval.APPROVED)
+//                .stream()
+//                .map(mapper::bookToBookDTO)
+//                .toList();
+//    }
 
     // method to get the borrowed book copies of current user
     public List<BookCopyDTO> getMyBorrowedBookCopies(User user)

@@ -50,6 +50,7 @@ public class Mapper
                 book.getOwner().getFullName(),
                 book.getOwner().getEmail(),
                 book.getOwner().getProfilePhotoURL(),
+                book.getOwner().getAddress().getCity(),
                 requestDate,
                 requestTime,
                 responseDate,

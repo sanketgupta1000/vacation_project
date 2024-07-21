@@ -7,6 +7,7 @@ import com.project.readers.readers_community.DTOs.BookCopyDTO;
 import com.project.readers.readers_community.DTOs.BookDTO;
 import com.project.readers.readers_community.DTOs.BookTransactionsDTO;
 import com.project.readers.readers_community.entities.*;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 import com.project.readers.readers_community.annotations.CurrentUser;
 import com.project.readers.readers_community.services.BookService;
@@ -37,9 +38,16 @@ public class BookController
 
 	//to get all approved books
 	@GetMapping
-	public List<BookDTO> getAllBooks()
+	public Page<BookDTO> getAllBooks(@RequestParam(defaultValue = "1") int pageNumber,
+									 @RequestParam(required = false) String title,
+									 @RequestParam(required = false) String author,
+									 @RequestParam(required = false) String owner,
+									 @RequestParam(required = false) String city,
+									 @RequestParam(required = false) List<Integer> categories,
+									 @RequestParam(required = false) Integer minPageCount,
+									 @RequestParam(required = false) Integer maxPageCount)
 	{
-		return bookService.getAllBooks();
+		return bookService.getAllBooks(pageNumber, title, author, owner, city, categories, minPageCount, maxPageCount);
 	}
 
 	// method to get a book's data
@@ -82,11 +90,11 @@ public class BookController
 	}
 
 	// method to get uploaded and approved books of the current user
-	@GetMapping("/myUploadedBooks")
-	public List<BookDTO> getMyUploadedBooks(@CurrentUser User user)
-	{
-		return bookService.getMyUploadedBooks(user);
-	}
+//	@GetMapping("/myUploadedBooks")
+//	public List<BookDTO> getMyUploadedBooks(@CurrentUser User user)
+//	{
+//		return bookService.getMyUploadedBooks(user);
+//	}
 
 	// method to get the borrowed book copies of current user
 	@GetMapping("/myBorrowedBookCopies")
