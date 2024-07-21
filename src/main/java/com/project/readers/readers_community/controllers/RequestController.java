@@ -8,6 +8,7 @@ import com.project.readers.readers_community.entities.BorrowRequest;
 import com.project.readers.readers_community.entities.MemberApprovalRequest;
 import com.project.readers.readers_community.entities.User;
 import com.project.readers.readers_community.services.RequestService;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,9 +28,9 @@ public class RequestController
 
     //endpoint to get all MemberApprovalRequests
     @GetMapping("/memberApprovalRequests")
-    public Map<String,List<MemberApprovalRequestDTO>> getAllMemberApprovalRequests()
+    public Map<String,Page<MemberApprovalRequestDTO>> getAllMemberApprovalRequests(@RequestParam int pageNumber)
     {
-        return requestService.getAllMemberApprovalRequests();
+        return requestService.getAllMemberApprovalRequests(pageNumber);
     }
 
     // endpoint to approve member signup request from the side of reference
@@ -62,9 +63,9 @@ public class RequestController
 
     //endpoint to get all book upload requests
     @GetMapping("/bookUploadRequests")
-    public Map<String, List<BookDTO>> getAllBookUploadRequests()
+    public Map<String, Page<BookDTO>> getAllBookUploadRequests(@RequestParam int pageNumber)
     {
-        return requestService.getAllBookUploadRequests();
+        return requestService.getAllBookUploadRequests(pageNumber);
     }
 
     //endpoint to approve a book upload request from admin's side
@@ -111,9 +112,9 @@ public class RequestController
 
     //endpoint to see my/current user's upload book requests
     @GetMapping("/myUploadRequests")
-    public Map<String, List<BookDTO>> getMyUploadRequests(@CurrentUser User user)
+    public Map<String, Page<BookDTO>> getMyUploadRequests(@RequestParam int pageNumber, @CurrentUser User user)
     {
-        return requestService.getMyUploadRequests(user);
+        return requestService.getMyUploadRequests(pageNumber, user);
     }
 
 }

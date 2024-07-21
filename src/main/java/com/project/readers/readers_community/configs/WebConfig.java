@@ -2,6 +2,7 @@ package com.project.readers.readers_community.configs;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -9,6 +10,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.util.List;
 
 @Configuration
+@EnableSpringDataWebSupport(pageSerializationMode = EnableSpringDataWebSupport.PageSerializationMode.VIA_DTO)
 public class WebConfig implements WebMvcConfigurer
 {
     private final CurrentUserHandlerMethodArgumentResolver currentUserHandlerMethodArgumentResolver;
@@ -30,7 +32,7 @@ public class WebConfig implements WebMvcConfigurer
     public void addCorsMappings(CorsRegistry registry)
     {
         registry.addMapping("/**")
-                .allowedOrigins(allowedOrigin, "http://192.168.1.7:5173").allowedMethods("GET", "POST", "PUT", "DELETE");
+                .allowedOrigins(allowedOrigin, "http://192.168.1.3:5173").allowedMethods("GET", "POST", "PUT", "DELETE");
     }
 
 }
